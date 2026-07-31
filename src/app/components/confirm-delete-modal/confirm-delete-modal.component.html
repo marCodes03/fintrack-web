@@ -1,0 +1,50 @@
+@if (isOpen) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Clickable dark backdrop -->
+    <div (click)="onClose()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-200 animate-in fade-in"></div>
+
+    <!-- Modal Card Container -->
+    <div class="relative w-full max-w-md bg-surface-card border border-border-subtle rounded-2xl shadow-2xl p-6 z-10 space-y-5 animate-in scale-in duration-200">
+      
+      <!-- Icon & Header -->
+      <div class="flex items-start space-x-4">
+        <div class="h-12 w-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-xl shrink-0">
+          ⚠️
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-base font-bold text-text-heading leading-snug">{{ title }}</h3>
+          <p class="text-xs text-text-muted leading-normal">
+            Are you sure you want to permanently delete <strong class="text-text-body font-semibold">"{{ itemName }}"</strong>? This action is irreversible.
+          </p>
+        </div>
+      </div>
+
+      <!-- Description instruction -->
+      <div class="p-3 bg-surface-subtle border border-border-subtle rounded-xl text-2xs font-medium text-text-muted leading-normal">
+        {{ description }}
+      </div>
+
+      <!-- Confirmation input form -->
+      <div class="space-y-2">
+        <label for="confirmationInput" class="block text-2xs font-semibold text-text-muted uppercase tracking-wider">
+          Confirmation Text
+        </label>
+        <input id="confirmationInput" type="text" placeholder="delete" autocomplete="off" [(ngModel)]="confirmationInput" (keyup.enter)="onConfirm()"
+          class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-rose-500 text-sm">
+      </div>
+
+      <!-- Bottom controls -->
+      <div class="flex items-center space-x-3 pt-2">
+        <button type="button" (click)="onClose()"
+          class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-xs">
+          Cancel
+        </button>
+        <button type="button" (click)="onConfirm()" [disabled]="isConfirmDisabled()"
+          class="flex-1 bg-rose-500 hover:bg-rose-600 dark:hover:bg-rose-400 text-white dark:text-slate-950 font-bold py-2.5 px-4 rounded-xl transition-all text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+          Delete Item
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

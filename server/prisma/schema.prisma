@@ -1,0 +1,191 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                  String    @id @default(uuid())
+  createdBy           String?
+  createdDate         DateTime  @default(now())
+  updatedBy           String?
+  updatedDate         DateTime  @updatedAt
+  email               String    @unique
+  name                String
+  password            String
+  monthlySavingsGoal  Float     @default(0.0)
+
+  accounts     Account[]
+  transactions Transaction[]
+  categories   Category[]
+  budgetPlans  BudgetPlan[]
+  budgetGoal   BudgetGoal?
+  reviews      Review[]
+}
+
+model Account {
+  id          String    @id @default(uuid())
+  createdBy   String?
+  createdDate DateTime  @default(now())
+  updatedBy   String?
+  updatedDate DateTime  @updatedAt
+  name        String
+  type        String    // CASH, BANK, CREDIT, SAVINGS, E_WALLET
+  balance     Float     @default(0.0)
+  currency    String    @default("PHP")
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sourceTransactions      Transaction[] @relation("SourceAccount")
+  destinationTransactions Transaction[] @relation("DestinationAccount")
+}
+
+model Transaction {
+  id            String    @id @default(uuid())
+  createdBy     String?
+  createdDate   DateTime  @default(now())
+  updatedBy     String?
+  updatedDate   DateTime  @updatedAt
+  description   String
+  amount        Float
+  transferFee   Float     @default(0.0)
+  type          String    // INCOME, EXPENSE, TRANSFER, SAVINGS
+  expenseType   String?   @default("VARIABLE") // FIXED or VARIABLE
+  category      String
+  date          DateTime  @default(now())
+  expenseDate   DateTime? // Date-specific expense date (optional)
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId     String?   // Source account
+  account       Account?  @relation("SourceAccount", fields: [accountId], references: [id], onDelete: SetNull)
+  toAccountId   String?   // Destination account (for TRANSFER type)
+  toAccount     Account?  @relation("DestinationAccount", fields: [toAccountId], references: [id], onDelete: SetNull)
+}
+
+model Category {
+  id               String     @id @default(uuid())
+  createdBy        String?
+  createdDate      DateTime   @default(now())
+  updatedBy        String?
+  updatedDate      DateTime   @updatedAt
+  name             String
+  parentCategoryId String?
+  parentCategory   Category?  @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id], onDelete: Cascade)
+  subCategories    Category[] @relation("CategoryHierarchy")
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BudgetPlan {
+  id                    String           @id @default(uuid())
+  createdBy             String?
+  createdDate           DateTime         @default(now())
+  updatedBy             String?
+  updatedDate           DateTime         @updatedAt
+  name                  String
+  timeframe             String           // JSON string representing the timeframe configuration
+  startDate             DateTime?
+  endDate               DateTime?
+  isActive              Boolean          @default(false)
+  implementedAccountId  String?
+  userId                String
+  user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items                 BudgetPlanItem[]
+}
+
+model BudgetPlanItem {
+  id           String     @id @default(uuid())
+  createdBy    String?
+  createdDate  DateTime   @default(now())
+  updatedBy    String?
+  updatedDate  DateTime   @updatedAt
+  type         String     // INCOME or EXPENSE or SAVINGS or TRANSFER
+  categoryName String
+  amount       Float
+  accountId    String?
+  toAccountId  String?
+  transferFee  Float?
+  budgetPlanId String
+  budgetPlan   BudgetPlan @relation(fields: [budgetPlanId], references: [id], onDelete: Cascade)
+}
+
+// Reference Tables
+
+model RefIncomeCategory {
+  id          String   @id @default(uuid())
+  createdBy   String?
+  createdDate DateTime @default(now())
+  updatedBy   String?
+  updatedDate DateTime @updatedAt
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+}
+
+model RefExpenseCategory {
+  id          String   @id @default(uuid())
+  createdBy   String?
+  createdDate DateTime @default(now())
+  updatedBy   String?
+  updatedDate DateTime @updatedAt
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+}
+
+model RefSavingCategory {
+  id          String   @id @default(uuid())
+  createdBy   String?
+  createdDate DateTime @default(now())
+  updatedBy   String?
+  updatedDate DateTime @updatedAt
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+}
+
+
+
+model RefAccountType {
+  id          String   @id @default(uuid())
+  createdBy   String?
+  createdDate DateTime @default(now())
+  updatedBy   String?
+  updatedDate DateTime @updatedAt
+  code        String   @unique // CASH, BANK, CREDIT, SAVINGS, E_WALLET
+  label       String
+  icon        String   @default("🏦")
+  sortOrder   Int      @default(0)
+}
+
+model BudgetGoal {
+  id          String            @id @default(uuid())
+  userId      String            @unique
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groups      BudgetGoalGroup[]
+  createdDate DateTime          @default(now())
+  updatedDate DateTime          @updatedAt
+}
+
+model BudgetGoalGroup {
+  id           String     @id @default(uuid())
+  name         String     // e.g., "Necessity", "Leisure", "Savings"
+  percentage   Float      // e.g., 50.0, 10.0, 25.0
+  categories   String[]   // e.g., ["Food", "Transportation", "Groceries", "Allowances", "Education"]
+  budgetGoalId String
+  budgetGoal   BudgetGoal @relation(fields: [budgetGoalId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  rating      Int
+  comment     String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdDate DateTime @default(now())
+}
+
+

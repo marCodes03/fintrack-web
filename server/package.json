@@ -1,0 +1,36 @@
+{
+  "name": "fintrack-server",
+  "version": "1.0.0",
+  "description": "FinTrack Node.js Express REST API with PostgreSQL and Prisma",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemailer": "^9.0.3",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "@types/nodemailer": "^8.0.1",
+    "prisma": "^6.19.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^7.0.2"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}

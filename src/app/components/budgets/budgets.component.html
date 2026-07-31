@@ -1,0 +1,376 @@
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
+  <app-header (resetPassword)="openResetModal()"></app-header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
+    <div class="flex items-center justify-between border-b border-border-subtle pb-4">
+      <div>
+        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Budget Plans</h1>
+        <p class="text-xs text-text-muted mt-1">Design budget blueprints, allocate inflows to outflows/savings, and activate plans for target execution periods.</p>
+      </div>
+      <button (click)="openCreateSlider()"
+        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
+        <span>+</span><span>New Budget Plan</span>
+      </button>
+    </div>
+
+    @if (successMessage()) {
+      <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+        <span>✅</span><span>{{ successMessage() }}</span>
+      </div>
+    }
+    @if (errorMessage()) {
+      <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-sm flex items-center space-x-2">
+        <span>⚠️</span><span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Baseline Budget Goal Setup Card -->
+    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-6 relative overflow-hidden transition-all">
+      <div class="flex items-center justify-between border-b border-border-subtle pb-3">
+        <div>
+          <h2 class="text-lg font-bold text-text-heading">Budget Goals</h2>
+          <p class="text-xs text-text-muted mt-0.5">Define target percentages for category groups as a baseline blueprint for your active budget timeframes.</p>
+        </div>
+        @if (!isEditingGoal()) {
+          <button (click)="startEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
+            ⚙️ Configure Baseline Goal
+          </button>
+        } @else {
+          <div class="flex items-center space-x-2">
+            <button (click)="saveBudgetGoal()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
+              Save Goal
+            </button>
+            <button (click)="cancelEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
+              Cancel
+            </button>
+          </div>
+        }
+      </div>
+
+      @if (!isEditingGoal()) {
+        <!-- Display Current Baseline Budget Goals in Tab Design -->
+        <div class="space-y-4">
+          <!-- Tabs Header for Display Mode -->
+          <div class="flex space-x-2 overflow-x-auto pb-2 border-b border-border-subtle">
+            @for (group of budgetGoal()?.groups ?? []; track group.id; let groupIdx = $index) {
+              <button (click)="activeDisplayGoalTab.set(groupIdx)"
+                class="px-4 py-2 text-xs font-bold rounded-t-xl transition-all whitespace-nowrap"
+                [class.bg-surface-subtle]="activeDisplayGoalTab() === groupIdx"
+                [class.text-text-heading]="activeDisplayGoalTab() === groupIdx"
+                [class.text-text-muted]="activeDisplayGoalTab() !== groupIdx"
+                [class.hover:text-text-body]="activeDisplayGoalTab() !== groupIdx">
+                {{ group.name }} 
+                <span class="ml-1 text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+              </button>
+            } @empty {
+              <div class="py-4 text-center text-text-muted text-xs italic w-full">
+                No baseline goals set. Click configure to define Necessity (e.g. 50%), Wants (e.g. 10%), or Savings (e.g. 25%).
+              </div>
+            }
+          </div>
+
+          <!-- Tab Content for Display Mode -->
+          @if (budgetGoal()?.groups?.[activeDisplayGoalTab()]; as activeGroup) {
+            <div class="bg-surface-subtle border border-border-subtle rounded-b-xl rounded-tr-xl p-5 space-y-4 animate-in fade-in duration-150">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-bold text-text-heading">{{ activeGroup.name }} Allocation Details</span>
+                <span class="text-xs font-semibold text-text-muted">Target: {{ activeGroup.percentage | number:'1.0-2' }}% of planned inflows</span>
+              </div>
+              
+              <div class="flex flex-wrap gap-2 pt-2">
+                @for (cat of activeGroup.categories; track cat) {
+                  <span class="text-xs font-medium text-text-body bg-surface-card border border-border-subtle px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+                    <span class="text-text-muted">📂</span>
+                    <span>{{ cat }}</span>
+                  </span>
+                } @empty {
+                  <span class="text-xs text-text-muted italic">No categories assigned to this group yet.</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Edit Baseline Budget Goals Form -->
+        <div class="space-y-6">
+          <!-- Tabs Header -->
+          <div class="flex space-x-2 overflow-x-auto pb-2 border-b border-border-subtle">
+            @for (group of goalGroupsEdit(); track $index; let groupIdx = $index) {
+              <button (click)="setActiveTab(groupIdx)"
+                class="px-4 py-2 text-xs font-bold rounded-t-xl transition-all whitespace-nowrap"
+                [class.bg-surface-subtle]="activeGoalTab() === groupIdx"
+                [class.text-text-heading]="activeGoalTab() === groupIdx"
+                [class.text-text-muted]="activeGoalTab() !== groupIdx"
+                [class.hover:text-text-body]="activeGoalTab() !== groupIdx">
+                {{ group.name }} <span class="ml-1 text-[10px] bg-surface-card px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+              </button>
+            }
+            <button (click)="addGroup()" class="px-4 py-2 text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-all">
+              + Add Group
+            </button>
+          </div>
+
+          <!-- Active Tab Content -->
+          @if (goalGroupsEdit()[activeGoalTab()]; as group) {
+            <div class="bg-surface-subtle border border-border-subtle rounded-b-xl rounded-tr-xl p-5 space-y-4 animate-in fade-in duration-200">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+                <div class="flex-1">
+                  <label class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1">Group Name</label>
+                  <input type="text" [(ngModel)]="group.name" [disabled]="group.name.toLowerCase() === 'others'"
+                    class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2 text-input-text focus:outline-none focus:border-emerald-500 text-xs font-bold disabled:opacity-50">
+                </div>
+                <div class="w-32">
+                  <label class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1">Target %</label>
+                  <div class="relative">
+                    <input type="number" [ngModel]="group.percentage" (ngModelChange)="onPercentageChange(group, $event)"
+                      [disabled]="group.name.toLowerCase() === 'others' || (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0)"
+                      class="w-full bg-input-bg border border-input-border rounded-xl pl-3 pr-6 py-2 text-input-text focus:outline-none focus:border-emerald-500 text-xs font-bold disabled:opacity-50">
+                    <span class="absolute right-3 top-2 text-xs text-text-muted font-bold">%</span>
+                  </div>
+                  @if (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0) {
+                    <p class="text-[10px] text-emerald-500 font-medium mt-1 leading-tight">Aligned with Savings Goal ({{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}/mo)</p>
+                  }
+                </div>
+                <div class="flex items-end pt-5">
+                  @if (group.name.toLowerCase() !== 'others') {
+                    <button (click)="removeGroup(activeGoalTab())" class="bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-rose-500 text-xs font-bold py-2 px-3 rounded-xl transition-all">
+                      Remove
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Category checklist selections -->
+              <div>
+                <label class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1.5">Assign Categories</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
+                  <!-- Savings special category -->
+                  <label class="flex flex-col justify-between bg-surface-card border border-border-subtle p-2.5 rounded-lg text-2xs transition-colors"
+                    [class.border-emerald-500/40]="isCategoryInGroup(group, 'Savings')" [class.bg-emerald-500/5]="isCategoryInGroup(group, 'Savings')"
+                    [class.cursor-pointer]="group.name.toLowerCase() !== 'others'"
+                    [class.opacity-50]="group.name.toLowerCase() === 'others'">
+                    <div class="flex items-center space-x-2">
+                      <input type="checkbox" [checked]="isCategoryInGroup(group, 'Savings')" (change)="toggleCategoryInGroup(group, 'Savings')" 
+                        [disabled]="group.name.toLowerCase() === 'others'"
+                        class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-3.5 h-3.5 disabled:opacity-50">
+                      <span class="font-semibold text-text-body">Savings</span>
+                    </div>
+                    @if (getCategoryOwnerGroup('Savings'); as owner) {
+                      @if (owner !== group.name) {
+                        <span class="text-[9px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
+                      }
+                    }
+                  </label>
+
+                  @for (cat of expenseCategories(); track cat.id) {
+                    <label class="flex flex-col justify-between bg-surface-card border border-border-subtle p-2.5 rounded-lg text-2xs transition-colors"
+                      [class.border-emerald-500/40]="isCategoryInGroup(group, cat.name)" [class.bg-emerald-500/5]="isCategoryInGroup(group, cat.name)"
+                      [class.cursor-pointer]="group.name.toLowerCase() !== 'others'"
+                      [class.opacity-50]="group.name.toLowerCase() === 'others'">
+                      <div class="flex items-center space-x-2">
+                        <input type="checkbox" [checked]="isCategoryInGroup(group, cat.name)" (change)="toggleCategoryInGroup(group, cat.name)"
+                          [disabled]="group.name.toLowerCase() === 'others'"
+                          class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-3.5 h-3.5 disabled:opacity-50">
+                        <span class="font-semibold text-text-body truncate">{{ cat.name }}</span>
+                      </div>
+                      @if (getCategoryOwnerGroup(cat.name); as owner) {
+                        @if (owner !== group.name) {
+                          <span class="text-[9px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
+                        }
+                      }
+                    </label>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Budget Plans Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (plan of budgetPlans(); track plan.id) {
+        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
+          [class.border-emerald-500/50]="plan.isActive">
+          
+          @if (plan.isActive) {
+            <div class="absolute top-0 right-0 bg-emerald-505 text-white dark:text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-md">
+              Active Plan
+            </div>
+          }
+
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="text-lg font-bold text-text-heading leading-tight">{{ plan.name }}</h3>
+                @if (plan.isActive && plan.startDate && plan.endDate) {
+                  <p class="text-[11px] font-semibold text-emerald-500 mt-1">
+                    Period: {{ plan.startDate | date:'MMM d, y' }} — {{ plan.endDate | date:'MMM d, y' }}
+                  </p>
+                }
+              </div>
+            </div>
+
+            <!-- Inflows / Outflows / Savings breakdown -->
+            <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
+              <div>
+                <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Inflows</span>
+                <span class="text-xs font-bold text-emerald-500">+{{ getPlannedInflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+              </div>
+              <div>
+                <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Outflows</span>
+                <span class="text-xs font-bold text-rose-500">-{{ getPlannedOutflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+              </div>
+              <div>
+                <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Savings</span>
+                <span class="text-xs font-bold text-teal-500">{{ getPlannedSavings(plan) | currency:'PHP':'symbol-narrow' }}</span>
+              </div>
+            </div>
+
+            <!-- Net Remaining -->
+            <div class="flex items-center justify-between p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+              <span class="text-xs font-medium text-text-muted">Net Remaining</span>
+              <span class="text-sm font-black" [class.text-emerald-500]="getRemainingBudget(plan) >= 0" [class.text-rose-500]="getRemainingBudget(plan) < 0">
+                {{ getRemainingBudget(plan) | currency:'PHP':'symbol-narrow' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="space-y-2 pt-2 border-t border-border-subtle">
+            <!-- Implement for Period Button -->
+            <button (click)="openImplementModal(plan)"
+              class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+              <span>🚀</span>
+              <span>{{ plan.isActive ? 'Re-Implement Period' : 'Implement for Period' }}</span>
+            </button>
+
+            @if (plan.isActive) {
+              <button (click)="openDeactivateModal(plan)"
+                class="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-550 border border-amber-500/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                <span>⏸️</span>
+                <span>Deactivate Plan</span>
+              </button>
+            }
+
+            <div class="flex items-center space-x-2">
+              <button (click)="startEdit(plan)" class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-1.5 px-3 rounded-xl text-xs transition-all">
+                Edit Plan
+              </button>
+              <button (click)="handleDeletePlan(plan)" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-bold py-1.5 px-3 rounded-xl text-xs transition-all border border-rose-500/20">
+                Delete
+              </button>
+            </div>
+          </div>
+
+        </div>
+      } @empty {
+        <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
+          <p class="text-sm text-text-muted">No budget plans created yet.</p>
+          <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+            Create First Budget Plan
+          </button>
+        </div>
+      }
+    </div>
+  </main>
+</div>
+
+<!-- Implement Budget Plan for Period Modal -->
+@if (isImplementModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div (click)="closeImplementModal()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"></div>
+    <div class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
+      <div>
+        <h3 class="text-lg font-bold text-text-heading">Implement Plan for Period</h3>
+        <p class="text-xs text-text-muted mt-1">
+          Activate "<span class="text-emerald-500 font-semibold">{{ implementPlanName() }}</span>" for a specific timeframe. The planned income will be deposited automatically as an actual income record.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Start Date -->
+        <div>
+          <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Start Date *</label>
+          <input type="date" [(ngModel)]="implementStartDate" (ngModelChange)="onStartDateChange($event)"
+            class="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 text-sm">
+        </div>
+
+        <!-- Option to apply but don't execute -->
+        <label class="flex items-center space-x-2.5 cursor-pointer p-1">
+          <input type="checkbox" [(ngModel)]="implementExecute"
+            class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-4 h-4">
+          <span class="text-xs font-semibold text-text-body select-none">Generate actual transactions & update balances</span>
+        </label>
+
+        <div class="p-3 rounded-xl bg-surface-subtle border border-border-subtle text-xs text-text-muted">
+          💡 <span class="text-text-body font-semibold">Account Routing:</span> Each line item will automatically update the account assigned to it in the budget plan blueprint.
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3 pt-2">
+        <button (click)="executeImplementPlan()" [disabled]="isLoading()"
+          class="flex-1 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
+          <span>🚀</span><span>{{ implementExecute ? 'Activate & Execute Plan' : 'Activate Plan Only' }}</span>
+        </button>
+        <button (click)="closeImplementModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-all">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<app-budget-plan-slider
+  [isOpen]="isSliderOpen()"
+  [isEditMode]="isEditMode()"
+  [editingId]="editingPlanId()"
+  (close)="closeSlider()"
+  (saved)="onSaved()">
+</app-budget-plan-slider>
+
+@if (isResetModalOpen()) {
+  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+}
+
+<app-confirm-delete-modal
+  [isOpen]="isDeleteModalOpen()"
+  [itemName]="planToDelete()?.name ?? ''"
+  title="Delete Budget Plan"
+  description="To confirm deleting this budget plan blueprint, please type 'delete' below."
+  (confirm)="executeDelete()"
+  (close)="closeDeleteModal()">
+</app-confirm-delete-modal>
+
+<!-- Deactivate Plan Warning Modal -->
+@if (isDeactivateModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div (click)="closeDeactivateModal()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"></div>
+    <div class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
+      <div>
+        <h3 class="text-lg font-bold text-text-heading flex items-center space-x-2">
+          <span>⚠️</span>
+          <span>Deactivate Budget Plan</span>
+        </h3>
+        <p class="text-xs text-text-muted mt-2">
+          Are you sure you want to deactivate "<span class="text-amber-500 font-semibold">{{ planToDeactivate()?.name }}</span>"?
+        </p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-500 leading-relaxed">
+        <strong>Important Warning:</strong> Deactivating the plan will stop tracking its budget allocations. However, all actual transactions that were created when the plan was activated/implemented will <strong>remain untouched</strong> in your ledger.
+      </div>
+
+      <div class="flex items-center space-x-3 pt-2">
+        <button (click)="executeDeactivatePlan()" [disabled]="isLoading()"
+          class="flex-1 bg-amber-500 hover:bg-amber-600 text-white dark:text-slate-950 font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
+          <span>Confirm Deactivation</span>
+        </button>
+        <button (click)="closeDeactivateModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-all">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+}

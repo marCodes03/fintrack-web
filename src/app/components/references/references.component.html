@@ -1,0 +1,359 @@
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
+  <app-header (resetPassword)="openResetModal()"></app-header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-6 animate-in fade-in duration-200">
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between border-b border-border-subtle pb-4">
+      <div>
+        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Reference Data</h1>
+        <p class="text-xs text-text-muted mt-1">Manage and configure system-wide reference lists used across all modules.</p>
+      </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (successMessage()) {
+      <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+        <span>✅</span><span>{{ successMessage() }}</span>
+      </div>
+    }
+    @if (errorMessage()) {
+      <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
+        <span>⚠️</span><span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Tab Navigation -->
+    <div class="flex items-center space-x-1 bg-surface-subtle rounded-xl p-1.5 border border-border-subtle overflow-x-auto">
+      <button (click)="setTab('income-categories')"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        [class.bg-emerald-500]="activeTab() === 'income-categories'"
+        [class.text-white]="activeTab() === 'income-categories'"
+        [class.dark:text-slate-950]="activeTab() === 'income-categories'"
+        [class.text-text-muted]="activeTab() !== 'income-categories'"
+        [class.hover:text-text-body]="activeTab() !== 'income-categories'">
+        📈 Income Categories
+      </button>
+      <button (click)="setTab('expense-categories')"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        [class.bg-emerald-500]="activeTab() === 'expense-categories'"
+        [class.text-white]="activeTab() === 'expense-categories'"
+        [class.dark:text-slate-950]="activeTab() === 'expense-categories'"
+        [class.text-text-muted]="activeTab() !== 'expense-categories'"
+        [class.hover:text-text-body]="activeTab() !== 'expense-categories'">
+        🛒 Expense Categories
+      </button>
+      <button (click)="setTab('saving-categories')"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        [class.bg-emerald-500]="activeTab() === 'saving-categories'"
+        [class.text-white]="activeTab() === 'saving-categories'"
+        [class.dark:text-slate-950]="activeTab() === 'saving-categories'"
+        [class.text-text-muted]="activeTab() !== 'saving-categories'"
+        [class.hover:text-text-body]="activeTab() !== 'saving-categories'">
+        💰 Saving Categories
+      </button>
+      <button (click)="setTab('account-types')"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        [class.bg-emerald-500]="activeTab() === 'account-types'"
+        [class.text-white]="activeTab() === 'account-types'"
+        [class.dark:text-slate-950]="activeTab() === 'account-types'"
+        [class.text-text-muted]="activeTab() !== 'account-types'"
+        [class.hover:text-text-body]="activeTab() !== 'account-types'">
+        🏦 Account Types
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB: Income Categories (with management) -->
+    <!-- ============================================ -->
+    @if (activeTab() === 'income-categories') {
+      <div class="bg-surface-card border border-border-subtle rounded-2xl shadow-md overflow-hidden animate-in fade-in duration-150">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+          <div>
+            <h2 class="text-base font-bold text-text-heading">Income Categories</h2>
+            <p class="text-xs text-text-muted mt-0.5">Categories available when recording income transactions.</p>
+          </div>
+          <button (click)="openCreateIncomeSlider()"
+            class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md">
+            <span>+</span><span>Add Category</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-text-body">
+            <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
+              <tr>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Description</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3">Last Updated</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-subtle">
+              @for (item of incomeCategories(); track item.id) {
+                <tr class="hover:bg-table-row-hover transition-colors">
+                  <td class="px-6 py-4 font-semibold text-text-heading">{{ item.name }}</td>
+                  <td class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider"
+                      [class.bg-emerald-500/10]="item.isActive" [class.text-emerald-500]="item.isActive"
+                      [class.bg-surface-subtle]="!item.isActive" [class.text-text-muted]="!item.isActive">
+                      {{ item.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-text-muted text-xs">{{ item.updatedDate | date:'MMM d, y' }}</td>
+                  <td class="px-6 py-4 text-right space-x-3">
+                    <button (click)="openEditIncomeSlider(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">Edit</button>
+                    <button (click)="promptDeleteIncomeCategory(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">Delete</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No income categories configured yet.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- ============================================ -->
+    <!-- TAB: Expense Categories (with management) -->
+    <!-- ============================================ -->
+    @if (activeTab() === 'expense-categories') {
+      <div class="bg-surface-card border border-border-subtle rounded-2xl shadow-md overflow-hidden animate-in fade-in duration-150">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+          <div>
+            <h2 class="text-base font-bold text-text-heading">Expense Categories</h2>
+            <p class="text-xs text-text-muted mt-0.5">Categories available when recording expense transactions.</p>
+          </div>
+          <button (click)="openCreateExpenseSlider()"
+            class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md">
+            <span>+</span><span>Add Category</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-text-body">
+            <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
+              <tr>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Description</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3">Last Updated</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-subtle">
+              @for (item of expenseCategories(); track item.id) {
+                <tr class="hover:bg-table-row-hover transition-colors">
+                  <td class="px-6 py-4 font-semibold text-text-heading">{{ item.name }}</td>
+                  <td class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider"
+                      [class.bg-emerald-500/10]="item.isActive" [class.text-emerald-500]="item.isActive"
+                      [class.bg-surface-subtle]="!item.isActive" [class.text-text-muted]="!item.isActive">
+                      {{ item.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-text-muted text-xs">{{ item.updatedDate | date:'MMM d, y' }}</td>
+                  <td class="px-6 py-4 text-right space-x-3">
+                    <button (click)="openEditExpenseSlider(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">Edit</button>
+                    <button (click)="promptDeleteExpenseCategory(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">Delete</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No expense categories configured yet.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- ============================================ -->
+    <!-- TAB: Saving Categories (with management) -->
+    <!-- ============================================ -->
+    @if (activeTab() === 'saving-categories') {
+      <div class="bg-surface-card border border-border-subtle rounded-2xl shadow-md overflow-hidden animate-in fade-in duration-150">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+          <div>
+            <h2 class="text-base font-bold text-text-heading">Saving Categories</h2>
+            <p class="text-xs text-text-muted mt-0.5">Categories available when allocating savings records.</p>
+          </div>
+          <button (click)="openCreateSavingSlider()"
+            class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md">
+            <span>+</span><span>Add Category</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-text-body">
+            <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
+              <tr>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Description</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3">Last Updated</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-subtle">
+              @for (item of savingCategories(); track item.id) {
+                <tr class="hover:bg-table-row-hover transition-colors">
+                  <td class="px-6 py-4 font-semibold text-text-heading">{{ item.name }}</td>
+                  <td class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider"
+                      [class.bg-emerald-500/10]="item.isActive" [class.text-emerald-500]="item.isActive"
+                      [class.bg-surface-subtle]="!item.isActive" [class.text-text-muted]="!item.isActive">
+                      {{ item.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-text-muted text-xs">{{ item.updatedDate | date:'MMM d, y' }}</td>
+                  <td class="px-6 py-4 text-right space-x-3">
+                    <button (click)="openEditSavingSlider(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">Edit</button>
+                    <button (click)="promptDeleteSavingCategory(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">Delete</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No saving categories configured yet.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- ============================================ -->
+    <!-- TAB: Account Types (read-only) -->
+    <!-- ============================================ -->
+    @if (activeTab() === 'account-types') {
+      <div class="bg-surface-card border border-border-subtle rounded-2xl shadow-md overflow-hidden animate-in fade-in duration-150">
+        <div class="px-6 py-4 border-b border-border-subtle flex items-center">
+          <div>
+            <h2 class="text-base font-bold text-text-heading">Account Types</h2>
+            <p class="text-xs text-text-muted mt-0.5">System-seeded account type definitions. Read-only.</p>
+          </div>
+          <span class="ml-auto inline-flex items-center px-2.5 py-1 rounded-full bg-surface-subtle text-text-muted text-2xs font-semibold uppercase tracking-wider">Seed Only</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
+          @for (item of accountTypes(); track item.id) {
+            <div class="flex items-center space-x-3 p-4 bg-surface-subtle border border-border-subtle rounded-xl">
+              <div class="h-9 w-9 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg font-bold">{{ item.icon }}</div>
+              <div>
+                <p class="text-sm font-bold text-text-heading">{{ item.label }}</p>
+                <p class="text-xs font-mono text-text-muted uppercase tracking-wider">{{ item.code }}</p>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-text-muted text-sm col-span-3 py-6 text-center">Loading account types...</p>
+          }
+        </div>
+      </div>
+    }
+
+  </main>
+</div>
+
+<!-- ============================================ -->
+<!-- RIGHT-SIDE SLIDER PANEL -->
+<!-- ============================================ -->
+@if (isSliderOpen()) {
+  <div class="fixed inset-0 z-50 flex justify-end">
+    <!-- Backdrop -->
+    <div (click)="closeSlider()"
+      class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in">
+    </div>
+
+    <!-- Slider Panel -->
+    <div class="relative w-96 max-w-full bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-5 border-b border-border-subtle">
+        <h3 class="text-sm font-bold text-text-heading">{{ getSliderTitle() }}</h3>
+        <button (click)="closeSlider()"
+          class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-5">
+        @if (errorMessage()) {
+          <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-xs">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <div>
+          <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Category Name *</label>
+          <input
+            type="text"
+            [(ngModel)]="formName"
+            placeholder="{{ isIncomeMode() ? 'e.g. Salary, Bonus...' : (isSavingMode() ? 'e.g. Retirement, Emergency...' : 'e.g. Transport, Medical...') }}"
+            class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-emerald-500 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Description</label>
+          <textarea
+            [(ngModel)]="formDescription"
+            rows="3"
+            placeholder="Optional: brief description of this category..."
+            class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-emerald-500 text-sm resize-none">
+          </textarea>
+        </div>
+
+        <div class="flex items-center space-x-3 bg-surface-subtle p-3 border border-border-subtle rounded-xl">
+          <input
+            id="formIsActive"
+            type="checkbox"
+            [(ngModel)]="formIsActive"
+            class="w-4 h-4 rounded text-emerald-500 bg-input-bg border-input-border focus:ring-emerald-500 focus:ring-2">
+          <div class="flex flex-col">
+            <label for="formIsActive" class="text-xs font-bold text-text-heading">Active</label>
+            <span class="text-[10px] text-text-muted">Inactive categories are hidden from transaction forms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
+        <button (click)="isIncomeMode() ? submitIncomeCategory() : (isSavingMode() ? submitSavingCategory() : submitExpenseCategory())"
+          [disabled]="isLoading()"
+          class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
+          @if (isLoading()) {
+            <svg class="animate-spin h-4 w-4 text-white dark:text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Saving...</span>
+          } @else {
+            <span>{{ editingId() ? 'Update Category' : 'Create Category' }}</span>
+          }
+        </button>
+        <button (click)="closeSlider()"
+          class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-sm">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Reset Password Modal -->
+@if (isResetModalOpen()) {
+  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+}
+
+<!-- Confirm Delete Modal -->
+<app-confirm-delete-modal
+  [isOpen]="isDeleteModalOpen()"
+  [itemName]="deleteTarget()?.name ?? ''"
+  [title]="'Delete ' + (deleteTarget()?.type === 'income' ? 'Income' : (deleteTarget()?.type === 'saving' ? 'Saving' : 'Expense')) + ' Category'"
+  description="Deleting this category is permanent. If transactions currently use it, deletion will be blocked."
+  (confirm)="executeDelete()"
+  (close)="closeDeleteModal()">
+</app-confirm-delete-modal>

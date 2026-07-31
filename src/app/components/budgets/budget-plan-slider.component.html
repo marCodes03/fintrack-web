@@ -1,0 +1,617 @@
+@if (isOpen) {
+  <div class="fixed inset-0 z-50 flex justify-end">
+    <!-- Backdrop -->
+    <div (click)="onClose()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
+
+    <!-- Slide Panel -->
+    <div class="relative w-full md:w-2/3 max-w-6xl bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between p-5 border-b border-border-subtle">
+        <h3 class="text-sm font-bold text-text-heading">{{ isEditMode ? 'Edit Budget Plan' : 'Create Budget Plan' }}</h3>
+        <button (click)="onClose()" class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-5">
+        @if (errorMessage()) {
+          <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- ALWAYS VISIBLE ACTIVE PLAN BLUEPRINT SUMMARY BOX -->
+        <div class="rounded-2xl border p-4 shadow-md bg-surface-subtle border-border-subtle space-y-4">
+          <div class="flex items-center justify-between border-b border-border-subtle pb-3">
+            <div>
+              <span class="block text-[10px] uppercase font-extrabold text-emerald-500 tracking-wider">Active Plan Blueprint</span>
+              <h3 class="text-sm font-bold text-text-heading flex items-center space-x-2 mt-0.5">
+                <span>📋 {{ planName || 'Untitled Budget Plan' }}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold uppercase tracking-wider">{{ timePeriodLabel }}</span>
+              </h3>
+            </div>
+            <div class="flex items-center space-x-6 text-right">
+              <div>
+                <span class="block text-[10px] uppercase font-semibold text-text-muted">Total Inflows</span>
+                <span class="text-xs font-black text-emerald-500">{{ totalPlannedIncome | currency:'PHP':'symbol-narrow' }}</span>
+              </div>
+              <div>
+                <span class="block text-[10px] uppercase font-semibold text-text-muted">Total Outflows</span>
+                <span class="text-xs font-black text-rose-500">{{ totalPlannedOutflows | currency:'PHP':'symbol-narrow' }}</span>
+              </div>
+              <div>
+                <span class="block text-[10px] uppercase font-semibold text-text-muted">Net Balance</span>
+                <span class="text-sm font-black" [class.text-emerald-500]="netBalance >= 0" [class.text-rose-500]="netBalance < 0">
+                  {{ netBalance | currency:'PHP':'symbol-narrow' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Virtual Balance per Account Breakdown (EXCLUDES CREDIT ACCOUNTS) -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="block text-[10px] uppercase font-bold text-text-muted tracking-wider">Virtual Account Balance Breakdown (₱0.00 Baseline)</span>
+              @if (nonCreditAccounts.length > 3) {
+                <span class="text-[10px] text-emerald-500 font-bold flex items-center space-x-1 animate-pulse bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span>Scroll ↔</span>
+                </span>
+              }
+            </div>
+
+            <!-- Horizontal Scroll Container with Edge Visual Indicators -->
+            <div class="relative group">
+              <!-- Scrollable Track -->
+              <div class="flex items-center space-x-2.5 overflow-x-auto pb-2 pt-0.5 px-1">
+                @for (acc of nonCreditAccounts; track acc.id) {
+                  <div class="min-w-[170px] bg-surface-card border border-border-subtle rounded-xl p-2.5 flex items-center justify-between shadow-xs shrink-0 hover:border-border-strong transition-all">
+                    <div class="truncate mr-2">
+                      <span class="block text-[10px] font-bold text-text-heading truncate">{{ acc.name }}</span>
+                      <span class="text-[9px] text-text-muted uppercase font-semibold">{{ acc.type }}</span>
+                    </div>
+                    <span class="text-xs font-black shrink-0" [class.text-emerald-500]="getVirtualBalance(acc.id) >= 0" [class.text-rose-500]="getVirtualBalance(acc.id) < 0">
+                      ₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }}
+                    </span>
+                  </div>
+                } @empty {
+                  <div class="text-xs text-text-muted italic">No non-credit accounts available.</div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB NAVIGATION BAR -->
+        <div class="relative group">
+          <div class="flex items-center space-x-1 border border-border-subtle bg-surface-subtle p-1.5 rounded-xl overflow-x-auto">
+            <button type="button" (click)="activeTab.set(1)"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              [class.bg-emerald-500]="activeTab() === 1" [class.text-white]="activeTab() === 1"
+              [class.text-text-muted]="activeTab() === 1"
+              [class.text-text-muted]="activeTab() !== 1" [class.hover:text-text-body]="activeTab() !== 1">
+              STEP 1: Details
+            </button>
+            <button type="button" (click)="activeTab.set(2)"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              [class.bg-emerald-500]="activeTab() === 2" [class.text-white]="activeTab() === 2"
+              [class.text-text-muted]="activeTab() !== 2" [class.hover:text-text-body]="activeTab() !== 2">
+              STEP 2: Planned Inflow
+            </button>
+            <button type="button" (click)="activeTab.set(3)"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              [class.bg-emerald-500]="activeTab() === 3" [class.text-white]="activeTab() === 3"
+              [class.text-text-muted]="activeTab() !== 3" [class.hover:text-text-body]="activeTab() !== 3">
+              STEP 3: Planned Transfers
+            </button>
+            <button type="button" (click)="activeTab.set(4)"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              [class.bg-emerald-500]="activeTab() === 4" [class.text-white]="activeTab() === 4"
+              [class.text-text-muted]="activeTab() !== 4" [class.hover:text-text-body]="activeTab() !== 4">
+              STEP 4: Planned Savings
+            </button>
+            <button type="button" (click)="activeTab.set(5)"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              [class.bg-emerald-500]="activeTab() === 5" [class.text-white]="activeTab() === 5"
+              [class.text-text-muted]="activeTab() !== 5" [class.hover:text-text-body]="activeTab() !== 5">
+              STEP 5: Planned Outflows
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 1: BUDGET PLAN DETAILS -->
+        @if (activeTab() === 1) {
+          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200">
+            <h4 class="text-xs font-bold text-text-heading uppercase tracking-wider">⚙️ STEP 1: Budget Plan Details</h4>
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Plan Name -->
+              <div>
+                <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Plan Name *</label>
+                <input type="text" [(ngModel)]="planName" placeholder="e.g. 2nd Half Month Budget Plan"
+                  class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-emerald-500 text-sm">
+              </div>
+
+              <!-- Time Period Days (1-30) -->
+              <div>
+                <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Time Period (1-30 Days)</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <select [(ngModel)]="startDay" (change)="onStartDayChange()"
+                      class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-emerald-500 text-sm">
+                      @for (day of daysArray; track day) {
+                        <option [value]="day">Day {{ day }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div>
+                    <select [(ngModel)]="endDay"
+                      class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-emerald-500 text-sm">
+                      @for (day of validEndDayOptions; track day) {
+                        <option [value]="day">Day {{ day }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button type="button" (click)="activeTab.set(2)" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition-all">
+                Next: Step 2 Planned Inflow ➔
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- TAB CONTENT 2: PLANNED INFLOW (INCOME & EXTERNAL FUNDING) -->
+        @if (activeTab() === 2) {
+          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200">
+            <h4 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
+              <span>📈 STEP 2: Planned Inflow (Income & External Funding)</span>
+              <span class="text-xs text-emerald-500 font-black">Total Inflows: {{ totalPlannedIncome | currency:'PHP':'symbol-narrow' }}</span>
+            </h4>
+
+            <!-- Step 2 Form -->
+            <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
+              <div class="col-span-4">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <select [(ngModel)]="newIncomeCategory" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none">
+                  @for (cat of incomeCategories(); track cat.id) {
+                    <option [value]="cat.name">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-4">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Added To) *</label>
+                <select [(ngModel)]="newIncomeAccountId" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none">
+                  @for (acc of nonCreditAccounts; track acc.id) {
+                    <option [value]="acc.id">{{ acc.name }}</option>
+                  }
+                </select>
+              </div>
+              
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input type="number" [(ngModel)]="newIncomeAmount" placeholder="0" min="1"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none">
+              </div>
+
+              <div class="col-span-2 flex flex-col justify-end space-y-1">
+                <button type="button" (click)="addIncomeItem()"
+                  class="w-full text-white dark:text-slate-950 font-bold text-xs py-2 rounded-lg transition-all"
+                  [class.bg-emerald-500]="!editingIncomeItem()" [class.hover:bg-emerald-600]="!editingIncomeItem()" [class.dark:hover:bg-emerald-400]="!editingIncomeItem()"
+                  [class.bg-amber-500]="editingIncomeItem()" [class.hover:bg-amber-600]="editingIncomeItem()">
+                  {{ editingIncomeItem() ? 'Update Inflow' : 'Add Inflow' }}
+                </button>
+                @if (editingIncomeItem()) {
+                  <button type="button" (click)="cancelIncomeEdit()"
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[10px] py-1 rounded-lg transition-all">
+                    Cancel
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Step 2 Inflows List Table -->
+            <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
+              <table class="w-full text-left text-xs text-text-body">
+                <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
+                  <tr>
+                    <th class="px-4 py-2">Category / Title</th>
+                    <th class="px-4 py-2">Account (Added To)</th>
+                    <th class="px-4 py-2">Planned Inflow</th>
+                    <th class="px-4 py-2 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border-subtle">
+                  @for (item of planItems(); track $index) {
+                    @if (item.type === 'INCOME') {
+                      <tr class="hover:bg-table-row-hover">
+                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td class="px-4 py-2 text-emerald-500 font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td class="px-4 py-2 text-emerald-500 font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                        <td class="px-4 py-2 text-right space-x-2">
+                          <button type="button" (click)="editIncomeItem(item)" class="text-amber-500 hover:text-amber-600 transition-colors font-bold">
+                            Edit
+                          </button>
+                          <button type="button" (click)="removePlanItem(item)" class="text-rose-500 hover:text-rose-600 transition-colors font-bold">
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="px-4 py-4 text-center text-text-muted italic">No inflows added yet. Add inflows above to establish baseline budget limit.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex justify-between pt-2">
+              <button type="button" (click)="activeTab.set(1)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+                ⏮ Back to Step 1
+              </button>
+              <button type="button" (click)="activeTab.set(3)" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-5 py-2 rounded-xl transition-all">
+                Next: Step 3 Planned Transfers ➔
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- TAB CONTENT 3: PLANNED TRANSFERS (INTERNAL TRANSFERS) -->
+        @if (activeTab() === 3) {
+          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
+            <h4 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
+              <span>🔄 STEP 3: Planned Transfers (Internal Transfers)</span>
+              <span class="text-xs text-indigo-500 font-black">Total Transfers: {{ totalPlannedTransfers | currency:'PHP':'symbol-narrow' }}</span>
+            </h4>
+
+            <!-- Step 3 Form -->
+            <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
+              <div class="col-span-3">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Title / Note</label>
+                <input type="text" [(ngModel)]="newTransferCategory" placeholder="e.g. Checking to Savings Transfer" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+              </div>
+              
+              <div class="col-span-3">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
+                <select [(ngModel)]="newTransferSourceAccountId" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (acc of nonCreditAccounts; track acc.id) {
+                    <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
+                <select [(ngModel)]="newTransferDestAccountId" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (acc of nonCreditAccounts; track acc.id) {
+                    <option [value]="acc.id">{{ acc.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input type="number" [(ngModel)]="newTransferAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
+                <input type="number" [(ngModel)]="newTransferTransferFee" placeholder="0" min="0" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+              </div>
+
+              <div class="col-span-12 flex justify-end space-x-2 mt-1">
+                @if (editingTransferItem()) {
+                  <button type="button" (click)="cancelTransferEdit()"
+                    class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3 py-2 rounded-lg transition-all">
+                    Cancel Edit
+                  </button>
+                }
+                <button type="button" (click)="addTransferItem()" [disabled]="totalPlannedIncome <= 0"
+                  class="text-white font-bold text-xs px-4 py-2 rounded-lg transition-all disabled:opacity-50 bg-indigo-600 hover:bg-indigo-500"
+                  [class.bg-amber-600]="editingTransferItem()" [class.hover:bg-amber-500]="editingTransferItem()">
+                  {{ editingTransferItem() ? 'Update Transfer' : 'Transfer Funds' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3 Transfers List Table -->
+            <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
+              <table class="w-full text-left text-xs text-text-body">
+                <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
+                  <tr>
+                    <th class="px-4 py-2">Title / Note</th>
+                    <th class="px-4 py-2">Source Account (Deducted)</th>
+                    <th class="px-4 py-2">Destination Account (Added)</th>
+                    <th class="px-4 py-2">Amount</th>
+                    <th class="px-4 py-2">Transfer Fee</th>
+                    <th class="px-4 py-2 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border-subtle">
+                  @for (item of planItems(); track $index) {
+                    @if (item.type === 'TRANSFER') {
+                      <tr class="hover:bg-table-row-hover">
+                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td class="px-4 py-2 text-rose-500 font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td class="px-4 py-2 text-emerald-500 font-semibold">{{ getAccountName(item.toAccountId) }}</td>
+                        <td class="px-4 py-2 text-indigo-500 font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                        <td class="px-4 py-2 text-rose-500 font-bold">{{ item.transferFee ? (item.transferFee | currency:'PHP':'symbol-narrow') : '₱0.00' }}</td>
+                        <td class="px-4 py-2 text-right space-x-2">
+                          <button type="button" (click)="editTransferItem(item)" class="text-amber-505 hover:text-amber-600 transition-colors font-bold">
+                            Edit
+                          </button>
+                          <button type="button" (click)="removePlanItem(item)" class="text-rose-500 hover:text-rose-600 transition-colors font-bold">
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="px-4 py-4 text-center text-text-muted italic">No internal transfers added yet.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex justify-between pt-2">
+              <button type="button" (click)="activeTab.set(2)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+                ⏮ Back to Step 2
+              </button>
+              <button type="button" (click)="activeTab.set(4)" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-5 py-2 rounded-xl transition-all">
+                Next: Step 4 Planned Savings ➔
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- TAB CONTENT 4: PLANNED SAVINGS -->
+        @if (activeTab() === 4) {
+          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
+            <h4 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
+              <span>💎 STEP 4: Planned Savings</span>
+              <span class="text-xs text-teal-500 font-black">Total Savings: {{ totalPlannedSavings | currency:'PHP':'symbol-narrow' }}</span>
+            </h4>
+
+            <!-- Step 4 Form -->
+            <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
+              <div class="col-span-3">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Savings Category *</label>
+                <select [(ngModel)]="newSavingsCategory" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (cat of savingCategories(); track cat.id) {
+                    <option [value]="cat.name">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-3">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
+                <select [(ngModel)]="newSavingsSourceAccountId" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (acc of nonCreditAccounts; track acc.id) {
+                    <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
+                <select [(ngModel)]="newSavingsDestAccountId" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (acc of nonCreditAccounts; track acc.id) {
+                    <option [value]="acc.id">{{ acc.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input type="number" [(ngModel)]="newSavingsAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
+                <input type="number" [(ngModel)]="newSavingsTransferFee" placeholder="0" min="0" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+              </div>
+
+              <div class="col-span-12 flex justify-end space-x-2 mt-1">
+                @if (editingSavingsItem()) {
+                  <button type="button" (click)="cancelSavingsEdit()"
+                    class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3 py-2 rounded-lg transition-all">
+                    Cancel Edit
+                  </button>
+                }
+                <button type="button" (click)="addSavingsItem()" [disabled]="totalPlannedIncome <= 0"
+                  class="text-white font-bold text-xs px-4 py-2 rounded-lg transition-all disabled:opacity-50 bg-teal-600 hover:bg-teal-500"
+                  [class.bg-amber-600]="editingSavingsItem()" [class.hover:bg-amber-500]="editingSavingsItem()">
+                  {{ editingSavingsItem() ? 'Update Savings' : 'Save Funds' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 4 Savings List Table -->
+            <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
+              <table class="w-full text-left text-xs text-text-body">
+                <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
+                  <tr>
+                    <th class="px-4 py-2">Savings Category</th>
+                    <th class="px-4 py-2">Source Account (Deducted)</th>
+                    <th class="px-4 py-2">Destination Account (Added)</th>
+                    <th class="px-4 py-2">Amount</th>
+                    <th class="px-4 py-2">Transfer Fee</th>
+                    <th class="px-4 py-2 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border-subtle">
+                  @for (item of planItems(); track $index) {
+                    @if (item.type === 'SAVINGS') {
+                      <tr class="hover:bg-table-row-hover">
+                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td class="px-4 py-2 text-rose-500 font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td class="px-4 py-2 text-emerald-500 font-semibold">{{ getAccountName(item.toAccountId) }}</td>
+                        <td class="px-4 py-2 text-teal-500 font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                        <td class="px-4 py-2 text-rose-500 font-bold">{{ item.transferFee ? (item.transferFee | currency:'PHP':'symbol-narrow') : '₱0.00' }}</td>
+                        <td class="px-4 py-2 text-right space-x-2">
+                          <button type="button" (click)="editSavingsItem(item)" class="text-amber-500 hover:text-amber-600 transition-colors font-bold">
+                            Edit
+                          </button>
+                          <button type="button" (click)="removePlanItem(item)" class="text-rose-500 hover:text-rose-600 transition-colors font-bold">
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="px-4 py-4 text-center text-text-muted italic">No savings transfers added yet.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex justify-between pt-2">
+              <button type="button" (click)="activeTab.set(3)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+                ⏮ Back to Step 3
+              </button>
+              <button type="button" (click)="activeTab.set(5)" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-5 py-2 rounded-xl transition-all">
+                Next: Step 5 Planned Outflows ➔
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- TAB CONTENT 5: PLANNED OUTFLOWS & ALLOCATIONS (FIXED EXPENSES) -->
+        @if (activeTab() === 5) {
+          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
+            <h4 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
+              <span>💸 STEP 5: Planned Outflows & Allocations (Fixed Expenses)</span>
+              <span class="text-xs text-rose-500 font-black">Total Outflows: {{ totalPlannedOutflows | currency:'PHP':'symbol-narrow' }}</span>
+            </h4>
+
+            <!-- Step 5 Form -->
+            <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
+              <div class="col-span-4">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <select [(ngModel)]="newOutflowCategory" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (cat of expenseCategories(); track cat.id) {
+                    <option [value]="cat.name">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-4">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Deducted From) *</label>
+                <select [(ngModel)]="newOutflowAccountId" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
+                  @for (acc of nonCreditAccounts; track acc.id) {
+                    <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input type="number" [(ngModel)]="newOutflowAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+              </div>
+
+              <div class="col-span-2 flex flex-col justify-end space-y-1">
+                <button type="button" (click)="addOutflowItem()" [disabled]="totalPlannedIncome <= 0"
+                  class="w-full text-white font-bold text-xs py-2 rounded-lg transition-all disabled:opacity-50 bg-rose-600 hover:bg-rose-500"
+                  [class.bg-amber-600]="editingOutflowItem()" [class.hover:bg-amber-500]="editingOutflowItem()">
+                  {{ editingOutflowItem() ? 'Update Expense' : 'Allocate Expense' }}
+                </button>
+                @if (editingOutflowItem()) {
+                  <button type="button" (click)="cancelOutflowEdit()"
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[10px] py-1 rounded-lg transition-all">
+                    Cancel
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Step 5 Outflows List Table -->
+            <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
+              <table class="w-full text-left text-xs text-text-body">
+                <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
+                  <tr>
+                    <th class="px-4 py-2">Category / Title</th>
+                    <th class="px-4 py-2">Account (Deducted From)</th>
+                    <th class="px-4 py-2">Planned Amount</th>
+                    <th class="px-4 py-2 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border-subtle">
+                  @for (item of planItems(); track $index) {
+                    @if (item.type === 'EXPENSE') {
+                      <tr class="hover:bg-table-row-hover">
+                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td class="px-4 py-2 text-rose-500 font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td class="px-4 py-2 text-text-body font-bold">
+                          {{ item.amount | currency:'PHP':'symbol-narrow' }}
+                        </td>
+                        <td class="px-4 py-2 text-right space-x-2">
+                          <button type="button" (click)="editOutflowItem(item)" class="text-amber-500 hover:text-amber-600 transition-colors font-bold">
+                            Edit
+                          </button>
+                          <button type="button" (click)="removePlanItem(item)" class="text-rose-500 hover:text-rose-600 transition-colors font-bold">
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="px-4 py-4 text-center text-text-muted italic">No expense outflows added yet.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex justify-between pt-2">
+              <button type="button" (click)="activeTab.set(4)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+                ⏮ Back to Step 4
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
+        <button (click)="onSubmit()" [disabled]="isLoading() || nonCreditAccounts.length === 0"
+          class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md">
+          @if (isLoading()) {
+            <span>Saving Plan...</span>
+          } @else {
+            <span>{{ isEditMode ? 'Update Budget Plan' : 'Save Budget Plan Blueprint' }}</span>
+          }
+        </button>
+        <button (click)="onClose()" class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-sm">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

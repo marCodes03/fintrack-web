@@ -1,0 +1,141 @@
+<app-header></app-header>
+
+<div class="min-h-screen bg-bg-main text-text-body font-sans antialiased pb-12 transition-colors duration-300">
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+    
+    <!-- Title Page Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-border-subtle pb-5">
+      <div>
+        <h1 class="text-2xl font-black tracking-tight text-text-heading flex items-center space-x-2.5">
+          <span>⭐</span>
+          <span>Feedback & Reviews</span>
+        </h1>
+        <p class="text-sm text-text-muted mt-1">We value your opinion. Share your experience with FinTrack to help us improve.</p>
+      </div>
+      <a routerLink="/dashboard" class="mt-4 md:mt-0 inline-flex items-center space-x-2 text-xs font-bold text-text-muted hover:text-text-heading bg-surface-subtle border border-border-subtle px-4 py-2 rounded-xl transition-all">
+        <span>←</span>
+        <span>Back to Dashboard</span>
+      </a>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Review Form Column -->
+      <div class="md:col-span-2 space-y-6">
+        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5">
+          <h2 class="text-base font-bold text-text-heading">Write a Review</h2>
+
+          @if (successMessage()) {
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-xs flex items-center space-x-2">
+              <span>✅</span>
+              <span>{{ successMessage() }}</span>
+            </div>
+          }
+
+          @if (errorMessage()) {
+            <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-505 text-xs flex items-center space-x-2">
+              <span>⚠️</span>
+              <span>{{ errorMessage() }}</span>
+            </div>
+          }
+
+          <!-- Rating Stars Selector -->
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider">Select Rating *</label>
+            <div class="flex items-center space-x-2">
+              @for (star of [1, 2, 3, 4, 5]; track star) {
+                <button type="button" 
+                        (click)="setRating(star)" 
+                        (mouseenter)="setHover(star)" 
+                        (mouseleave)="clearHover()"
+                        class="text-3xl transition-transform hover:scale-110 focus:outline-none duration-150">
+                  <span [class.text-yellow-500]="star <= (hoverRating() || rating())"
+                        [class.text-border-strong]="star > (hoverRating() || rating())">
+                    ★
+                  </span>
+                </button>
+              }
+              @if (rating() > 0) {
+                <span class="text-xs font-bold text-text-muted ml-2">({{ rating() }} / 5 stars)</span>
+              }
+            </div>
+          </div>
+
+          <!-- Review Comment Text Area -->
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider">Share your thoughts *</label>
+            <textarea [(ngModel)]="comment" rows="5" placeholder="What do you like? What can we do better? Type your feedback here..."
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:border-emerald-500 text-sm resize-none"></textarea>
+          </div>
+
+          <!-- Actions -->
+          <div class="pt-2">
+            <button (click)="onSubmit()" [disabled]="isLoading()"
+              class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
+              @if (isLoading()) {
+                <span>Submitting Feedback...</span>
+              } @else {
+                <span>Submit Feedback & Review</span>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar info/history stats -->
+      <div class="space-y-6">
+        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4">
+          <h2 class="text-xs font-bold text-text-muted uppercase tracking-wider">Review Guidelines</h2>
+          <ul class="text-xs text-text-body space-y-3">
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span>Keep details relevant to features, user interface, or performance.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span>We actively read all constructive suggestions to build new tools.</span>
+            </li>
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span>Your feedback helps other budgeters get the most out of FinTrack.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review History Section -->
+    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5">
+      <div class="border-b border-border-subtle pb-3">
+        <h2 class="text-base font-bold text-text-heading">Your Past Reviews</h2>
+        <p class="text-xs text-text-muted mt-0.5">A history of review comments you've shared with the team.</p>
+      </div>
+
+      <div class="space-y-4">
+        @for (item of reviews(); track item.id) {
+          <div class="bg-surface-subtle p-4.5 rounded-xl border border-border-subtle space-y-3 transition-colors hover:border-border-strong">
+            <div class="flex items-center justify-between">
+              <!-- Stars Display -->
+              <div class="flex items-center space-x-1">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <span class="text-sm" 
+                        [class.text-yellow-500]="star <= item.rating" 
+                        [class.text-border-strong]="star > item.rating">★</span>
+                }
+                <span class="text-xs font-bold text-text-muted ml-1.5">{{ item.rating }} Stars</span>
+              </div>
+              <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider">{{ item.createdDate | date:'mediumDate' }}</span>
+            </div>
+            <p class="text-sm text-text-body leading-relaxed font-medium italic">"{{ item.comment }}"</p>
+          </div>
+        } @empty {
+          <div class="py-8 text-center text-text-muted text-xs italic">
+            You haven't submitted any reviews yet. Use the form above to share your first thoughts!
+          </div>
+        }
+      </div>
+    </div>
+
+  </main>
+</div>

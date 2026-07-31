@@ -1,0 +1,38 @@
+<header class="border-b border-[var(--border-subtle)] bg-[var(--surface-card)]/90 backdrop-blur fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <a routerLink="/dashboard" class="flex items-center space-x-2.5 cursor-pointer group">
+      <img src="logo.png" alt="FinTrack"
+        class="h-9 w-9 object-contain group-hover:scale-105 transition-transform drop-shadow-md" />
+      <span class="text-xl font-bold tracking-tight text-[var(--text-heading)]">FinTrack</span>
+    </a>
+
+    <!-- Right-aligned profile area & hamburger button -->
+    <div class="flex items-center space-x-4">
+      <!-- Profile Info Area -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden sm:block text-right">
+          <p class="text-xs font-semibold text-[var(--text-heading)] leading-tight">{{ user()?.name }}</p>
+          <p class="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5">{{ user()?.email }}</p>
+        </div>
+        <!-- User avatar thumbnail -->
+        <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center font-extrabold text-slate-950 text-sm shadow-md">
+          {{ user()?.name ? user()?.name?.charAt(0) : 'U' }}
+        </div>
+      </div>
+
+      <!-- Hamburger Slider Menu button -->
+      <button (click)="openSlider()"
+        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-all focus:outline-none"
+        title="Open Menu">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Standalone slideover sidebar menu -->
+<app-slider-menu [isOpen]="isSliderOpen()" (close)="closeSlider()"
+  (resetPassword)="triggerResetPassword()"></app-slider-menu>

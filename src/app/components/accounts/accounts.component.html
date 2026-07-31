@@ -1,0 +1,121 @@
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
+  <app-header (resetPassword)="openResetModal()"></app-header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
+    <div class="flex items-center justify-between border-b border-border-subtle pb-4">
+      <div>
+        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Accounts Management</h1>
+        <p class="text-xs text-text-muted mt-1">Manage cash drawers, bank deposits, credit details, e-wallets, and savings accounts in PHP.</p>
+      </div>
+      <button (click)="openCreateSlider()"
+        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
+        <span>+</span><span>Add Account</span>
+      </button>
+    </div>
+
+    @if (successMessage()) {
+      <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+        <span>✅</span><span>{{ successMessage() }}</span>
+      </div>
+    }
+    @if (errorMessage()) {
+      <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
+        <span>⚠️</span><span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Accounts Listing Grid -->
+    <div class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border-subtle pb-3">
+        <h2 class="text-lg font-semibold text-text-heading">Active Accounts</h2>
+
+        <!-- Filters Toolbar -->
+        <div class="flex items-center gap-3">
+          <!-- Filter by Account Type -->
+          <select [ngModel]="filterType()" (ngModelChange)="onFilterTypeChange($event)"
+            class="bg-input-bg border border-input-border rounded-xl px-3 py-1.5 text-xs text-input-text focus:outline-none focus:border-emerald-500">
+            <option value="ALL">All Types</option>
+            <option value="CASH">Cash</option>
+            <option value="BANK">Bank</option>
+            <option value="CREDIT">Credit Card</option>
+            <option value="SAVINGS">Savings</option>
+            <option value="E_WALLET">E-Wallet</option>
+          </select>
+
+          <!-- Sort By -->
+          <select [ngModel]="sortBy()" (ngModelChange)="onSortByChange($event)"
+            class="bg-input-bg border border-input-border rounded-xl px-3 py-1.5 text-xs text-input-text focus:outline-none focus:border-emerald-500">
+            <option value="updatedDate_desc">Last Updated (Newest)</option>
+            <option value="updatedDate_asc">Last Updated (Oldest)</option>
+            <option value="balance_desc">Balance (Highest)</option>
+            <option value="balance_asc">Balance (Lowest)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (acc of filteredAccounts(); track acc.id) {
+          <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 shadow-md flex flex-col justify-between hover:border-border-strong transition-all group relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 rounded-xl flex items-center justify-center font-bold text-lg"
+                  [class.bg-emerald-500/10]="acc.type === 'CASH'" [class.text-emerald-500]="acc.type === 'CASH'"
+                  [class.bg-blue-500/10]="acc.type === 'BANK'" [class.text-blue-500]="acc.type === 'BANK'"
+                  [class.bg-rose-500/10]="acc.type === 'CREDIT'" [class.text-rose-500]="acc.type === 'CREDIT'"
+                  [class.bg-indigo-500/10]="acc.type === 'SAVINGS'" [class.text-indigo-500]="acc.type === 'SAVINGS'"
+                  [class.bg-teal-500/10]="acc.type === 'E_WALLET'" [class.text-teal-500]="acc.type === 'E_WALLET'">
+                  {{ acc.type === 'CASH' ? '💵' : (acc.type === 'BANK' ? '🏦' : (acc.type === 'CREDIT' ? '💳' : (acc.type === 'SAVINGS' ? '🏧' : '📱'))) }}
+                </div>
+                <div>
+                  <h3 class="font-bold text-text-heading leading-tight">{{ acc.name }}</h3>
+                  <span class="text-[10px] uppercase font-semibold text-text-muted tracking-wider">{{ acc.type }}</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-black text-text-heading text-lg">{{ acc.balance | currency:acc.currency:'symbol-narrow' }}</p>
+              </div>
+            </div>
+
+            <!-- Action button bar -->
+            <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-end space-x-3">
+              <button (click)="startEdit(acc)" class="text-[10px] font-bold text-emerald-500 hover:text-emerald-600 transition-colors uppercase tracking-wider">
+                Edit
+              </button>
+              <button (click)="handleDeleteAccount(acc)" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 transition-colors uppercase tracking-wider">
+                Delete
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <p class="text-sm text-text-muted text-center py-6 col-span-3">No accounts set up yet.</p>
+        }
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Standalone Account Slider Component -->
+<app-account-slider
+  [isOpen]="isSliderOpen()"
+  [isEditMode]="isEditMode()"
+  [editingId]="editingAccountId()"
+  [accountTypes]="accountTypes()"
+  [name]="name"
+  [type]="type"
+  [balance]="balance"
+  (close)="closeSlider()"
+  (saved)="onSaved()">
+</app-account-slider>
+
+@if (isResetModalOpen()) {
+  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+}
+
+<app-confirm-delete-modal
+  [isOpen]="isDeleteModalOpen()"
+  [itemName]="accountToDelete()?.name ?? ''"
+  title="Delete Account"
+  description="To confirm deleting this account, please type 'delete' below."
+  (confirm)="executeDelete()"
+  (close)="closeDeleteModal()">
+</app-confirm-delete-modal>
