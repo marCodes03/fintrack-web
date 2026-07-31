@@ -23,27 +23,35 @@ This guide provides step-by-step instructions for deploying the **FinTrack** app
 
 ## Step 2: Push Database Schema & Seed Data
 
-Since we are using Prisma ORM, you need to apply migrations to your live Supabase database.
+Since we are using Prisma ORM, you must apply migrations to your live Supabase database. Because Supabase uses IPv6-only direct connections and transaction-pooled connections on port 6543 (which block Prisma advisory locks), use one of the following methods:
 
-1. Open your terminal in the `/server` directory of your project.
-2. Run the Prisma migration deployment command using your Supabase connection string:
+### Method A: Run Automatically on Render (Recommended)
+You can let Render run the migrations automatically during deployment. This uses Render's network (which supports direct IPv6 connections to port 5432).
+1. In your Render Dashboard settings for the service, set the **Build Command** to:
+   ```bash
+   npx prisma migrate deploy && node prisma/seed.js && npm run build
+   ```
+2. Set your `DATABASE_URL` environment variable to the direct connection string on port 5432:
+   ```text
+   postgresql://postgres:marCodes0903!@db.baawteabywruizyfirpm.supabase.co:5432/postgres
+   ```
+
+### Method B: Run Locally via Session Pooler
+If you want to run the migration from your local machine, you must configure the Supabase pooler to use **Session** mode:
+1. In the Supabase Dashboard, go to **Project Settings** > **Database** > **Connection Pooler**.
+2. Change the Pooler Mode from **Transaction** to **Session** (this allows database locks required by Prisma).
+3. Open your terminal and **navigate to the `/server` directory** of the project:
+   ```bash
+   cd server
+   ```
+4. Run the migration command using the pooler connection string (port 6543):
    ```bash
    # On Windows (PowerShell)
-   $env:DATABASE_URL="YOUR_SUPABASE_CONNECTION_STRING"
+   $env:DATABASE_URL="postgresql://postgres.baawteabywruizyfirpm:marCodes0903!@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
    npx prisma migrate deploy
-
-   # On Linux/macOS
-   DATABASE_URL="YOUR_SUPABASE_CONNECTION_STRING" npx prisma migrate deploy
-   ```
-3. Run the seed script to populate the reference database tables (Income Categories, Expense Categories, Saving Categories, and Account Types):
-   ```bash
-   # On Windows (PowerShell)
-   $env:DATABASE_URL="YOUR_SUPABASE_CONNECTION_STRING"
    node prisma/seed.js
-
-   # On Linux/macOS
-   DATABASE_URL="YOUR_SUPABASE_CONNECTION_STRING" node prisma/seed.js
    ```
+5. *Important: Switch the Supabase Pooler Mode back to **Transaction** in the dashboard once the migration is complete.
 
 ---
 
