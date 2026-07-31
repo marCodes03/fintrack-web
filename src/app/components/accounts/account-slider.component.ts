@@ -49,7 +49,7 @@ export class AccountSliderComponent {
     };
 
     if (this.isEditMode && this.editingId) {
-      this.http.put(`http://localhost:3000/api/accounts/${this.editingId}`, payload).subscribe({
+      this.http.put(`${this.apiService.apiUrl}/accounts/${this.editingId}`, payload).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.saved.emit();
@@ -61,7 +61,7 @@ export class AccountSliderComponent {
         }
       });
     } else {
-      this.http.post('http://localhost:3000/api/accounts', payload).subscribe({
+      this.http.post(`${this.apiService.apiUrl}/accounts`, payload).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.saved.emit();

@@ -81,7 +81,7 @@ export class ExpenseSliderComponent {
     };
 
     if (this.isEditMode && this.editingId) {
-      this.http.put(`http://localhost:3000/api/transactions/${this.editingId}`, payload).subscribe({
+      this.http.put(`${this.apiService.apiUrl}/transactions/${this.editingId}`, payload).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.saved.emit();
@@ -94,7 +94,7 @@ export class ExpenseSliderComponent {
         }
       });
     } else {
-      this.http.post('http://localhost:3000/api/transactions', payload).subscribe({
+      this.http.post(`${this.apiService.apiUrl}/transactions`, payload).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.saved.emit();

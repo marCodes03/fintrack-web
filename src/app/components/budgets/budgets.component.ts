@@ -333,7 +333,7 @@ export class BudgetsComponent implements OnInit {
     if (!plan) return;
 
     this.isLoading.set(true);
-    this.http.delete(`http://localhost:3000/api/budget-plans/${plan.id}`).subscribe({
+    this.http.delete(`${this.apiService.apiUrl}/budget-plans/${plan.id}`).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.successMessage.set('Budget plan deleted. All clean!');

@@ -125,9 +125,10 @@ export interface Review {
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private baseUrl = window.location.origin.includes('localhost')
+  readonly apiUrl = window.location.origin.includes('localhost')
     ? 'http://localhost:3000/api'
     : 'https://fintrack-api-env1.onrender.com/api';
+  private baseUrl = this.apiUrl;
 
   getHealth(): Observable<HealthResponse> {
 

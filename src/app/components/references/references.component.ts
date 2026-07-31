@@ -139,7 +139,7 @@ export class ReferencesComponent implements OnInit {
     const mode = this.sliderMode();
 
     if (mode === 'create-income') {
-      this.http.post('http://localhost:3000/api/refs/income-categories', body).subscribe({
+      this.http.post(`${this.apiService.apiUrl}/refs/income-categories`, body).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.successMessage.set('Income category created successfully!');
@@ -150,7 +150,7 @@ export class ReferencesComponent implements OnInit {
       });
     } else {
       const id = this.editingId();
-      this.http.put(`http://localhost:3000/api/refs/income-categories/${id}`, body).subscribe({
+      this.http.put(`${this.apiService.apiUrl}/refs/income-categories/${id}`, body).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.successMessage.set('Income category updated successfully!');
@@ -198,7 +198,7 @@ export class ReferencesComponent implements OnInit {
     const mode = this.sliderMode();
 
     if (mode === 'create-expense') {
-      this.http.post('http://localhost:3000/api/refs/expense-categories', body).subscribe({
+      this.http.post(`${this.apiService.apiUrl}/refs/expense-categories`, body).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.successMessage.set('Expense category created successfully!');
@@ -209,7 +209,7 @@ export class ReferencesComponent implements OnInit {
       });
     } else {
       const id = this.editingId();
-      this.http.put(`http://localhost:3000/api/refs/expense-categories/${id}`, body).subscribe({
+      this.http.put(`${this.apiService.apiUrl}/refs/expense-categories/${id}`, body).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.successMessage.set('Expense category updated successfully!');
@@ -257,7 +257,7 @@ export class ReferencesComponent implements OnInit {
     const mode = this.sliderMode();
 
     if (mode === 'create-saving') {
-      this.http.post('http://localhost:3000/api/refs/saving-categories', body).subscribe({
+      this.http.post(`${this.apiService.apiUrl}/refs/saving-categories`, body).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.successMessage.set('Saving category created successfully!');
@@ -268,7 +268,7 @@ export class ReferencesComponent implements OnInit {
       });
     } else {
       const id = this.editingId();
-      this.http.put(`http://localhost:3000/api/refs/saving-categories/${id}`, body).subscribe({
+      this.http.put(`${this.apiService.apiUrl}/refs/saving-categories/${id}`, body).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.successMessage.set('Saving category updated successfully!');
@@ -293,11 +293,11 @@ export class ReferencesComponent implements OnInit {
     this.isLoading.set(true);
     let url = '';
     if (target.type === 'income') {
-      url = `http://localhost:3000/api/refs/income-categories/${target.id}`;
+      url = `${this.apiService.apiUrl}/refs/income-categories/${target.id}`;
     } else if (target.type === 'expense') {
-      url = `http://localhost:3000/api/refs/expense-categories/${target.id}`;
+      url = `${this.apiService.apiUrl}/refs/expense-categories/${target.id}`;
     } else {
-      url = `http://localhost:3000/api/refs/saving-categories/${target.id}`;
+      url = `${this.apiService.apiUrl}/refs/saving-categories/${target.id}`;
     }
 
     this.http.delete(url).subscribe({

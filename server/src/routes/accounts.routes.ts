@@ -27,6 +27,22 @@ router.post('/', async (req: Request, res: Response) => {
     return;
   }
 
+  if (userId && userId.startsWith('user-mock-')) {
+    const newAcc = {
+      id: `acc-mock-${Date.now()}`,
+      name,
+      type,
+      balance: parseFloat(balance) || 0,
+      currency: currency || 'PHP',
+      userId,
+      createdDate: new Date().toISOString(),
+      updatedDate: new Date().toISOString()
+    };
+    mockAccounts.push(newAcc);
+    res.status(201).json({ success: true, data: newAcc });
+    return;
+  }
+
   try {
     let targetUserId = userId;
     if (!targetUserId) {
@@ -46,23 +62,13 @@ router.post('/', async (req: Request, res: Response) => {
       });
       res.status(201).json({ success: true, data: newAcc });
       return;
+    } else {
+      res.status(400).json({ success: false, message: 'User ID is required.' });
+      return;
     }
   } catch (err) {
-    console.warn('DB error on create account, using fallback array');
+    return handleDbError(err, res, 'Failed to create account');
   }
-
-  const newAcc = {
-    id: `acc-mock-${Date.now()}`,
-    name,
-    type,
-    balance: parseFloat(balance) || 0,
-    currency: currency || 'PHP',
-    userId: userId || 'user-default-1',
-    createdDate: new Date().toISOString(),
-    updatedDate: new Date().toISOString()
-  };
-  mockAccounts.push(newAcc);
-  res.status(201).json({ success: true, data: newAcc });
 });
 
 // PUT /api/accounts/:id
@@ -70,17 +76,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { name, type, balance } = req.body;
 
-  try {
-    const updated = await prisma.account.update({
-      where: { id },
-      data: {
-        name,
-        type,
-        ...(balance !== undefined && { balance: parseFloat(balance) })
-      }
-    });
-    res.json({ success: true, data: updated });
-  } catch (_err) {
+  if (id.startsWith('acc-mock-')) {
     const idx = mockAccounts.findIndex(a => a.id === id);
     if (idx === -1) {
       res.status(404).json({ success: false, message: 'Account not found.' });
@@ -94,12 +90,42 @@ router.put('/:id', async (req: Request, res: Response) => {
       updatedDate: new Date().toISOString()
     };
     res.json({ success: true, data: mockAccounts[idx] });
+    return;
+  }
+
+  try {
+    const updated = await prisma.account.update({
+      where: { id },
+      data: {
+        name,
+        type,
+        ...(balance !== undefined && { balance: parseFloat(balance) })
+      }
+    });
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    return handleDbError(err, res, 'Failed to update account');
   }
 });
 
 // DELETE /api/accounts/:id
 router.delete('/:id', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
+
+  if (id.startsWith('acc-mock-')) {
+    const idx = mockAccounts.findIndex(a => a.id === id);
+    if (idx === -1) {
+      res.status(404).json({ success: false, message: 'Account not found.' });
+      return;
+    }
+    if (mockAccounts[idx].balance !== 0) {
+      res.status(400).json({ success: false, message: 'Cannot delete account with a non-zero balance.' });
+      return;
+    }
+    mockAccounts.splice(idx, 1);
+    res.json({ success: true, message: 'Account deleted.' });
+    return;
+  }
 
   try {
     const acc = await prisma.account.findUnique({ where: { id } });
@@ -114,18 +140,8 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     await prisma.account.delete({ where: { id } });
     res.json({ success: true, message: 'Account deleted.' });
-  } catch (_err) {
-    const idx = mockAccounts.findIndex(a => a.id === id);
-    if (idx === -1) {
-      res.status(404).json({ success: false, message: 'Account not found.' });
-      return;
-    }
-    if (mockAccounts[idx].balance !== 0) {
-      res.status(400).json({ success: false, message: 'Cannot delete account with a non-zero balance.' });
-      return;
-    }
-    mockAccounts.splice(idx, 1);
-    res.json({ success: true, message: 'Account deleted.' });
+  } catch (err) {
+    return handleDbError(err, res, 'Failed to delete account');
   }
 });
 

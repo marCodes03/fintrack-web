@@ -168,7 +168,7 @@ export class AccountsComponent implements OnInit {
     if (!account) return;
 
     this.isLoading.set(true);
-    this.http.delete(`http://localhost:3000/api/accounts/${account.id}`).subscribe({
+    this.http.delete(`${this.apiService.apiUrl}/accounts/${account.id}`).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.successMessage.set('Account deleted. All clean!');

@@ -255,7 +255,7 @@ export class ExpensesComponent implements OnInit {
     if (!tx) return;
 
     this.isLoading.set(true);
-    this.http.delete(`http://localhost:3000/api/transactions/${tx.id}`).subscribe({
+    this.http.delete(`${this.apiService.apiUrl}/transactions/${tx.id}`).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.successMessage.set('Expense transaction deleted successfully.');
@@ -312,7 +312,7 @@ export class ExpensesComponent implements OnInit {
     if (ids.length === 0) return;
 
     this.isLoading.set(true);
-    this.http.post('http://localhost:3000/api/transactions/bulk-delete', { ids }).subscribe({
+    this.http.post(`${this.apiService.apiUrl}/transactions/bulk-delete`, { ids }).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.successMessage.set('All selected expense transactions have been deleted.');

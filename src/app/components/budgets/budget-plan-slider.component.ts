@@ -537,7 +537,7 @@ export class BudgetPlanSliderComponent {
 
   loadPlanForEditing(id: string): void {
     this.isLoading.set(true);
-    this.http.get<{ success: boolean; data: any }>(`http://localhost:3000/api/budget-plans`).subscribe({
+    this.http.get<{ success: boolean; data: any }>(`${this.apiService.apiUrl}/budget-plans`).subscribe({
       next: (res) => {
         this.isLoading.set(false);
         if (res.success) {
@@ -585,7 +585,7 @@ export class BudgetPlanSliderComponent {
     };
 
     if (this.isEditMode && this.editingId) {
-      this.http.put(`http://localhost:3000/api/budget-plans/${this.editingId}`, payload).subscribe({
+      this.http.put(`${this.apiService.apiUrl}/budget-plans/${this.editingId}`, payload).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.saved.emit();
@@ -598,7 +598,7 @@ export class BudgetPlanSliderComponent {
         }
       });
     } else {
-      this.http.post('http://localhost:3000/api/budget-plans', payload).subscribe({
+      this.http.post(`${this.apiService.apiUrl}/budget-plans`, payload).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.saved.emit();
