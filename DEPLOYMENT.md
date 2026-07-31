@@ -13,45 +13,47 @@ This guide provides step-by-step instructions for deploying the **FinTrack** app
    - **Database Password**: Choose a strong password (keep note of this password).
    - **Region**: Select a region close to your target audience or Render hosting region.
 4. Once the project is provisioned, go to the dashboard menu on the left and navigate to **Project Settings** > **Database**.
-5. Scroll down to the **Connection string** section, select **URI**, and copy the connection string. It will look like this:
-   ```text
-   postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
-   ```
-   *Replace `[YOUR-PASSWORD]` with the database password you chose in step 3.*
+5. Scroll down to the **Connection Pooler** section and obtain the two required connection strings:
+   - **Transaction Pooler Connection String (for DATABASE_URL)**: Select **Transaction** mode, set the type to **URI**, and copy the string (port `6543`). It will look like this:
+     ```text
+     postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+     ```
+   - **Session Pooler Connection String (for DIRECT_URL)**: Select **Session** mode, set the type to **URI**, and copy the string (port `5432`). It will look like this:
+     ```text
+     postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:5432/postgres
+     ```
+   *Replace `[YOUR-PASSWORD]` with your actual database password. If your password contains special characters, percent-encode them.*
 
 ---
 
 ## Step 2: Push Database Schema & Seed Data
 
-Since we are using Prisma ORM, you must apply migrations to your live Supabase database. Because Supabase uses IPv6-only direct connections and transaction-pooled connections on port 6543 (which block Prisma advisory locks), use one of the following methods:
+Since we are using Prisma ORM with Supabase connection pooling, we use a separate **Session Pooler** (port `5432`) to run migrations because the **Transaction Pooler** (port `6543`) does not support Prisma's database advisory locks.
 
 ### Method A: Run Automatically on Render (Recommended)
-You can let Render run the migrations automatically during deployment. This uses Render's network (which supports direct IPv6 connections to port 5432).
-1. In your Render Dashboard settings for the service, set the **Build Command** to:
+You can let Render run migrations automatically during deployment.
+1. In your Render Dashboard settings for the service, set the **Start Command** to:
    ```bash
-   npx prisma migrate deploy && node prisma/seed.js && npm run build
+   npx prisma migrate deploy && node prisma/seed.js && npm start
    ```
-2. Set your `DATABASE_URL` environment variable to the direct connection string on port 5432:
-   ```text
-   postgresql://postgres:marCodes0903!@db.baawteabywruizyfirpm.supabase.co:5432/postgres
-   ```
+2. Set your Environment Variables:
+   - `DATABASE_URL`: Set to your **Transaction Pooler** connection string (port `6543` with `?pgbouncer=true`).
+   - `DIRECT_URL`: Set to your **Session Pooler** connection string (port `5432`).
 
 ### Method B: Run Locally via Session Pooler
-If you want to run the migration from your local machine, you must configure the Supabase pooler to use **Session** mode:
-1. In the Supabase Dashboard, go to **Project Settings** > **Database** > **Connection Pooler**.
-2. Change the Pooler Mode from **Transaction** to **Session** (this allows database locks required by Prisma).
-3. Open your terminal and **navigate to the `/server` directory** of the project:
+If you want to run migrations from your local machine:
+1. Open your terminal and **navigate to the `/server` directory** of the project:
    ```bash
    cd server
    ```
-4. Run the migration command using the pooler connection string (port 6543):
+2. Set the `DATABASE_URL` and `DIRECT_URL` environment variables and run deploy:
    ```bash
    # On Windows (PowerShell)
-   $env:DATABASE_URL="postgresql://postgres.baawteabywruizyfirpm:marCodes0903!@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+   $env:DATABASE_URL="postgresql://postgres.baawteabywruizyfirpm:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+   $env:DIRECT_URL="postgresql://postgres.baawteabywruizyfirpm:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
    npx prisma migrate deploy
    node prisma/seed.js
    ```
-5. *Important: Switch the Supabase Pooler Mode back to **Transaction** in the dashboard once the migration is complete.
 
 ---
 
@@ -67,9 +69,10 @@ If you want to run the migration from your local machine, you must configure the
    - **Branch**: `main`
    - **Root Directory**: `server`
    - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
+   - **Start Command**: `npx prisma migrate deploy && node prisma/seed.js && npm start`
 5. Scroll down and click **Advanced** to add **Environment Variables**:
-   - `DATABASE_URL`: *Your Supabase connection string (obtained in Step 1)*
+   - `DATABASE_URL`: *Your Supabase Transaction Pooler connection string (port 6543 with ?pgbouncer=true)*
+   - `DIRECT_URL`: *Your Supabase Session Pooler connection string (port 5432)*
    - `PORT`: `3000`
    - `SMTP_HOST`: `smtp.gmail.com`
    - `SMTP_PORT`: `587`
