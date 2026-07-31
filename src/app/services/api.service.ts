@@ -127,7 +127,7 @@ export class ApiService {
   private http = inject(HttpClient);
   private baseUrl = window.location.origin.includes('localhost')
     ? 'http://localhost:3000/api'
-    : 'https://fintrack-backend.onrender.com/api'; // Replace with your production Render URL
+    : 'https://fintrack-api-env1.onrender.com/api';
 
   getHealth(): Observable<HealthResponse> {
 

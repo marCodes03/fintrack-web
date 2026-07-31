@@ -21,7 +21,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private baseUrl = window.location.origin.includes('localhost')
     ? 'http://localhost:3000/api/auth'
-    : 'https://fintrack-backend.onrender.com/api/auth'; // Replace with your production Render URL
+    : 'https://fintrack-api-env1.onrender.com/api/auth';
 
   // Manage logged-in user state reactively using signal
   readonly currentUser = signal<User | null>(null);

@@ -77,7 +77,7 @@ If you want to run the migration from your local machine, you must configure the
    - `SMTP_PASS`: `woil encp huoo fmky` *(or your dedicated SMTP app password)*
    - `SMTP_SENDER_NAME`: `FinTrack`
 6. Click **Create Web Service**. 
-7. Once the build completes and the service is live, copy the public service URL (e.g., `https://fintrack-api.onrender.com`).
+7. Once the build completes and the service is live, copy the public service URL (e.g., `https://fintrack-api-env1.onrender.com`).
 
 ---
 
@@ -89,13 +89,13 @@ We have already configured your Angular client code to dynamically determine the
   ```typescript
   private baseUrl = window.location.origin.includes('localhost')
     ? 'http://localhost:3000/api'
-    : 'https://fintrack-api.onrender.com/api'; // Make sure this matches your Render URL
+    : 'https://fintrack-api-env1.onrender.com/api'; // Make sure this matches your Render URL
   ```
 - **Frontend Auth client**: [auth.service.ts](src/app/services/auth.service.ts)
   ```typescript
   private baseUrl = window.location.origin.includes('localhost')
     ? 'http://localhost:3000/api/auth'
-    : 'https://fintrack-api.onrender.com/api/auth'; // Make sure this matches your Render URL
+    : 'https://fintrack-api-env1.onrender.com/api/auth'; // Make sure this matches your Render URL
   ```
 
 *Since you've modified these files, remember to push them to GitHub:*
