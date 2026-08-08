@@ -25,7 +25,7 @@ export class TransactionsComponent implements OnInit {
   protected readonly transactions = signal<Transaction[]>([]);
   protected readonly accounts = signal<Account[]>([]);
   protected readonly isResetModalOpen = signal<boolean>(false);
-  protected readonly isLoading = signal<boolean>(false);
+  protected readonly isLoading = signal<boolean>(true);
   protected readonly Math = Math;
 
   // Filter & Sort State
@@ -200,11 +200,17 @@ export class TransactionsComponent implements OnInit {
 
   loadData(): void {
     const userId = this.authService.currentUser()?.id;
+    this.isLoading.set(true);
     this.apiService.getTransactions(userId).subscribe({
       next: (res) => {
         if (res.success) {
           this.transactions.set(res.data);
         }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.warn('Failed to load transactions:', err);
+        this.isLoading.set(false);
       }
     });
 

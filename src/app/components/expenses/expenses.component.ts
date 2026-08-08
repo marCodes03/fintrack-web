@@ -27,7 +27,7 @@ export class ExpensesComponent implements OnInit {
   protected readonly expenseCategories = signal<RefExpenseCategory[]>([]);
   protected readonly budgetPlans = signal<BudgetPlan[]>([]);
   protected readonly isResetModalOpen = signal<boolean>(false);
-  protected readonly isLoading = signal<boolean>(false);
+  protected readonly isLoading = signal<boolean>(true);
 
   // Filter & Sort State
   protected readonly timeframeFilter = signal<string>('ALL');
@@ -184,14 +184,19 @@ export class ExpensesComponent implements OnInit {
 
   loadData(): void {
     const userId = this.authService.currentUser()?.id;
+    this.isLoading.set(true);
     this.apiService.getTransactions(userId).subscribe({
       next: (res) => {
         if (res.success) {
           const expenseTxs = res.data.filter(t => t.type === 'EXPENSE');
           this.transactions.set(expenseTxs);
         }
+        this.isLoading.set(false);
       },
-      error: (err) => console.warn('Failed to load expense transactions:', err)
+      error: (err) => {
+        console.warn('Failed to load expense transactions:', err);
+        this.isLoading.set(false);
+      }
     });
 
     this.apiService.getAccounts(userId).subscribe({

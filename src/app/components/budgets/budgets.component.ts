@@ -57,7 +57,7 @@ export class BudgetsComponent implements OnInit {
   protected readonly accounts = signal<Account[]>([]);
   protected readonly Math = Math;
   protected readonly isResetModalOpen = signal<boolean>(false);
-  protected readonly isLoading = signal<boolean>(false);
+  protected readonly isLoading = signal<boolean>(true);
 
   // Slider State
   protected readonly isSliderOpen = signal<boolean>(false);
@@ -121,13 +121,18 @@ export class BudgetsComponent implements OnInit {
       });
     }
 
+    this.isLoading.set(true);
     this.apiService.getBudgetPlans(userId).subscribe({
       next: (res) => {
         if (res.success) {
           this.budgetPlans.set(res.data);
         }
+        this.isLoading.set(false);
       },
-      error: (err) => console.warn('Failed to load budget plans:', err)
+      error: (err) => {
+        console.warn('Failed to load budget plans:', err);
+        this.isLoading.set(false);
+      }
     });
 
     this.apiService.getAccounts(userId).subscribe({

@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit {
   protected readonly monthlySavingsGoal = signal<number>(0);
   protected readonly isResetModalOpen = signal<boolean>(false);
   protected readonly isLoadingTransactions = signal<boolean>(true);
+  protected readonly isLoadingDashboard = signal<boolean>(true);
 
   protected readonly hideAmounts = this.authService.hideAmounts;
 
@@ -272,17 +273,29 @@ export class DashboardComponent implements OnInit {
 
     const userId = this.authService.currentUser()?.id;
 
+    let pendingCalls = 3;
+    const checkDashboardLoading = () => {
+      pendingCalls--;
+      if (pendingCalls <= 0) {
+        this.isLoadingDashboard.set(false);
+      }
+    };
+
     this.isLoadingTransactions.set(true);
+    this.isLoadingDashboard.set(true);
+
     this.apiService.getTransactions(userId).subscribe({
       next: (res) => {
         if (res.success) {
           this.transactions.set(res.data);
         }
         this.isLoadingTransactions.set(false);
+        checkDashboardLoading();
       },
       error: (err) => {
         console.warn('Failed to load transactions:', err);
         this.isLoadingTransactions.set(false);
+        checkDashboardLoading();
       }
     });
 
@@ -291,8 +304,12 @@ export class DashboardComponent implements OnInit {
         if (res.success) {
           this.accounts.set(res.data);
         }
+        checkDashboardLoading();
       },
-      error: (err) => console.warn('Failed to load accounts:', err)
+      error: (err) => {
+        console.warn('Failed to load accounts:', err);
+        checkDashboardLoading();
+      }
     });
 
     this.apiService.getBudgetPlans(userId).subscribe({
@@ -300,6 +317,11 @@ export class DashboardComponent implements OnInit {
         if (res.success) {
           this.budgetPlans.set(res.data);
         }
+        checkDashboardLoading();
+      },
+      error: (err) => {
+        console.warn('Failed to load budget plans:', err);
+        checkDashboardLoading();
       }
     });
 

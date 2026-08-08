@@ -25,7 +25,7 @@ export class AccountsComponent implements OnInit {
   protected readonly accounts = signal<Account[]>([]);
   protected readonly accountTypes = signal<RefAccountType[]>([]);
   protected readonly isResetModalOpen = signal<boolean>(false);
-  protected readonly isLoading = signal<boolean>(false);
+  protected readonly isLoading = signal<boolean>(true);
 
   // Filter & Sort State
   protected readonly filterType = signal<string>('ALL');
@@ -95,13 +95,18 @@ export class AccountsComponent implements OnInit {
 
   loadAccounts(): void {
     const userId = this.authService.currentUser()?.id;
+    this.isLoading.set(true);
     this.apiService.getAccounts(userId).subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);
         }
+        this.isLoading.set(false);
       },
-      error: (err) => console.warn('Failed to load accounts:', err)
+      error: (err) => {
+        console.warn('Failed to load accounts:', err);
+        this.isLoading.set(false);
+      }
     });
   }
 

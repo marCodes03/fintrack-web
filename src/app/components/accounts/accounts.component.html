@@ -54,42 +54,68 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        @for (acc of filteredAccounts(); track acc.id) {
-          <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 shadow-md flex flex-col justify-between hover:border-border-strong transition-all group relative overflow-hidden">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="h-10 w-10 rounded-xl flex items-center justify-center font-bold text-lg"
-                  [class.bg-emerald-500/10]="acc.type === 'CASH'" [class.text-emerald-500]="acc.type === 'CASH'"
-                  [class.bg-blue-500/10]="acc.type === 'BANK'" [class.text-blue-500]="acc.type === 'BANK'"
-                  [class.bg-rose-500/10]="acc.type === 'CREDIT'" [class.text-rose-500]="acc.type === 'CREDIT'"
-                  [class.bg-indigo-500/10]="acc.type === 'SAVINGS'" [class.text-indigo-500]="acc.type === 'SAVINGS'"
-                  [class.bg-teal-500/10]="acc.type === 'E_WALLET'" [class.text-teal-500]="acc.type === 'E_WALLET'">
-                  {{ acc.type === 'CASH' ? '💵' : (acc.type === 'BANK' ? '🏦' : (acc.type === 'CREDIT' ? '💳' : (acc.type === 'SAVINGS' ? '🏧' : '📱'))) }}
+        @if (isLoading()) {
+          @for (i of [1, 2, 3]; track i) {
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 shadow-md flex flex-col justify-between animate-pulse">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 w-2/3">
+                  <div class="h-10 w-10 rounded-xl bg-border-subtle"></div>
+                  <div class="space-y-2 flex-1">
+                    <div class="h-4 bg-border-subtle rounded-lg w-3/4"></div>
+                    <div class="h-3 bg-border-subtle rounded-lg w-1/2"></div>
+                  </div>
                 </div>
-                <div>
-                  <h3 class="font-bold text-text-heading leading-tight">{{ acc.name }}</h3>
-                  <span class="text-[10px] uppercase font-semibold text-text-muted tracking-wider">{{ acc.type }}</span>
-                </div>
+                <div class="h-5 bg-border-subtle rounded-lg w-1/4"></div>
               </div>
-              <div class="text-right">
-                <p class="font-black text-text-heading text-lg">
-                  {{ hideAmounts() ? '₱ •••••' : (acc.balance | currency:acc.currency:'symbol-narrow') }}
-                </p>
+              <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-end space-x-3">
+                <div class="h-4 bg-border-subtle rounded-lg w-8"></div>
+                <div class="h-4 bg-border-subtle rounded-lg w-10"></div>
               </div>
             </div>
+          }
+        } @else {
+          @for (acc of filteredAccounts(); track acc.id) {
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 shadow-md flex flex-col justify-between hover:border-border-strong transition-all group relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="h-10 w-10 rounded-xl flex items-center justify-center font-bold text-lg"
+                    [class.bg-emerald-500/10]="acc.type === 'CASH'" [class.text-emerald-500]="acc.type === 'CASH'"
+                    [class.bg-blue-500/10]="acc.type === 'BANK'" [class.text-blue-500]="acc.type === 'BANK'"
+                    [class.bg-rose-500/10]="acc.type === 'CREDIT'" [class.text-rose-500]="acc.type === 'CREDIT'"
+                    [class.bg-indigo-500/10]="acc.type === 'SAVINGS'" [class.text-indigo-500]="acc.type === 'SAVINGS'"
+                    [class.bg-teal-500/10]="acc.type === 'E_WALLET'" [class.text-teal-500]="acc.type === 'E_WALLET'">
+                    {{ acc.type === 'CASH' ? '💵' : (acc.type === 'BANK' ? '🏦' : (acc.type === 'CREDIT' ? '💳' : (acc.type === 'SAVINGS' ? '🏧' : '📱'))) }}
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-text-heading leading-tight">{{ acc.name }}</h3>
+                    <span class="text-[10px] uppercase font-semibold text-text-muted tracking-wider">{{ acc.type }}</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="font-black text-text-heading text-lg">
+                    {{ hideAmounts() ? '₱ •••••' : (acc.balance | currency:acc.currency:'symbol-narrow') }}
+                  </p>
+                </div>
+              </div>
 
-            <!-- Action button bar -->
-            <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-end space-x-3">
-              <button (click)="startEdit(acc)" class="text-[10px] font-bold text-emerald-500 hover:text-emerald-600 transition-colors uppercase tracking-wider">
-                Edit
-              </button>
-              <button (click)="handleDeleteAccount(acc)" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 transition-colors uppercase tracking-wider">
-                Delete
+              <!-- Action button bar -->
+              <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-end space-x-3">
+                <button (click)="startEdit(acc)" class="text-[10px] font-bold text-emerald-500 hover:text-emerald-600 transition-colors uppercase tracking-wider">
+                  Edit
+                </button>
+                <button (click)="handleDeleteAccount(acc)" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 transition-colors uppercase tracking-wider">
+                  Delete
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
+              <p class="text-sm text-text-muted">No accounts added yet.</p>
+              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+                Create First Account
               </button>
             </div>
-          </div>
-        } @empty {
-          <p class="text-sm text-text-muted text-center py-6 col-span-3">No accounts set up yet.</p>
+          }
         }
       </div>
     </div>

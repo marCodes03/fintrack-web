@@ -7,68 +7,81 @@
 
     <!-- Hero / Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Total Net Worth Card -->
-      <div
-        class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-text-muted">Total Net Worth</p>
-          <span class="text-[10px] uppercase font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md">{{
-            accounts().length }} Account(s)</span>
+      @if (isLoadingDashboard()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md animate-pulse space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="h-4 bg-border-subtle rounded w-1/3"></div>
+              <div class="h-5 bg-border-subtle rounded w-1/4"></div>
+            </div>
+            <div class="h-8 bg-border-subtle rounded w-1/2"></div>
+            <div class="h-3 bg-border-subtle rounded w-3/4"></div>
+          </div>
+        }
+      } @else {
+        <!-- Total Net Worth Card -->
+        <div
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-text-muted">Total Net Worth</p>
+            <span class="text-[10px] uppercase font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md">{{
+              accounts().length }} Account(s)</span>
+          </div>
+          <p class="text-3xl font-extrabold text-text-heading mt-3">
+            {{ hideAmounts() ? '₱ •••••' : (totalNetWorth() | currency:'PHP':'symbol-narrow') }}
+          </p>
+          <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
+          <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-1.5">
+            <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
+              <input type="checkbox" [checked]="includeSavingsInNetWorth()" (change)="toggleIncludeSavings()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
+              Include Savings
+            </label>
+            <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
+              <input type="checkbox" [checked]="includeCreditInNetWorth()" (change)="toggleIncludeCredit()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
+              Include Credit
+            </label>
+          </div>
         </div>
-        <p class="text-3xl font-extrabold text-text-heading mt-3">
-          {{ hideAmounts() ? '₱ •••••' : (totalNetWorth() | currency:'PHP':'symbol-narrow') }}
-        </p>
-        <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
-        <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-1.5">
-          <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
-            <input type="checkbox" [checked]="includeSavingsInNetWorth()" (change)="toggleIncludeSavings()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
-            Include Savings
-          </label>
-          <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
-            <input type="checkbox" [checked]="includeCreditInNetWorth()" (change)="toggleIncludeCredit()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
-            Include Credit
-          </label>
+  
+        <!-- Total Income Card -->
+        <div
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-text-muted">Total Income</p>
+            <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">Inflows</span>
+          </div>
+          <p class="text-3xl font-extrabold text-emerald-500 mt-3">
+            {{ hideAmounts() ? '₱ •••••' : (totalIncome() | currency:'PHP':'symbol-narrow') }}
+          </p>
+          <p class="text-xs text-text-muted mt-2">Sum of monthly recorded income</p>
         </div>
-      </div>
-
-      <!-- Total Income Card -->
-      <div
-        class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-text-muted">Total Income</p>
-          <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">Inflows</span>
+  
+        <!-- Total Expenses Card -->
+        <div
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-text-muted">Total Expenses</p>
+            <span class="text-xs font-semibold text-rose-500 bg-rose-500/10 px-2 py-1 rounded-md">Outflows</span>
+          </div>
+          <p class="text-3xl font-extrabold text-rose-500 mt-3">
+            {{ hideAmounts() ? '₱ •••••' : (totalExpenses() | currency:'PHP':'symbol-narrow') }}
+          </p>
+          <p class="text-xs text-text-muted mt-2">Sum of monthly recorded expenses</p>
         </div>
-        <p class="text-3xl font-extrabold text-emerald-500 mt-3">
-          {{ hideAmounts() ? '₱ •••••' : (totalIncome() | currency:'PHP':'symbol-narrow') }}
-        </p>
-        <p class="text-xs text-text-muted mt-2">Sum of monthly recorded income</p>
-      </div>
-
-      <!-- Total Expenses Card -->
-      <div
-        class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-text-muted">Total Expenses</p>
-          <span class="text-xs font-semibold text-rose-500 bg-rose-500/10 px-2 py-1 rounded-md">Outflows</span>
+  
+        <!-- Total Savings Card -->
+        <div
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-text-muted">Total Savings</p>
+            <span class="text-xs font-semibold text-teal-500 bg-teal-500/10 px-2 py-1 rounded-md">Savings</span>
+          </div>
+          <p class="text-3xl font-extrabold text-teal-500 mt-3">
+            {{ hideAmounts() ? '₱ •••••' : (totalSavings() | currency:'PHP':'symbol-narrow') }}
+          </p>
+          <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
         </div>
-        <p class="text-3xl font-extrabold text-rose-500 mt-3">
-          {{ hideAmounts() ? '₱ •••••' : (totalExpenses() | currency:'PHP':'symbol-narrow') }}
-        </p>
-        <p class="text-xs text-text-muted mt-2">Sum of monthly recorded expenses</p>
-      </div>
-
-      <!-- Total Savings Card -->
-      <div
-        class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-text-muted">Total Savings</p>
-          <span class="text-xs font-semibold text-teal-500 bg-teal-500/10 px-2 py-1 rounded-md">Savings</span>
-        </div>
-        <p class="text-3xl font-extrabold text-teal-500 mt-3">
-          {{ hideAmounts() ? '₱ •••••' : (totalSavings() | currency:'PHP':'symbol-narrow') }}
-        </p>
-        <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
-      </div>
+      }
     </div>
 
     <!-- Active Budget Plan & Savings Goal Widgets Row -->
@@ -80,7 +93,20 @@
           <a routerLink="/budgets" class="text-xs font-bold text-emerald-500 hover:underline">Manage Plans ➔</a>
         </div>
 
-        @if (activeBudgetPlan()) {
+        @if (isLoadingDashboard()) {
+          <div class="animate-pulse space-y-4">
+            <div class="space-y-2">
+              <div class="h-5 bg-border-subtle rounded w-2/3"></div>
+              <div class="h-3 bg-border-subtle rounded w-1/2"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle">
+              <div class="h-8 bg-border-subtle rounded"></div>
+              <div class="h-8 bg-border-subtle rounded"></div>
+              <div class="h-8 bg-border-subtle rounded"></div>
+            </div>
+            <div class="h-10 bg-border-subtle rounded w-full"></div>
+          </div>
+        } @else if (activeBudgetPlan()) {
           <div class="space-y-3">
             <div class="flex items-start justify-between">
               <div>
@@ -134,7 +160,21 @@
           <a routerLink="/savings" class="text-xs font-bold text-teal-500 hover:underline">Savings Page ➔</a>
         </div>
 
-        @if (monthlySavingsGoal() > 0) {
+        @if (isLoadingDashboard()) {
+          <div class="animate-pulse space-y-4">
+            <div class="space-y-2">
+              <div class="h-8 bg-border-subtle rounded w-1/2"></div>
+              <div class="h-3 bg-border-subtle rounded w-2/3"></div>
+            </div>
+            <div class="space-y-2">
+              <div class="h-3 bg-border-subtle rounded w-full"></div>
+              <div class="flex justify-between">
+                <div class="h-3 bg-border-subtle rounded w-1/4"></div>
+                <div class="h-3 bg-border-subtle rounded w-1/4"></div>
+              </div>
+            </div>
+          </div>
+        } @else if (monthlySavingsGoal() > 0) {
           <div class="space-y-3">
             <div>
               <p class="text-2xl font-extrabold text-text-heading">
@@ -181,7 +221,29 @@
         <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income ({{ hideAmounts() ? '₱ •••••' : (activePlanInflows() | currency:'PHP':'symbol-narrow') }})</span>
       </div>
 
-      @if (budgetGoal()) {
+      @if (isLoadingDashboard()) {
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-pulse">
+          <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-2xl border border-border-subtle w-full">
+            <div class="h-4 bg-border-subtle rounded w-1/2"></div>
+            <div class="w-36 h-36 rounded-full border-4 border-border-subtle bg-transparent flex items-center justify-center">
+              <div class="w-24 h-24 rounded-full bg-border-subtle"></div>
+            </div>
+            <div class="w-full space-y-2">
+              <div class="h-3 bg-border-subtle rounded w-full"></div>
+              <div class="h-3 bg-border-subtle rounded w-2/3"></div>
+            </div>
+          </div>
+          <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            @for (i of [1, 2, 3]; track i) {
+              <div class="bg-surface-subtle border border-border-subtle rounded-xl p-5 space-y-4">
+                <div class="h-5 bg-border-subtle rounded w-1/2"></div>
+                <div class="h-10 bg-border-subtle rounded w-full"></div>
+                <div class="h-8 bg-border-subtle rounded w-full"></div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else if (budgetGoal()) {
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Donut Diagram Column -->
           <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-2xl border border-border-subtle w-full min-w-[220px]">

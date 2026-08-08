@@ -25,7 +25,7 @@ export class SavingsComponent implements OnInit {
   protected readonly transactions = signal<Transaction[]>([]);
   protected readonly accounts = signal<Account[]>([]);
   protected readonly isResetModalOpen = signal<boolean>(false);
-  protected readonly isLoading = signal<boolean>(false);
+  protected readonly isLoading = signal<boolean>(true);
 
   // Filter & Sort State
   protected readonly timeframeFilter = signal<string>('ALL');
@@ -201,14 +201,19 @@ export class SavingsComponent implements OnInit {
 
   loadData(): void {
     const userId = this.authService.currentUser()?.id;
+    this.isLoading.set(true);
     this.apiService.getTransactions(userId).subscribe({
       next: (res) => {
         if (res.success) {
           const savingsTxs = res.data.filter(t => t.type === 'SAVINGS');
           this.transactions.set(savingsTxs);
         }
+        this.isLoading.set(false);
       },
-      error: (err) => console.warn('Failed to load savings transactions:', err)
+      error: (err) => {
+        console.warn('Failed to load savings transactions:', err);
+        this.isLoading.set(false);
+      }
     });
 
     this.apiService.getAccounts(userId).subscribe({
