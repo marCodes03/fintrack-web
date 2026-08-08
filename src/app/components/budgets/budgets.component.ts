@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -33,7 +33,29 @@ export class BudgetsComponent implements OnInit {
   private router = inject(Router);
 
   protected readonly budgetPlans = signal<BudgetPlan[]>([]);
+  protected readonly itemsToShow = signal<number>(10);
+
+  protected readonly paginatedPlans = computed(() => {
+    return this.budgetPlans().slice(0, this.itemsToShow());
+  });
+
+  onContainerScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    const pos = target.scrollTop + target.clientHeight;
+    const max = target.scrollHeight;
+    if (pos >= max - 50) {
+      this.loadMore();
+    }
+  }
+
+  protected loadMore(): void {
+    if (this.itemsToShow() < this.budgetPlans().length) {
+      this.itemsToShow.update(val => val + 10);
+    }
+  }
+
   protected readonly accounts = signal<Account[]>([]);
+  protected readonly Math = Math;
   protected readonly isResetModalOpen = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
 

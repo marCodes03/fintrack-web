@@ -25,31 +25,77 @@ export class DashboardComponent implements OnInit {
   protected readonly budgetGoal = signal<BudgetGoal | null>(null);
   protected readonly monthlySavingsGoal = signal<number>(0);
   protected readonly isResetModalOpen = signal<boolean>(false);
+  protected readonly isLoadingTransactions = signal<boolean>(true);
+
+  protected readonly hideAmounts = this.authService.hideAmounts;
+
+  // Net Worth Configuration
+  protected readonly includeSavingsInNetWorth = signal<boolean>(
+    localStorage.getItem('fintrack_networth_include_savings') !== 'false'
+  );
+  protected readonly includeCreditInNetWorth = signal<boolean>(
+    localStorage.getItem('fintrack_networth_include_credit') === 'true'
+  );
+
+  toggleIncludeSavings(): void {
+    const nextVal = !this.includeSavingsInNetWorth();
+    this.includeSavingsInNetWorth.set(nextVal);
+    localStorage.setItem('fintrack_networth_include_savings', String(nextVal));
+  }
+
+  toggleIncludeCredit(): void {
+    const nextVal = !this.includeCreditInNetWorth();
+    this.includeCreditInNetWorth.set(nextVal);
+    localStorage.setItem('fintrack_networth_include_credit', String(nextVal));
+  }
 
 
   // Computations for real totals
   protected readonly totalNetWorth = computed(() => {
     return this.accounts()
-      .filter(acc => acc.type !== 'CREDIT')
-      .reduce((sum, acc) => sum + acc.balance, 0);
+      .filter(acc => {
+        if (acc.type === 'SAVINGS' && !this.includeSavingsInNetWorth()) return false;
+        if (acc.type === 'CREDIT' && !this.includeCreditInNetWorth()) return false;
+        return true;
+      })
+      .reduce((sum, acc) => {
+        if (acc.type === 'CREDIT') {
+          return sum - acc.balance;
+        }
+        return sum + acc.balance;
+      }, 0);
   });
 
   protected readonly totalIncome = computed(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
     return this.transactions()
-      .filter(t => t.type === 'INCOME')
+      .filter(t => {
+        if (t.type !== 'INCOME') return false;
+        const d = new Date(t.expenseDate || t.date);
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      })
       .reduce((sum, t) => sum + t.amount, 0);
   });
 
   protected readonly totalExpenses = computed(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
     return this.transactions()
-      .filter(t => t.type === 'EXPENSE')
+      .filter(t => {
+        if (t.type !== 'EXPENSE') return false;
+        const d = new Date(t.expenseDate || t.date);
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      })
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
   });
 
   protected readonly totalSavings = computed(() => {
-    return this.transactions()
-      .filter(t => t.type === 'SAVINGS')
-      .reduce((sum, t) => sum + t.amount, 0);
+    return this.accounts()
+      .filter(acc => acc.type === 'SAVINGS')
+      .reduce((sum, acc) => sum + acc.balance, 0);
   });
 
   protected readonly currentMonthSavings = computed(() => {
@@ -226,13 +272,18 @@ export class DashboardComponent implements OnInit {
 
     const userId = this.authService.currentUser()?.id;
 
+    this.isLoadingTransactions.set(true);
     this.apiService.getTransactions(userId).subscribe({
       next: (res) => {
         if (res.success) {
           this.transactions.set(res.data);
         }
+        this.isLoadingTransactions.set(false);
       },
-      error: (err) => console.warn('Failed to load transactions:', err)
+      error: (err) => {
+        console.warn('Failed to load transactions:', err);
+        this.isLoadingTransactions.set(false);
+      }
     });
 
     this.apiService.getAccounts(userId).subscribe({

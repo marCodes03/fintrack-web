@@ -189,88 +189,122 @@
     </div>
 
     <!-- Budget Plans Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (plan of budgetPlans(); track plan.id) {
-        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
-          [class.border-emerald-500/50]="plan.isActive">
-          
-          @if (plan.isActive) {
-            <div class="absolute top-0 right-0 bg-emerald-505 text-white dark:text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-md">
-              Active Plan
+    <div class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-[640px] scroll-smooth" (scroll)="onContainerScroll($event)">
+        @if (isLoading()) {
+          @for (i of [1, 2, 3]; track i) {
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 animate-pulse">
+              <div class="space-y-3">
+                <div class="h-6 bg-border-subtle rounded-lg w-3/4"></div>
+                <div class="h-4 bg-border-subtle rounded-lg w-1/2"></div>
+                <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle">
+                  <div class="h-10 bg-border-subtle rounded-lg"></div>
+                  <div class="h-10 bg-border-subtle rounded-lg"></div>
+                  <div class="h-10 bg-border-subtle rounded-lg"></div>
+                </div>
+                <div class="h-12 bg-border-subtle rounded-lg w-full"></div>
+              </div>
+              <div class="h-10 bg-border-subtle rounded-lg w-full"></div>
             </div>
           }
+        } @else {
+          @for (plan of paginatedPlans(); track plan.id) {
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
+              [class.border-emerald-500/50]="plan.isActive">
+              
+              @if (plan.isActive) {
+                <div class="absolute top-0 right-0 bg-emerald-505 text-white dark:text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-md">
+                  Active Plan
+                </div>
+              }
 
-          <div class="space-y-3">
-            <div class="flex items-start justify-between">
-              <div>
-                <h3 class="text-lg font-bold text-text-heading leading-tight">{{ plan.name }}</h3>
-                @if (plan.isActive && plan.startDate && plan.endDate) {
-                  <p class="text-[11px] font-semibold text-emerald-500 mt-1">
-                    Period: {{ plan.startDate | date:'MMM d, y' }} — {{ plan.endDate | date:'MMM d, y' }}
-                  </p>
+              <div class="space-y-3">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <h3 class="text-lg font-bold text-text-heading leading-tight">{{ plan.name }}</h3>
+                    @if (plan.isActive && plan.startDate && plan.endDate) {
+                      <p class="text-[11px] font-semibold text-emerald-500 mt-1">
+                        Period: {{ plan.startDate | date:'MMM d, y' }} — {{ plan.endDate | date:'MMM d, y' }}
+                      </p>
+                    }
+                  </div>
+                </div>
+
+                <!-- Inflows / Outflows / Savings breakdown -->
+                <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
+                  <div>
+                    <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Inflows</span>
+                    <span class="text-xs font-bold text-emerald-500">+{{ getPlannedInflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                  </div>
+                  <div>
+                    <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Outflows</span>
+                    <span class="text-xs font-bold text-rose-500">-{{ getPlannedOutflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                  </div>
+                  <div>
+                    <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Savings</span>
+                    <span class="text-xs font-bold text-teal-500">{{ getPlannedSavings(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                  </div>
+                </div>
+
+                <!-- Net Remaining -->
+                <div class="flex items-center justify-between p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                  <span class="text-xs font-medium text-text-muted">Net Remaining</span>
+                  <span class="text-sm font-black" [class.text-emerald-500]="getRemainingBudget(plan) >= 0" [class.text-rose-500]="getRemainingBudget(plan) < 0">
+                    {{ getRemainingBudget(plan) | currency:'PHP':'symbol-narrow' }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Card Actions -->
+              <div class="space-y-2 pt-2 border-t border-border-subtle">
+                <!-- Implement for Period Button -->
+                <button (click)="openImplementModal(plan)"
+                  class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                  <span>🚀</span>
+                  <span>{{ plan.isActive ? 'Re-Implement Period' : 'Implement for Period' }}</span>
+                </button>
+
+                @if (plan.isActive) {
+                  <button (click)="openDeactivateModal(plan)"
+                    class="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-550 border border-amber-500/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                    <span>⏸️</span>
+                    <span>Deactivate Plan</span>
+                  </button>
                 }
-              </div>
-            </div>
 
-            <!-- Inflows / Outflows / Savings breakdown -->
-            <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
-              <div>
-                <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Inflows</span>
-                <span class="text-xs font-bold text-emerald-500">+{{ getPlannedInflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                <div class="flex items-center space-x-2">
+                  <button (click)="startEdit(plan)" class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-1.5 px-3 rounded-xl text-xs transition-all">
+                    Edit Plan
+                  </button>
+                  <button (click)="handleDeletePlan(plan)" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-bold py-1.5 px-3 rounded-xl text-xs transition-all border border-rose-500/20">
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div>
-                <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Outflows</span>
-                <span class="text-xs font-bold text-rose-500">-{{ getPlannedOutflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
-              </div>
-              <div>
-                <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Savings</span>
-                <span class="text-xs font-bold text-teal-500">{{ getPlannedSavings(plan) | currency:'PHP':'symbol-narrow' }}</span>
-              </div>
-            </div>
 
-            <!-- Net Remaining -->
-            <div class="flex items-center justify-between p-3 rounded-xl bg-surface-subtle border border-border-subtle">
-              <span class="text-xs font-medium text-text-muted">Net Remaining</span>
-              <span class="text-sm font-black" [class.text-emerald-500]="getRemainingBudget(plan) >= 0" [class.text-rose-500]="getRemainingBudget(plan) < 0">
-                {{ getRemainingBudget(plan) | currency:'PHP':'symbol-narrow' }}
-              </span>
             </div>
+          } @empty {
+            <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
+              <p class="text-sm text-text-muted">No budget plans created yet.</p>
+              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+                Create First Budget Plan
+              </button>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Infinite Scroll Indicator -->
+      @if (itemsToShow() < budgetPlans().length) {
+        <div class="flex justify-center py-4 border-t border-border-subtle">
+          <div class="flex items-center space-x-2 text-xs text-text-muted">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Scrolling loads more items...</span>
           </div>
-
-          <!-- Card Actions -->
-          <div class="space-y-2 pt-2 border-t border-border-subtle">
-            <!-- Implement for Period Button -->
-            <button (click)="openImplementModal(plan)"
-              class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
-              <span>🚀</span>
-              <span>{{ plan.isActive ? 'Re-Implement Period' : 'Implement for Period' }}</span>
-            </button>
-
-            @if (plan.isActive) {
-              <button (click)="openDeactivateModal(plan)"
-                class="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-550 border border-amber-500/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
-                <span>⏸️</span>
-                <span>Deactivate Plan</span>
-              </button>
-            }
-
-            <div class="flex items-center space-x-2">
-              <button (click)="startEdit(plan)" class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-1.5 px-3 rounded-xl text-xs transition-all">
-                Edit Plan
-              </button>
-              <button (click)="handleDeletePlan(plan)" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-bold py-1.5 px-3 rounded-xl text-xs transition-all border border-rose-500/20">
-                Delete
-              </button>
-            </div>
-          </div>
-
         </div>
-      } @empty {
-        <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
-          <p class="text-sm text-text-muted">No budget plans created yet.</p>
-          <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
-            Create First Budget Plan
-          </button>
+      } @else if (budgetPlans().length > 10) {
+        <div class="flex justify-center py-4 border-t border-border-subtle text-xs text-text-muted">
+          Showing all {{ budgetPlans().length }} items
         </div>
       }
     </div>

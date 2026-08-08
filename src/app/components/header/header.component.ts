@@ -17,6 +17,11 @@ export class HeaderComponent {
 
   protected readonly user = this.authService.currentUser;
   protected readonly isSliderOpen = signal<boolean>(false);
+  protected readonly hideAmounts = this.authService.hideAmounts;
+
+  toggleHideAmounts(): void {
+    this.authService.toggleHideAmounts();
+  }
 
   openSlider(): void {
     this.isSliderOpen.set(true);

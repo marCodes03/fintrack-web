@@ -18,6 +18,11 @@ export class SliderMenuComponent implements OnInit {
 
   protected readonly user = this.authService.currentUser;
   protected isDarkMode = signal<boolean>(false);
+  protected readonly hideAmounts = this.authService.hideAmounts;
+
+  toggleHideAmounts(): void {
+    this.authService.toggleHideAmounts();
+  }
 
   ngOnInit(): void {
     this.isDarkMode.set(document.documentElement.classList.contains('dark'));

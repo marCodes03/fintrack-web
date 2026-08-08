@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../prisma';
-import { mockAccounts, handleDbError } from '../mockStore';
+import { mockAccounts, handleDbError, mockTransactions } from '../mockStore';
 
 const router = Router();
 
@@ -82,26 +82,84 @@ router.put('/:id', async (req: Request, res: Response) => {
       res.status(404).json({ success: false, message: 'Account not found.' });
       return;
     }
+    const currentAccount = mockAccounts[idx];
+    const oldBalance = currentAccount.balance;
+    const newBalance = balance !== undefined ? parseFloat(balance) : oldBalance;
+
     mockAccounts[idx] = {
-      ...mockAccounts[idx],
+      ...currentAccount,
       name,
       type,
-      ...(balance !== undefined && { balance: parseFloat(balance) }),
+      balance: newBalance,
       updatedDate: new Date().toISOString()
     };
+
+    if (balance !== undefined && newBalance !== oldBalance) {
+      const diff = newBalance - oldBalance;
+      const txType = diff > 0 ? 'INCOME' : 'EXPENSE';
+      const absAmount = Math.abs(diff);
+
+      const newTx = {
+        id: `tx-mock-${Date.now()}`,
+        description: `Balance adjustment for ${name || currentAccount.name}`,
+        amount: absAmount,
+        type: txType,
+        category: 'Adjustment',
+        date: new Date().toISOString(),
+        accountId: id,
+        toAccountId: null,
+        transferFee: 0,
+        userId: currentAccount.userId,
+        createdDate: new Date().toISOString(),
+        updatedDate: new Date().toISOString()
+      };
+      mockTransactions.push(newTx);
+    }
+
     res.json({ success: true, data: mockAccounts[idx] });
     return;
   }
 
   try {
+    const currentAccount = await prisma.account.findUnique({
+      where: { id }
+    });
+
+    if (!currentAccount) {
+      res.status(404).json({ success: false, message: 'Account not found.' });
+      return;
+    }
+
+    const oldBalance = currentAccount.balance;
+    const newBalance = balance !== undefined ? parseFloat(balance) : oldBalance;
+
     const updated = await prisma.account.update({
       where: { id },
       data: {
         name,
         type,
-        ...(balance !== undefined && { balance: parseFloat(balance) })
+        balance: newBalance
       }
     });
+
+    if (balance !== undefined && newBalance !== oldBalance) {
+      const diff = newBalance - oldBalance;
+      const txType = diff > 0 ? 'INCOME' : 'EXPENSE';
+      const absAmount = Math.abs(diff);
+
+      await prisma.transaction.create({
+        data: {
+          description: `Balance adjustment for ${name || currentAccount.name}`,
+          amount: absAmount,
+          type: txType,
+          category: 'Adjustment',
+          date: new Date(),
+          userId: currentAccount.userId,
+          accountId: id
+        }
+      });
+    }
+
     res.json({ success: true, data: updated });
   } catch (err) {
     return handleDbError(err, res, 'Failed to update account');

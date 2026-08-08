@@ -92,7 +92,7 @@
             <!-- Timeframe Filter -->
             <div>
               <label class="block text-[10px] uppercase font-bold text-text-muted mb-1">Timeframe</label>
-              <select [ngModel]="timeframeFilter()" (ngModelChange)="timeframeFilter.set($event)"
+              <select [ngModel]="timeframeFilter()" (ngModelChange)="timeframeFilter.set($event); itemsToShow.set(10)"
                 class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
                 <option value="ALL">All Time</option>
                 <option value="THIS_MONTH">This Month</option>
@@ -107,12 +107,12 @@
               <div class="flex items-center space-x-2">
                 <div>
                   <label class="block text-[10px] uppercase font-bold text-text-muted mb-1">From</label>
-                  <input type="date" [ngModel]="customStartDate()" (ngModelChange)="customStartDate.set($event)"
+                  <input type="date" [ngModel]="customStartDate()" (ngModelChange)="customStartDate.set($event); itemsToShow.set(10)"
                     class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2 py-1 focus:outline-none">
                 </div>
                 <div>
                   <label class="block text-[10px] uppercase font-bold text-text-muted mb-1">To</label>
-                  <input type="date" [ngModel]="customEndDate()" (ngModelChange)="customEndDate.set($event)"
+                  <input type="date" [ngModel]="customEndDate()" (ngModelChange)="customEndDate.set($event); itemsToShow.set(10)"
                     class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2 py-1 focus:outline-none">
                 </div>
               </div>
@@ -121,7 +121,7 @@
             <!-- Category Filter -->
             <div>
               <label class="block text-[10px] uppercase font-bold text-text-muted mb-1">Category</label>
-              <select [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)"
+              <select [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event); itemsToShow.set(10)"
                 class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
                 <option value="ALL">All Categories</option>
                 @for (cat of savingsCategories(); track cat.id) {
@@ -134,7 +134,7 @@
           <!-- Sort Order -->
           <div>
             <label class="block text-[10px] uppercase font-bold text-text-muted mb-1">Sort By</label>
-            <select [ngModel]="sortOrder()" (ngModelChange)="sortOrder.set($event)"
+            <select [ngModel]="sortOrder()" (ngModelChange)="sortOrder.set($event); itemsToShow.set(10)"
               class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="DATE_DESC">Date: Newest First (Desc)</option>
               <option value="DATE_ASC">Date: Oldest First (Asc)</option>
@@ -144,7 +144,7 @@
           </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" (scroll)="onContainerScroll($event)">
           <table class="w-full text-left text-sm text-text-body">
             <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
               <tr>
@@ -162,42 +162,75 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-border-subtle">
-              @for (item of filteredTransactions(); track item.id) {
-                <tr class="hover:bg-table-row-hover transition-colors" [class.bg-surface-subtle]="selectedIds().has(item.id)">
-                  <td class="px-6 py-4 w-10">
-                    <input type="checkbox" [checked]="selectedIds().has(item.id)" (change)="toggleSelect(item.id)"
-                      class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-4 h-4 cursor-pointer">
-                  </td>
-                  <td class="px-6 py-4 font-semibold text-text-heading flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-500 flex items-center justify-center font-bold text-sm">
-                      💰
-                    </div>
-                    <span>{{ item.description }}</span>
-                  </td>
-                  <td class="px-6 py-4 text-xs font-semibold text-rose-500/90">{{ getAccountName(item.accountId) }}</td>
-                  <td class="px-6 py-4 text-xs font-semibold text-emerald-500/90">{{ getAccountName(item.toAccountId) }}</td>
-                  <td class="px-6 py-4 text-xs font-semibold text-teal-500">{{ item.category }}</td>
-                  <td class="px-6 py-4 text-xs text-text-muted">{{ (item.expenseDate || item.date) | date:'MMM d, y' }}</td>
-                  <td class="px-6 py-4 font-bold text-teal-500">+{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
-                  <td class="px-6 py-4 text-right space-x-3 rounded-r-xl">
-                    <button (click)="startEdit(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">
-                      Edit
-                    </button>
-                    <button (click)="handleDeleteTransaction(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="8" class="px-6 py-10 text-center text-text-muted">No savings records found matching the selected filters.</td>
-                </tr>
+              @if (isLoading()) {
+                @for (i of [1, 2, 3, 4, 5]; track i) {
+                  <tr class="animate-pulse">
+                    <td class="px-6 py-4 w-10"><div class="h-4 bg-border-subtle rounded w-4"></div></td>
+                    <td class="px-6 py-4 font-semibold text-text-heading flex items-center space-x-3">
+                      <div class="w-8 h-8 rounded-lg bg-border-subtle"></div>
+                      <div class="h-4 bg-border-subtle rounded w-32"></div>
+                    </td>
+                    <td class="px-6 py-4"><div class="h-4 bg-border-subtle rounded w-20"></div></td>
+                    <td class="px-6 py-4"><div class="h-4 bg-border-subtle rounded w-20"></div></td>
+                    <td class="px-6 py-4"><div class="h-4 bg-border-subtle rounded w-24"></div></td>
+                    <td class="px-6 py-4"><div class="h-4 bg-border-subtle rounded w-20"></div></td>
+                    <td class="px-6 py-4 font-semibold text-teal-500"><div class="h-4 bg-border-subtle rounded w-16"></div></td>
+                    <td class="px-6 py-4 text-right space-x-3 rounded-r-xl">
+                      <div class="h-4 bg-border-subtle rounded w-12 ml-auto"></div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                @for (item of paginatedTransactions(); track item.id) {
+                  <tr class="hover:bg-table-row-hover transition-colors" [class.bg-surface-subtle]="selectedIds().has(item.id)">
+                    <td class="px-6 py-4 w-10">
+                      <input type="checkbox" [checked]="selectedIds().has(item.id)" (change)="toggleSelect(item.id)"
+                        class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-4 h-4 cursor-pointer">
+                    </td>
+                    <td class="px-6 py-4 font-semibold text-text-heading flex items-center space-x-3">
+                      <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-500 flex items-center justify-center font-bold text-sm">
+                        💰
+                      </div>
+                      <span>{{ item.description }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-semibold text-rose-500/90">{{ getAccountName(item.accountId) }}</td>
+                    <td class="px-6 py-4 text-xs font-semibold text-emerald-500/90">{{ getAccountName(item.toAccountId) }}</td>
+                    <td class="px-6 py-4 text-xs font-semibold text-teal-500">{{ item.category }}</td>
+                    <td class="px-6 py-4 text-xs text-text-muted">{{ (item.expenseDate || item.date) | date:'MMM d, y' }}</td>
+                    <td class="px-6 py-4 font-bold text-teal-500">+{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                    <td class="px-6 py-4 text-right space-x-3 rounded-r-xl">
+                      <button (click)="startEdit(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">
+                        Edit
+                      </button>
+                      <button (click)="handleDeleteTransaction(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="8" class="px-6 py-10 text-center text-text-muted">No savings records found matching the selected filters.</td>
+                  </tr>
+                }
               }
             </tbody>
           </table>
         </div>
-      </div>
 
+        <!-- Infinite Scroll Indicator -->
+        @if (itemsToShow() < filteredTransactions().length) {
+          <div class="flex justify-center py-4 border-t border-border-subtle">
+            <div class="flex items-center space-x-2 text-xs text-text-muted">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Scrolling loads more items...</span>
+            </div>
+          </div>
+        } @else if (filteredTransactions().length > 10) {
+          <div class="flex justify-center py-4 border-t border-border-subtle text-xs text-text-muted">
+            Showing all {{ filteredTransactions().length }} items
+          </div>
+        }
+      </div>
     </div>
   </main>
 </div>

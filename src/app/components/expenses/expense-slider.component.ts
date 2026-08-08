@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,29 +11,12 @@ import { AuthService } from '../../services/auth.service';
   imports: [FormsModule, DecimalPipe],
   templateUrl: './expense-slider.component.html'
 })
-export class ExpenseSliderComponent {
+export class ExpenseSliderComponent implements OnChanges {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);
 
-  private _isOpen = false;
-  @Input()
-  set isOpen(value: boolean) {
-    this._isOpen = value;
-    if (value) {
-      this.localDescription = this.description;
-      this.localAmount = this.amount;
-      this.localCategory = this.category || (this.categories.length > 0 ? this.categories[0].name : '');
-      this.localAccountId = this.accountId || (this.accounts.length > 0 ? this.accounts[0].id : '');
-      this.localExpenseType = this.expenseType;
-      this.localExpenseDate = this.expenseDate || new Date().toISOString().split('T')[0];
-      this.errorMessage.set(null);
-    }
-  }
-  get isOpen(): boolean {
-    return this._isOpen;
-  }
-
+  @Input() isOpen = false;
   @Input() accounts: Account[] = [];
   @Input() categories: RefExpenseCategory[] = [];
   @Input() isEditMode = false;
@@ -58,6 +41,18 @@ export class ExpenseSliderComponent {
 
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.isOpen) {
+      this.localDescription = this.description;
+      this.localAmount = this.amount;
+      this.localCategory = this.category || (this.categories.length > 0 ? this.categories[0].name : '');
+      this.localAccountId = this.accountId || (this.accounts.length > 0 ? this.accounts[0].id : '');
+      this.localExpenseType = this.expenseType;
+      this.localExpenseDate = this.expenseDate || new Date().toISOString().split('T')[0];
+      this.errorMessage.set(null);
+    }
+  }
 
   onSubmit(): void {
     if (!this.localDescription || !this.localAmount || !this.localAccountId || !this.localCategory) {

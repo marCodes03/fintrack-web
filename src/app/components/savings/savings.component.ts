@@ -1,8 +1,8 @@
-import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { ApiService, Transaction, Account, RefSavingCategory, BudgetPlan } from '../../services/api.service';
+import { ApiService, Transaction, Account, RefSavingCategory } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../header/header.component';
 import { ResetPasswordComponent } from '../auth/reset-password/reset-password.component';
@@ -13,7 +13,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-savings',
   standalone: true,
-  imports: [HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, FormsModule, CurrencyPipe, DatePipe],
+  imports: [HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, CurrencyPipe, DatePipe, FormsModule],
   templateUrl: './savings.component.html'
 })
 export class SavingsComponent implements OnInit {
@@ -24,20 +24,39 @@ export class SavingsComponent implements OnInit {
 
   protected readonly transactions = signal<Transaction[]>([]);
   protected readonly accounts = signal<Account[]>([]);
-  protected readonly savingsCategories = signal<RefSavingCategory[]>([]);
-  protected readonly budgetPlans = signal<BudgetPlan[]>([]);
   protected readonly isResetModalOpen = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
 
-  // Savings Goal State
-  protected readonly monthlySavingsGoal = signal<number>(0);
-  protected readonly isGoalModalOpen = signal<boolean>(false);
-  protected editedGoalAmount: number | null = null;
+  // Filter & Sort State
+  protected readonly timeframeFilter = signal<string>('ALL');
+  protected readonly customStartDate = signal<string>('');
+  protected readonly customEndDate = signal<string>('');
+  protected readonly categoryFilter = signal<string>('ALL');
+  protected readonly sortOrder = signal<string>('DATE_DESC');
 
   // Slider State
   protected readonly isSliderOpen = signal<boolean>(false);
   protected readonly isEditMode = signal<boolean>(false);
   protected readonly editingTransactionId = signal<string | null>(null);
+
+  // Goal State
+  protected monthlySavingsGoal = signal<number>(0);
+  protected currentMonthSavings = signal<number>(0);
+  protected isGoalModalOpen = signal<boolean>(false);
+  protected localGoalValue: number | null = null;
+  protected editedGoalAmount: number | null = null;
+  protected readonly budgetPlans = signal<any[]>([]);
+
+  // Form Fields for Slider
+  protected description = '';
+  protected amount: number | null = null;
+  protected category = '';
+  protected accountId = '';
+  protected toAccountId = '';
+
+  protected successMessage = signal<string | null>(null);
+  protected errorMessage = signal<string | null>(null);
+  protected readonly Math = Math;
 
   // Confirm Delete Modal state
   protected readonly isDeleteModalOpen = signal<boolean>(false);
@@ -51,22 +70,7 @@ export class SavingsComponent implements OnInit {
     return current.every(t => this.selectedIds().has(t.id));
   });
 
-  // Filter & Sort State
-  protected readonly timeframeFilter = signal<string>('ALL');
-  protected readonly customStartDate = signal<string>('');
-  protected readonly customEndDate = signal<string>('');
-  protected readonly categoryFilter = signal<string>('ALL');
-  protected readonly sortOrder = signal<string>('DATE_DESC');
-
-  // Form Fields
-  protected description = '';
-  protected amount: number | null = null;
-  protected category = '';
-  protected accountId = '';
-
-  protected successMessage = signal<string | null>(null);
-  protected errorMessage = signal<string | null>(null);
-  protected readonly Math = Math;
+  protected readonly savingsCategories = signal<RefSavingCategory[]>([]);
 
   protected readonly filteredTransactions = computed(() => {
     let items = this.transactions().filter(tx => {
@@ -77,6 +81,27 @@ export class SavingsComponent implements OnInit {
     });
     return this.sortTransactions(items);
   });
+
+  protected readonly itemsToShow = signal<number>(10);
+
+  protected readonly paginatedTransactions = computed(() => {
+    return this.filteredTransactions().slice(0, this.itemsToShow());
+  });
+
+  protected loadMore(): void {
+    if (this.itemsToShow() < this.filteredTransactions().length) {
+      this.itemsToShow.update(val => val + 10);
+    }
+  }
+
+  onContainerScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    const pos = target.scrollTop + target.clientHeight;
+    const max = target.scrollHeight;
+    if (pos >= max - 50) {
+      this.loadMore();
+    }
+  }
 
   private matchesTimeframe(tx: Transaction): boolean {
     const tf = this.timeframeFilter();

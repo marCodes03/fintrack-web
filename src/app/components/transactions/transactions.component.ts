@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +26,7 @@ export class TransactionsComponent implements OnInit {
   protected readonly accounts = signal<Account[]>([]);
   protected readonly isResetModalOpen = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
+  protected readonly Math = Math;
 
   // Filter & Sort State
   protected readonly timeframeFilter = signal<string>('ALL');
@@ -40,18 +41,6 @@ export class TransactionsComponent implements OnInit {
   protected readonly isEditMode = signal<boolean>(false);
   protected readonly editingTransactionId = signal<string | null>(null);
 
-  // Confirm Delete Modal state
-  protected readonly isDeleteModalOpen = signal<boolean>(false);
-  protected readonly txToDelete = signal<Transaction | null>(null);
-  protected readonly isBulkDeleteModalOpen = signal<boolean>(false);
-  protected readonly selectedIds = signal<Set<string>>(new Set());
-
-  protected readonly isAllSelected = computed(() => {
-    const current = this.filteredTransactions();
-    if (current.length === 0) return false;
-    return current.every(t => this.selectedIds().has(t.id));
-  });
-
   // Form Fields (passed as initial state to slider)
   protected description = '';
   protected amount: number | null = null;
@@ -60,11 +49,34 @@ export class TransactionsComponent implements OnInit {
   protected accountId = '';
   protected toAccountId = '';
   protected transferFee = 0;
+  protected expenseDate = '';
+
+  // Confirm Delete Modal state
+  protected readonly isDeleteModalOpen = signal<boolean>(false);
+  protected readonly txToDelete = signal<Transaction | null>(null);
+  protected readonly isBulkDeleteModalOpen = signal<boolean>(false);
+  protected readonly selectedIds = signal<Set<string>>(new Set());
 
   protected successMessage = signal<string | null>(null);
   protected errorMessage = signal<string | null>(null);
 
-  protected readonly Math = Math;
+  protected readonly isAllSelected = computed(() => {
+    const current = this.filteredTransactions();
+    if (current.length === 0) return false;
+    return current.every(t => this.selectedIds().has(t.id));
+  });
+
+  protected readonly totalIncome = computed(() => {
+    return this.filteredTransactions()
+      .filter(t => t.type === 'INCOME')
+      .reduce((sum, tx) => sum + tx.amount, 0);
+  });
+
+  protected readonly totalExpenses = computed(() => {
+    return this.filteredTransactions()
+      .filter(t => t.type === 'EXPENSE')
+      .reduce((sum, tx) => sum + tx.amount, 0);
+  });
 
   // Extracted unique categories for filter dropdown
   protected readonly availableCategories = computed(() => {
@@ -89,6 +101,27 @@ export class TransactionsComponent implements OnInit {
     });
     return this.sortTransactions(items);
   });
+
+  protected readonly itemsToShow = signal<number>(10);
+
+  protected readonly paginatedTransactions = computed(() => {
+    return this.filteredTransactions().slice(0, this.itemsToShow());
+  });
+
+  protected loadMore(): void {
+    if (this.itemsToShow() < this.filteredTransactions().length) {
+      this.itemsToShow.update(val => val + 10);
+    }
+  }
+
+  onContainerScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    const pos = target.scrollTop + target.clientHeight;
+    const max = target.scrollHeight;
+    if (pos >= max - 50) {
+      this.loadMore();
+    }
+  }
 
   private matchesTimeframe(tx: Transaction): boolean {
     const tf = this.timeframeFilter();

@@ -6,17 +6,29 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8">
 
     <!-- Hero / Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Total Net Worth Card -->
       <div
         class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-text-muted">Total Net Worth</p>
-          <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">{{
+          <span class="text-[10px] uppercase font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md">{{
             accounts().length }} Account(s)</span>
         </div>
-        <p class="text-3xl font-extrabold text-text-heading mt-3">{{ totalNetWorth() | currency:'PHP':'symbol-narrow' }}</p>
-        <p class="text-xs text-text-muted mt-2">Sum of active non-credit accounts</p>
+        <p class="text-3xl font-extrabold text-text-heading mt-3">
+          {{ hideAmounts() ? '₱ •••••' : (totalNetWorth() | currency:'PHP':'symbol-narrow') }}
+        </p>
+        <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
+        <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-1.5">
+          <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
+            <input type="checkbox" [checked]="includeSavingsInNetWorth()" (change)="toggleIncludeSavings()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
+            Include Savings
+          </label>
+          <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
+            <input type="checkbox" [checked]="includeCreditInNetWorth()" (change)="toggleIncludeCredit()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
+            Include Credit
+          </label>
+        </div>
       </div>
 
       <!-- Total Income Card -->
@@ -26,9 +38,10 @@
           <p class="text-sm font-medium text-text-muted">Total Income</p>
           <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">Inflows</span>
         </div>
-        <p class="text-3xl font-extrabold text-emerald-500 mt-3">{{ totalIncome() | currency:'PHP':'symbol-narrow' }}
+        <p class="text-3xl font-extrabold text-emerald-500 mt-3">
+          {{ hideAmounts() ? '₱ •••••' : (totalIncome() | currency:'PHP':'symbol-narrow') }}
         </p>
-        <p class="text-xs text-text-muted mt-2">Sum of recorded income</p>
+        <p class="text-xs text-text-muted mt-2">Sum of monthly recorded income</p>
       </div>
 
       <!-- Total Expenses Card -->
@@ -38,8 +51,10 @@
           <p class="text-sm font-medium text-text-muted">Total Expenses</p>
           <span class="text-xs font-semibold text-rose-500 bg-rose-500/10 px-2 py-1 rounded-md">Outflows</span>
         </div>
-        <p class="text-3xl font-extrabold text-rose-500 mt-3">{{ totalExpenses() | currency:'PHP':'symbol-narrow' }}</p>
-        <p class="text-xs text-text-muted mt-2">Sum of recorded expenses</p>
+        <p class="text-3xl font-extrabold text-rose-500 mt-3">
+          {{ hideAmounts() ? '₱ •••••' : (totalExpenses() | currency:'PHP':'symbol-narrow') }}
+        </p>
+        <p class="text-xs text-text-muted mt-2">Sum of monthly recorded expenses</p>
       </div>
 
       <!-- Total Savings Card -->
@@ -49,8 +64,10 @@
           <p class="text-sm font-medium text-text-muted">Total Savings</p>
           <span class="text-xs font-semibold text-teal-500 bg-teal-500/10 px-2 py-1 rounded-md">Savings</span>
         </div>
-        <p class="text-3xl font-extrabold text-teal-500 mt-3">{{ totalSavings() | currency:'PHP':'symbol-narrow' }}</p>
-        <p class="text-xs text-text-muted mt-2">Sum of recorded savings</p>
+        <p class="text-3xl font-extrabold text-teal-500 mt-3">
+          {{ hideAmounts() ? '₱ •••••' : (totalSavings() | currency:'PHP':'symbol-narrow') }}
+        </p>
+        <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
       </div>
     </div>
 
@@ -80,23 +97,23 @@
             <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
               <div>
                 <span class="block text-[10px] font-semibold text-text-muted uppercase">Inflow</span>
-                <span class="text-xs font-bold text-emerald-500">+{{ activePlanInflows() | currency:'PHP':'symbol-narrow' }}</span>
+                <span class="text-xs font-bold text-emerald-500">{{ hideAmounts() ? '₱ •••••' : ('+' + (activePlanInflows() | currency:'PHP':'symbol-narrow')) }}</span>
               </div>
               <div>
                 <span class="block text-[10px] font-semibold text-text-muted uppercase">Outflow</span>
-                <span class="text-xs font-bold text-rose-500">-{{ activePlanOutflows() | currency:'PHP':'symbol-narrow' }}</span>
+                <span class="text-xs font-bold text-rose-500">{{ hideAmounts() ? '₱ •••••' : ('-' + (activePlanOutflows() | currency:'PHP':'symbol-narrow')) }}</span>
               </div>
               <div>
                 <span class="block text-[10px] font-semibold text-text-muted uppercase">Savings</span>
-                <span class="text-xs font-bold text-teal-500">{{ activePlanSavings() | currency:'PHP':'symbol-narrow' }}</span>
+                <span class="text-xs font-bold text-teal-500">{{ hideAmounts() ? '₱ •••••' : (activePlanSavings() | currency:'PHP':'symbol-narrow') }}</span>
               </div>
             </div>
 
             <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-surface-subtle border border-border-subtle">
-              <span class="text-text-muted font-medium">Net Remaining</span>
-              <span class="font-bold" [class.text-emerald-500]="activePlanRemaining() >= 0" [class.text-rose-500]="activePlanRemaining() < 0">
-                {{ activePlanRemaining() | currency:'PHP':'symbol-narrow' }}
-              </span>
+               <span class="text-text-muted font-medium">Net Remaining</span>
+               <span class="font-bold" [class.text-emerald-500]="activePlanRemaining() >= 0" [class.text-rose-500]="activePlanRemaining() < 0">
+                 {{ hideAmounts() ? '₱ •••••' : (activePlanRemaining() | currency:'PHP':'symbol-narrow') }}
+               </span>
             </div>
           </div>
         } @else {
@@ -121,8 +138,8 @@
           <div class="space-y-3">
             <div>
               <p class="text-2xl font-extrabold text-text-heading">
-                {{ currentMonthSavings() | currency:'PHP':'symbol-narrow' }}
-                <span class="text-xs text-text-muted font-normal">/ {{ monthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}</span>
+                {{ hideAmounts() ? '₱ •••••' : (currentMonthSavings() | currency:'PHP':'symbol-narrow') }}
+                <span class="text-xs text-text-muted font-normal">/ {{ hideAmounts() ? '₱ •••••' : (monthlySavingsGoal() | currency:'PHP':'symbol-narrow') }}</span>
               </p>
               <p class="text-xs text-text-muted mt-0.5">Current month savings target progress</p>
             </div>
@@ -135,7 +152,7 @@
               </div>
               <div class="flex items-center justify-between text-[11px] font-semibold text-text-muted">
                 <span>{{ savingsGoalProgressPercentage() }}% Reached</span>
-                <span>{{ Math.max(0, monthlySavingsGoal() - currentMonthSavings()) | currency:'PHP':'symbol-narrow' }} Remaining</span>
+                <span>{{ hideAmounts() ? '₱ •••••' : (Math.max(0, monthlySavingsGoal() - currentMonthSavings()) | currency:'PHP':'symbol-narrow') }} Remaining</span>
               </div>
             </div>
           </div>
@@ -161,7 +178,7 @@
           </h2>
           <p class="text-xs text-text-muted mt-0.5">Comparing baseline target percentages against current active plan blueprint and actual period expenses/savings.</p>
         </div>
-        <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income ({{ activePlanInflows() | currency:'PHP':'symbol-narrow' }})</span>
+        <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income ({{ hideAmounts() ? '₱ •••••' : (activePlanInflows() | currency:'PHP':'symbol-narrow') }})</span>
       </div>
 
       @if (budgetGoal()) {
@@ -201,7 +218,7 @@
                   <span class="text-sm font-bold text-text-heading">{{ group.name }}</span>
                   <div class="text-right">
                     <span class="text-xs font-semibold text-text-muted block">Target Goal: <span class="text-emerald-500 font-bold">{{ group.targetPercentage }}%</span></span>
-                    <span class="text-[10px] font-bold text-text-muted block mt-0.5">({{ group.targetAmount | currency:'PHP':'symbol-narrow' }})</span>
+                    <span class="text-[10px] font-bold text-text-muted block mt-0.5">({{ hideAmounts() ? '₱ •••••' : (group.targetAmount | currency:'PHP':'symbol-narrow') }})</span>
                   </div>
                 </div>
 
@@ -211,7 +228,7 @@
                     <span class="text-text-muted block font-semibold mb-0.5">
                       {{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'Actual Saved' : 'Actual Spent' }}
                     </span>
-                    <span class="text-sm font-bold text-text-heading block">{{ group.actualAmount | currency:'PHP':'symbol-narrow' }}</span>
+                    <span class="text-sm font-bold text-text-heading block">{{ hideAmounts() ? '₱ •••••' : (group.actualAmount | currency:'PHP':'symbol-narrow') }}</span>
                     <span class="block text-[9px] font-bold text-text-muted mt-0.5">({{ group.actualPercentage }}% of income)</span>
                   </div>
                 </div>
@@ -261,7 +278,7 @@
         <a routerLink="/transactions" class="text-xs text-emerald-500 hover:underline font-bold">View All</a>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto overflow-y-auto max-h-[295px] scroll-smooth">
         <table class="w-full text-left text-sm text-text-body">
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg rounded-lg">
             <tr>
@@ -272,32 +289,46 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-border-subtle">
-            @for (item of transactions(); track item.id) {
-            <tr class="hover:bg-table-row-hover transition-colors">
-              <td class="px-4 py-3 font-medium text-text-heading flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
-                  [class.bg-emerald-500/10]="item.type === 'INCOME'" [class.text-emerald-500]="item.type === 'INCOME'"
-                  [class.bg-rose-500/10]="item.type === 'EXPENSE'" [class.text-rose-500]="item.type === 'EXPENSE'"
-                  [class.bg-teal-500/10]="item.type === 'SAVINGS'" [class.text-teal-500]="item.type === 'SAVINGS'"
-                  [class.bg-indigo-500/10]="item.type === 'TRANSFER'" [class.text-indigo-500]="item.type === 'TRANSFER'">
-                  {{ item.type === 'INCOME' ? '💼' : (item.type === 'TRANSFER' ? '🔄' : (item.type === 'SAVINGS' ? '💰' : '🛒')) }}
-                </div>
-                <span>{{ item.description }}</span>
-              </td>
-              <td class="px-4 py-3 text-text-muted">{{ item.category }}</td>
-              <td class="px-4 py-3 text-text-muted">{{ (item.expenseDate || item.date) | date:'mediumDate' }}</td>
-              <td class="px-4 py-3 text-right font-semibold"
-                [class.text-emerald-500]="item.type === 'INCOME'"
-                [class.text-rose-500]="item.type === 'EXPENSE'"
-                [class.text-teal-500]="item.type === 'SAVINGS'"
-                [class.text-text-muted]="item.type === 'TRANSFER'">
-                {{ item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-')) }}{{ Math.abs(item.amount) | currency:'PHP':'symbol-narrow' }}
-              </td>
-            </tr>
-            } @empty {
-            <tr>
-              <td colspan="4" class="px-4 py-8 text-center text-text-muted">No transactions recorded yet.</td>
-            </tr>
+            @if (isLoadingTransactions()) {
+              @for (i of [1, 2, 3, 4, 5]; track i) {
+                <tr class="animate-pulse">
+                  <td class="px-4 py-3 font-semibold text-text-heading flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-border-subtle"></div>
+                    <div class="h-4 bg-border-subtle rounded w-28"></div>
+                  </td>
+                  <td class="px-4 py-3"><div class="h-4 bg-border-subtle rounded w-16"></div></td>
+                  <td class="px-4 py-3"><div class="h-4 bg-border-subtle rounded w-20"></div></td>
+                  <td class="px-4 py-3 text-right"><div class="h-4 bg-border-subtle rounded w-12 ml-auto"></div></td>
+                </tr>
+              }
+            } @else {
+              @for (item of transactions(); track item.id) {
+              <tr class="hover:bg-table-row-hover transition-colors">
+                <td class="px-4 py-3 font-medium text-text-heading flex items-center space-x-3">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
+                    [class.bg-emerald-500/10]="item.type === 'INCOME'" [class.text-emerald-500]="item.type === 'INCOME'"
+                    [class.bg-rose-500/10]="item.type === 'EXPENSE'" [class.text-rose-500]="item.type === 'EXPENSE'"
+                    [class.bg-teal-500/10]="item.type === 'SAVINGS'" [class.text-teal-500]="item.type === 'SAVINGS'"
+                    [class.bg-indigo-500/10]="item.type === 'TRANSFER'" [class.text-indigo-500]="item.type === 'TRANSFER'">
+                    {{ item.type === 'INCOME' ? '💼' : (item.type === 'TRANSFER' ? '🔄' : (item.type === 'SAVINGS' ? '💰' : '🛒')) }}
+                  </div>
+                  <span>{{ item.description }}</span>
+                </td>
+                <td class="px-4 py-3 text-text-muted">{{ item.category }}</td>
+                <td class="px-4 py-3 text-text-muted">{{ (item.expenseDate || item.date) | date:'mediumDate' }}</td>
+                <td class="px-4 py-3 text-right font-semibold"
+                  [class.text-emerald-500]="item.type === 'INCOME'"
+                  [class.text-rose-500]="item.type === 'EXPENSE'"
+                  [class.text-teal-500]="item.type === 'SAVINGS'"
+                  [class.text-text-muted]="item.type === 'TRANSFER'">
+                  {{ hideAmounts() ? '₱ •••••' : (item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-'))) + (Math.abs(item.amount) | currency:'PHP':'symbol-narrow') }}
+                </td>
+              </tr>
+              } @empty {
+              <tr>
+                <td colspan="4" class="px-4 py-8 text-center text-text-muted">No transactions recorded yet.</td>
+              </tr>
+              }
             }
           </tbody>
         </table>

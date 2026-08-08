@@ -72,7 +72,9 @@
                 </div>
               </div>
               <div class="text-right">
-                <p class="font-black text-text-heading text-lg">{{ acc.balance | currency:acc.currency:'symbol-narrow' }}</p>
+                <p class="font-black text-text-heading text-lg">
+                  {{ hideAmounts() ? '₱ •••••' : (acc.balance | currency:acc.currency:'symbol-narrow') }}
+                </p>
               </div>
             </div>
 

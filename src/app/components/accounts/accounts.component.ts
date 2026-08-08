@@ -41,6 +41,8 @@ export class AccountsComponent implements OnInit {
   protected type = 'CASH';
   protected balance: number | null = null;
 
+  protected readonly hideAmounts = this.authService.hideAmounts;
+
   // Computed filtered & sorted accounts list
   protected readonly filteredAccounts = computed(() => {
     let list = [...this.accounts()];

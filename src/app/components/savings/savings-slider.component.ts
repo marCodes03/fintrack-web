@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
@@ -11,28 +11,12 @@ import { AuthService } from '../../services/auth.service';
   imports: [FormsModule, DecimalPipe],
   templateUrl: './savings-slider.component.html'
 })
-export class SavingsSliderComponent {
+export class SavingsSliderComponent implements OnChanges {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);
 
-  private _isOpen = false;
-  @Input()
-  set isOpen(value: boolean) {
-    this._isOpen = value;
-    if (value) {
-      this.localDescription = this.description;
-      this.localAmount = this.amount;
-      this.localCategory = this.category || (this.savingsCategories().length > 0 ? this.savingsCategories()[0].name : '');
-      this.localAccountId = this.accountId || (this.accounts.length > 0 ? this.accounts[0].id : '');
-      this.localToAccountId = this.toAccountId || (this.accounts.length > 1 ? this.accounts[1].id : (this.accounts.length > 0 ? this.accounts[0].id : ''));
-      this.errorMessage.set(null);
-    }
-  }
-  get isOpen(): boolean {
-    return this._isOpen;
-  }
-
+  @Input() isOpen = false;
   @Input() isEditMode = false;
   @Input() editingId: string | null = null;
   @Input() accounts: Account[] = [];
@@ -55,6 +39,17 @@ export class SavingsSliderComponent {
   protected localCategory = '';
   protected localAccountId = '';
   protected localToAccountId = '';
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.isOpen) {
+      this.localDescription = this.description;
+      this.localAmount = this.amount;
+      this.localCategory = this.category || (this.savingsCategories().length > 0 ? this.savingsCategories()[0].name : '');
+      this.localAccountId = this.accountId || (this.accounts.length > 0 ? this.accounts[0].id : '');
+      this.localToAccountId = this.toAccountId || (this.accounts.length > 1 ? this.accounts[1].id : (this.accounts.length > 0 ? this.accounts[0].id : ''));
+      this.errorMessage.set(null);
+    }
+  }
 
   constructor() {
     this.loadCategories();

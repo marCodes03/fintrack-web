@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ApiService, RefAccountType } from '../../services/api.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [FormsModule],
   templateUrl: './account-slider.component.html'
 })
-export class AccountSliderComponent {
+export class AccountSliderComponent implements OnChanges {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);
@@ -27,11 +27,24 @@ export class AccountSliderComponent {
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
+  protected localName = '';
+  protected localType = 'CASH';
+  protected localBalance: number | null = null;
+
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.isOpen) {
+      this.localName = this.name;
+      this.localType = this.type;
+      this.localBalance = this.balance;
+      this.errorMessage.set(null);
+    }
+  }
+
   onSubmit(): void {
-    if (!this.name.trim()) {
+    if (!this.localName.trim()) {
       this.errorMessage.set('Please give your account a name to get started!');
       return;
     }
@@ -41,9 +54,9 @@ export class AccountSliderComponent {
     this.errorMessage.set(null);
 
     const payload = {
-      name: this.name.trim(),
-      type: this.type,
-      balance: this.balance || 0,
+      name: this.localName.trim(),
+      type: this.localType,
+      balance: this.localBalance || 0,
       currency: 'PHP',
       userId
     };
@@ -80,9 +93,9 @@ export class AccountSliderComponent {
   }
 
   clearForm(): void {
-    this.name = '';
-    this.type = 'CASH';
-    this.balance = null;
+    this.localName = '';
+    this.localType = 'CASH';
+    this.localBalance = null;
     this.errorMessage.set(null);
   }
 }
