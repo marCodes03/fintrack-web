@@ -255,3 +255,9 @@ a[class*="bg-accent-"]:active {
   }
   .card-table td[colspan] { flex: 0 0 100%; }
 }
+
+/* Checkboxes meet the 24px minimum target (WCAG 2.2 AA, 2.5.8) */
+input[type="checkbox"] {
+  width: 1.5rem;
+  height: 1.5rem;
+}
