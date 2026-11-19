@@ -1,6 +1,6 @@
 import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, effect } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -65,6 +65,8 @@ export class BudgetPlanSliderComponent {
   protected accounts = signal<Account[]>([]);
 
   protected activeTab = signal<number>(1);
+  protected stepDir = signal<'forward' | 'back'>('forward');
+  private lastStep = 1;
 
   // Form states
   protected planName = '';
@@ -119,6 +121,11 @@ export class BudgetPlanSliderComponent {
   }
 
   constructor() {
+    effect(() => {
+      const step = this.activeTab();
+      this.stepDir.set(step >= this.lastStep ? 'forward' : 'back');
+      this.lastStep = step;
+    });
     this.loadCategories();
   }
 

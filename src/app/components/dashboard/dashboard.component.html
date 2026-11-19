@@ -8,7 +8,7 @@
     <p class="sr-only" role="status">{{ isLoadingDashboard() || isLoadingTransactions() ? 'Loading dashboard' : 'Dashboard loaded' }}</p>
 
     <!-- Hero / Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" [attr.aria-busy]="isLoadingDashboard()">
+    <div class="fade-on-load grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       @if (isLoadingDashboard()) {
         @for (i of [1, 2, 3, 4]; track i) {
           <div role="status" aria-label="Loading" class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6 motion-safe:animate-pulse space-y-3">
@@ -22,7 +22,7 @@
         }
       } @else {
         <!-- Total Net Worth Card -->
-        <div
+        <div animate.enter="fade-enter"
           class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Net Worth</h2>
@@ -30,7 +30,7 @@
               accounts().length }} Account(s)</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-text-heading mt-3">
-            <app-amount [value]="totalNetWorth()" />
+            <app-amount [value]="totalNetWorth()" [tween]="true" />
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
           <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-2" role="group" aria-label="Net worth includes">
@@ -115,7 +115,7 @@
             <div class="h-10 bg-border-subtle rounded w-full"></div>
           </div>
         } @else if (activeBudgetPlan()) {
-          <div class="space-y-3">
+          <div animate.enter="fade-enter" class="space-y-3">
             <div class="flex items-start justify-between">
               <div>
                 <h3 class="text-lg font-bold text-text-heading">{{ activeBudgetPlan()?.name }}</h3>
@@ -151,7 +151,7 @@
             </div>
           </div>
         } @else {
-          <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
+          <div animate.enter="fade-enter" class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Budget Plan Active</p>
             <p class="text-sm text-text-body">Implement a budget plan for a date range to track allocations.</p>
             <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
@@ -183,7 +183,7 @@
             </div>
           </div>
         } @else if (monthlySavingsGoal() > 0) {
-          <div class="space-y-3">
+          <div animate.enter="fade-enter" class="space-y-3">
             <div>
               <p class="text-2xl font-extrabold text-text-heading">
                 <app-amount [value]="currentMonthSavings()" />
@@ -205,7 +205,7 @@
             </div>
           </div>
         } @else {
-          <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
+          <div animate.enter="fade-enter" class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Monthly Savings Goal Set</p>
             <p class="text-sm text-text-body">Define a monthly goal to monitor your savings target progress.</p>
             <a routerLink="/savings" class="inline-block bg-accent-teal hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
@@ -252,14 +252,14 @@
           </div>
         </div>
       } @else if (budgetGoal()) {
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div animate.enter="fade-enter" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Donut Diagram Column -->
           <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-xl border border-border-subtle w-full min-w-[220px]">
             <span class="text-xs font-bold text-text-body uppercase tracking-wider text-center">
               Actual Spent Share
             </span>
-            <div class="relative w-36 h-36 rounded-full flex items-center justify-center motion-safe:transition-transform motion-safe:hover:scale-105 duration-300" role="img" [attr.aria-label]="'Actual spent share: ' + totalAllocatedPercentage() + '% of income'" 
-                 [style.backgroundImage]="donutGradient()">
+            <div class="donut relative w-36 h-36 rounded-full flex items-center justify-center motion-safe:transition-transform motion-safe:hover:scale-105 duration-300" role="img" [attr.aria-label]="'Actual spent share: ' + totalAllocatedPercentage() + '% of income'" 
+                 [style.--d1]="donutStops()[0] + '%'" [style.--d2]="donutStops()[1] + '%'" [style.--d3]="donutStops()[2] + '%'" [style.--d4]="donutStops()[3] + '%'" [style.--d5]="donutStops()[4] + '%'" [style.--d6]="donutStops()[5] + '%'" [style.--d7]="donutStops()[6] + '%'" [style.--d8]="donutStops()[7] + '%'">
               <div class="absolute inset-3 bg-surface-card rounded-full flex flex-col items-center justify-center text-center">
                 <span class="text-xs font-semibold text-text-muted uppercase">Spent</span>
                 <span class="text-lg font-bold text-text-heading">{{ totalAllocatedPercentage() }}%</span>
@@ -326,7 +326,7 @@
           </div>
         </div>
       } @else {
-        <div class="p-8 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-3">
+        <div animate.enter="fade-enter" class="p-8 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-3">
           <p class="text-sm font-semibold text-text-body flex items-center justify-center space-x-2">
             <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             <span>Target Goal Analytics Unavailable</span>
@@ -359,7 +359,7 @@
               <th scope="col" class="px-4 py-3 text-right rounded-r-lg">Amount</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border-subtle" [attr.aria-busy]="isLoadingTransactions()">
+          <tbody class="fade-on-load divide-y divide-border-subtle" [attr.aria-busy]="isLoadingTransactions()">
             @if (isLoadingTransactions()) {
               @for (i of [1, 2, 3, 4, 5]; track i) {
                 <tr aria-busy="true" class="motion-safe:animate-pulse">

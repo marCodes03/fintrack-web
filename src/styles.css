@@ -300,3 +300,40 @@ main[tabindex="-1"]:focus-visible { outline: none !important; }
   .reveal-enter { --rise: -4px; animation: rise-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
   .icon-enter { --rise: 0px; --rise-scale: 0.7; animation: rise-in 140ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
+
+/* Content that replaces a skeleton fades in; the skeleton itself does not (aria-busy is still true) */
+@keyframes fade-in-simple { from { opacity: 0; } }
+@keyframes step-in { from { opacity: 0; transform: translate3d(var(--step-x, 0), 0, 0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .fade-enter { animation: fade-in-simple 160ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .fade-on-load[aria-busy="false"] > * { animation: fade-in-simple 160ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  /* Wizard steps slide 12px in the direction of travel */
+  .step-forward { --step-x: 12px; animation: step-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both !important; }
+  .step-back { --step-x: -12px; animation: step-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both !important; }
+}
+
+/* Donut: each segment end is a registered property, so the browser can tween them when data changes */
+@property --d1 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d2 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d3 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d4 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d5 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d6 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d7 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --d8 { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+.donut {
+  background-image: conic-gradient(
+    var(--chart-1) 0% var(--d1),
+    var(--chart-2) var(--d1) var(--d2),
+    var(--chart-3) var(--d2) var(--d3),
+    var(--chart-4) var(--d3) var(--d4),
+    var(--chart-5) var(--d4) var(--d5),
+    var(--chart-1) var(--d5) var(--d6),
+    var(--chart-2) var(--d6) var(--d7),
+    var(--chart-3) var(--d7) var(--d8),
+    var(--border-subtle) var(--d8) 100%
+  );
+}
+@media (prefers-reduced-motion: no-preference) {
+  .donut { transition: --d1 400ms cubic-bezier(0.22, 1, 0.36, 1), --d2 400ms cubic-bezier(0.22, 1, 0.36, 1), --d3 400ms cubic-bezier(0.22, 1, 0.36, 1), --d4 400ms cubic-bezier(0.22, 1, 0.36, 1), --d5 400ms cubic-bezier(0.22, 1, 0.36, 1), --d6 400ms cubic-bezier(0.22, 1, 0.36, 1), --d7 400ms cubic-bezier(0.22, 1, 0.36, 1), --d8 400ms cubic-bezier(0.22, 1, 0.36, 1), transform 300ms; }
+}

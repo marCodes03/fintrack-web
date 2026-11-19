@@ -229,28 +229,17 @@ export class DashboardComponent implements OnInit {
     });
   });
 
-  protected readonly donutGradient = computed(() => {
+  /** Cumulative end position (0-100) of each of 8 donut segments; unused segments sit at the last value so the CSS can tween them. */
+  protected readonly donutStops = computed(() => {
     const analytics = this.goalGroupAnalytics();
-    if (analytics.length === 0) return 'conic-gradient(var(--border-subtle) 0% 100%)';
-
-    let currentOffset = 0;
-    const colors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
-    const parts: string[] = [];
-
-    analytics.forEach((g, idx) => {
-      const percentage = Math.max(0, g.actualPercentage);
-      if (percentage > 0) {
-        const color = colors[idx % colors.length];
-        parts.push(`${color} ${currentOffset}% ${currentOffset + percentage}%`);
-        currentOffset += percentage;
-      }
-    });
-
-    if (currentOffset < 100) {
-      parts.push(`var(--border-subtle) ${currentOffset}% 100%`);
+    const stops: number[] = [];
+    let offset = 0;
+    for (let i = 0; i < 8; i++) {
+      const pct = Math.max(0, analytics[i]?.actualPercentage ?? 0);
+      offset = Math.min(100, offset + pct);
+      stops.push(offset);
     }
-
-    return `conic-gradient(${parts.join(', ')})`;
+    return stops;
   });
 
   protected readonly totalAllocatedPercentage = computed(() => {

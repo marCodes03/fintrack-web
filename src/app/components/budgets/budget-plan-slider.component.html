@@ -123,7 +123,7 @@
 
         <!-- TAB CONTENT 1: BUDGET PLAN DETAILS -->
         @if (activeTab() === 1) {
-          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200">
+          <div [class.step-back]="stepDir() === 'back'" [class.step-forward]="stepDir() === 'forward'" class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider inline-flex items-center gap-1.5"><app-icon name="settings"/> STEP 1: Budget Plan Details</h3>
             <div class="grid grid-cols-2 gap-4">
               <!-- Plan Name -->
@@ -168,7 +168,7 @@
 
         <!-- TAB CONTENT 2: PLANNED INFLOW (INCOME & EXTERNAL FUNDING) -->
         @if (activeTab() === 2) {
-          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200">
+          <div [class.step-back]="stepDir() === 'back'" [class.step-forward]="stepDir() === 'forward'" class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5"><app-icon name="trending-up"/> STEP 2: Planned Inflow (Income & External Funding)</span>
               <span class="text-xs text-accent-emerald font-bold">Total Inflows: <app-amount [value]="totalPlannedIncome" /></span>
@@ -270,7 +270,7 @@
 
         <!-- TAB CONTENT 3: PLANNED TRANSFERS (INTERNAL TRANSFERS) -->
         @if (activeTab() === 3) {
-          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
+          <div [class.step-back]="stepDir() === 'back'" [class.step-forward]="stepDir() === 'forward'" class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5"><app-icon name="transfer"/> STEP 3: Planned Transfers (Internal Transfers)</span>
               <span class="text-xs text-accent-indigo font-bold">Total Transfers: <app-amount [value]="totalPlannedTransfers" /></span>
@@ -392,7 +392,7 @@
 
         <!-- TAB CONTENT 4: PLANNED SAVINGS -->
         @if (activeTab() === 4) {
-          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
+          <div [class.step-back]="stepDir() === 'back'" [class.step-forward]="stepDir() === 'forward'" class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5"><app-icon name="gem"/> STEP 4: Planned Savings</span>
               <span class="text-xs text-accent-teal font-bold">Total Savings: <app-amount [value]="totalPlannedSavings" /></span>
@@ -518,7 +518,7 @@
 
         <!-- TAB CONTENT 5: PLANNED OUTFLOWS & ALLOCATIONS (FIXED EXPENSES) -->
         @if (activeTab() === 5) {
-          <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
+          <div [class.step-back]="stepDir() === 'back'" [class.step-forward]="stepDir() === 'forward'" class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5"><app-icon name="arrow-up-right"/> STEP 5: Planned Outflows & Allocations (Fixed Expenses)</span>
               <span class="text-xs text-accent-rose font-bold">Total Outflows: <app-amount [value]="totalPlannedOutflows" /></span>
