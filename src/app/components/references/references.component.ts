@@ -28,9 +28,17 @@ type SliderMode = 'create-income' | 'edit-income' | 'create-expense' | 'edit-exp
   templateUrl: './references.component.html'
 })
 export class ReferencesComponent implements OnInit {
-  protected readonly rowActions: RowMenuItem[] = [
-    { key: 'edit', label: 'Edit' },
-    { key: 'delete', label: 'Delete', danger: true }
+  protected readonly incomeActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit income category' },
+    { key: 'delete', label: 'Delete income category', danger: true }
+  ];
+  protected readonly expenseActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit expense category' },
+    { key: 'delete', label: 'Delete expense category', danger: true }
+  ];
+  protected readonly savingActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit saving category' },
+    { key: 'delete', label: 'Delete saving category', danger: true }
   ];
 
   private apiService = inject(ApiService);

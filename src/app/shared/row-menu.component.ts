@@ -36,6 +36,9 @@ export interface RowMenuItem {
   `
 })
 export class RowMenuComponent {
+  /** Only one row menu is open at a time. */
+  private static current: RowMenuComponent | null = null;
+
   private host = inject(ElementRef<HTMLElement>);
 
   @Input() label = 'Row actions';
@@ -66,6 +69,8 @@ export class RowMenuComponent {
   }
 
   private show(trigger: HTMLElement): void {
+    if (RowMenuComponent.current && RowMenuComponent.current !== this) RowMenuComponent.current.close(false, true);
+    RowMenuComponent.current = this;
     const r = trigger.getBoundingClientRect();
     // Provisional position below the trigger; refined once the real menu size is measured.
     this.left.set(Math.max(8, r.right - 176));
@@ -82,6 +87,8 @@ export class RowMenuComponent {
       this.left.set(Math.max(8, Math.min(r.right - width, window.innerWidth - width - 8)));
       this.top.set(r.bottom + 4 + height > window.innerHeight ? Math.max(8, r.top - height - 4) : r.bottom + 4);
       this.positioned.set(true);
+      // Focus needs a visible element, and the binding has not applied yet
+      el.style.visibility = 'visible';
       el.querySelector<HTMLElement>('[role="menuitem"]')?.focus({ preventScroll: true });
     });
   }
@@ -91,7 +98,12 @@ export class RowMenuComponent {
     this.select.emit(key);
   }
 
-  private close(restoreFocus: boolean): void {
+  private close(restoreFocus: boolean, immediate = false): void {
+    if (RowMenuComponent.current === this) RowMenuComponent.current = null;
+    // The open menu was moved to <body>; remove it ourselves so no stale copy stays on screen.
+    const el = this.menu()?.nativeElement;
+    if (el && immediate) el.remove();
+    else if (el) setTimeout(() => el.remove(), 160);
     this.open.set(false);
     if (restoreFocus) this.host.nativeElement.querySelector('button')?.focus();
   }

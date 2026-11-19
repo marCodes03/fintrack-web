@@ -89,7 +89,7 @@
             <tbody class="divide-y divide-border-subtle">
               @for (item of incomeCategories(); track item.id) {
                 <tr class="hover:bg-table-row-hover transition-colors">
-                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3"><span>{{ item.name }}</span><app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.name" [items]="rowActions" (select)="$event === 'edit' ? openEditIncomeSlider(item) : promptDeleteIncomeCategory(item)"/></div></td>
+                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3"><span>{{ item.name }}</span><app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.name" [items]="incomeActions" (select)="$event === 'edit' ? openEditIncomeSlider(item) : promptDeleteIncomeCategory(item)"/></div></td>
                   <td data-label="Description" class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
                   <td data-label="Status" class="px-6 py-4">
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
@@ -139,7 +139,7 @@
             <tbody class="divide-y divide-border-subtle">
               @for (item of expenseCategories(); track item.id) {
                 <tr class="hover:bg-table-row-hover transition-colors">
-                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3"><span>{{ item.name }}</span><app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.name" [items]="rowActions" (select)="$event === 'edit' ? openEditExpenseSlider(item) : promptDeleteExpenseCategory(item)"/></div></td>
+                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3"><span>{{ item.name }}</span><app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.name" [items]="expenseActions" (select)="$event === 'edit' ? openEditExpenseSlider(item) : promptDeleteExpenseCategory(item)"/></div></td>
                   <td data-label="Description" class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
                   <td data-label="Status" class="px-6 py-4">
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
@@ -189,7 +189,7 @@
             <tbody class="divide-y divide-border-subtle">
               @for (item of savingCategories(); track item.id) {
                 <tr class="hover:bg-table-row-hover transition-colors">
-                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3"><span>{{ item.name }}</span><app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.name" [items]="rowActions" (select)="$event === 'edit' ? openEditSavingSlider(item) : promptDeleteSavingCategory(item)"/></div></td>
+                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3"><span>{{ item.name }}</span><app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.name" [items]="savingActions" (select)="$event === 'edit' ? openEditSavingSlider(item) : promptDeleteSavingCategory(item)"/></div></td>
                   <td data-label="Description" class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
                   <td data-label="Status" class="px-6 py-4">
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
