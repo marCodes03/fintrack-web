@@ -225,3 +225,39 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Keep the defaults and free the ports.
 - **Consequences:** Anyone running locally must use these ports. The production URL is unchanged.
 - **Affected features:** [platform](features/platform.md)
+
+## D-023 — Accessible accent tokens and a separate chart palette
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The dashboard audit found light-mode accent text at about 2.5:1 (emerald/teal) and 3.6:1 (rose) on white, hard-coded Tailwind accent classes, and a chart palette that reused the emerald/amber money colors.
+- **Decision:** In `src/styles.css`, darken the light-mode `--accent-*` tokens to at least 4.5:1 on card and subtle surfaces, lighten dark `--accent-rose`, darken light `--text-muted`, and add `--accent-teal`, `--accent-indigo`, `--on-accent` and `--chart-1..5`. The dashboard uses the tokens instead of `*-500` classes and `dark:` text overrides. Chart hues avoid emerald, amber and rose.
+- **Alternatives:** Keep Tailwind `*-500` classes and only darken them per element; keep the old chart colors.
+- **Consequences:** `--text-muted` changes app-wide (slightly darker in light mode). Other components still use hard-coded `*-500` accents and need the same migration. Light-mode emerald is now `#047857`.
+- **Affected features:** [dashboard](features/dashboard.md)
+
+## D-024 — Dashboard accessibility, table structure, touch targets and type floor
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The dashboard audit found missing ARIA, flex on table cells, 14px checkbox targets and 9-11px text.
+- **Decision:** Progress bars get `role="progressbar"`; the donut gets `role="img"` with a text label; emoji and arrow glyphs are `aria-hidden` and each transaction row names its type for screen readers. The table scroll region is focusable and labelled, headers have `scope="col"`, and cell layout moved to an inner div. Net-worth checkboxes have a 24px minimum target (44px on coarse pointers). All fixed 9-11px text now uses `text-xs` (13px floor from `styles.css`); money figures use `tabular-nums`. Pulse and hover-scale effects use `motion-safe:`.
+- **Alternatives:** Keep fixed small sizes; leave motion to the global reduced-motion rule alone.
+- **Consequences:** Emoji icons remain (a drawn icon set is a separate change). The global 0.01ms reduced-motion rule in `styles.css` is unchanged.
+- **Affected features:** [dashboard](features/dashboard.md)
+
+## D-025 — Dashboard headings, loading announcements and drawn icons
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The second dashboard audit found no `<h1>`, stat titles as paragraphs, silent loading states, and emoji used as icons.
+- **Decision:** Add a visually hidden `<h1>` and a `role="status"` loading message; make widget titles `<h2>`; set `aria-busy` on the stats, plan and table regions while loading. Replace emoji with inline stroke SVG icons (chart, info, briefcase, transfer, wallet, cart). Drop `transition-all` from static cards.
+- **Alternatives:** Keep emoji; add an icon library dependency.
+- **Consequences:** Icons are inline SVG with no new dependency; other pages still use emoji.
+- **Affected features:** [dashboard](features/dashboard.md)
+
+## D-026 — Dashboard mobile adaptation
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** Rendering the dashboard at 360, 768 and 1280px (headless Chrome, mocked API, touch emulation) showed the transactions table hiding the amount column off-screen at 360px, a cramped analytics header, and 20px-tall text links.
+- **Decision:** Below `sm`, the Category and Date columns are hidden and shown as a muted line under the description, so the amount stays visible. Amounts never wrap. The analytics header stacks on narrow screens. The "Manage Plans", "Savings Page" and "View All" links get a 24px minimum height (44px on coarse pointers).
+- **Alternatives:** Horizontal scroll for the whole table; card list on mobile.
+- **Consequences:** No horizontal page overflow at 360, 768 or 1280px. Real-device touch and Safari remain untested.
+- **Affected features:** [dashboard](features/dashboard.md)

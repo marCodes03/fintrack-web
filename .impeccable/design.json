@@ -4,9 +4,9 @@
   "title": "Design System: FinTrack",
   "extensions": {
     "colorMeta": {
-      "accent-emerald": { "role": "primary", "displayName": "Ledger Emerald", "canonical": "#059669", "tonalRamp": ["#022c22", "#064e3b", "#047857", "#059669", "#10b981", "#34d399", "#a7f3d0", "#ecfdf5"] },
-      "accent-amber": { "role": "secondary", "displayName": "Caution Amber", "canonical": "#d97706", "tonalRamp": ["#451a03", "#78350f", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fde68a", "#fffbeb"] },
-      "accent-rose": { "role": "secondary", "displayName": "Spend Rose", "canonical": "#e11d48", "tonalRamp": ["#4c0519", "#881337", "#be123c", "#e11d48", "#f43f5e", "#fb7185", "#fecdd3", "#fff1f2"] },
+      "accent-emerald": { "role": "primary", "displayName": "Ledger Emerald", "canonical": "#047857", "tonalRamp": ["#022c22", "#064e3b", "#047857", "#047857", "#10b981", "#34d399", "#a7f3d0", "#ecfdf5"] },
+      "accent-amber": { "role": "secondary", "displayName": "Caution Amber", "canonical": "#b45309", "tonalRamp": ["#451a03", "#78350f", "#b45309", "#b45309", "#f59e0b", "#fbbf24", "#fde68a", "#fffbeb"] },
+      "accent-rose": { "role": "secondary", "displayName": "Spend Rose", "canonical": "#be123c", "tonalRamp": ["#4c0519", "#881337", "#be123c", "#be123c", "#fb7185", "#fb7185", "#fecdd3", "#fff1f2"] },
       "bg-main": { "role": "neutral", "displayName": "Mist Page", "canonical": "#f8fafc", "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#475569", "#94a3b8", "#cbd5e1", "#f1f5f9", "#f8fafc"] }
     },
     "typographyMeta": {
@@ -30,7 +30,7 @@
       "refersTo": "button-primary",
       "description": "Main action; emerald fill.",
       "html": "<button class=\"ds-btn-primary\">Add account</button>",
-      "css": ".ds-btn-primary{background:#059669;color:#fff;font-weight:700;font-size:12px;padding:10px 16px;border:0;border-radius:12px;cursor:pointer;transition:all .2s}.ds-btn-primary:hover{background:#047857}.ds-btn-primary:focus-visible{outline:2px solid #10b981;outline-offset:2px}"
+      "css": ".ds-btn-primary{background:#047857;color:#fff;font-weight:700;font-size:12px;padding:10px 16px;border:0;border-radius:12px;cursor:pointer;transition:all .2s}.ds-btn-primary:hover{background:#047857}.ds-btn-primary:focus-visible{outline:2px solid #10b981;outline-offset:2px}"
     },
     {
       "name": "Secondary Button",

@@ -8,10 +8,17 @@ colors:
   border-subtle: "#e2e8f0"
   text-heading: "#0f172a"
   text-body: "#334155"
-  text-muted: "#64748b"
-  accent-emerald: "#059669"
-  accent-amber: "#d97706"
-  accent-rose: "#e11d48"
+  text-muted: "#586579"
+  accent-emerald: "#047857"
+  accent-amber: "#b45309"
+  accent-rose: "#be123c"
+  accent-teal: "#0f766e"
+  accent-indigo: "#4338ca"
+  chart-1: "#4f46e5"
+  chart-2: "#0284c7"
+  chart-3: "#7c3aed"
+  chart-4: "#c026d3"
+  chart-5: "#64748b"
   input-border: "#cbd5e1"
   dark-bg-main: "#020617"
   dark-surface-card: "#0f172a"
@@ -21,7 +28,9 @@ colors:
   dark-text-muted: "#94a3b8"
   dark-accent-emerald: "#10b981"
   dark-accent-amber: "#fbbf24"
-  dark-accent-rose: "#f43f5e"
+  dark-accent-rose: "#fb7185"
+  dark-accent-teal: "#2dd4bf"
+  dark-accent-indigo: "#818cf8"
 typography:
   title:
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
@@ -78,7 +87,7 @@ components:
 
 <!-- impeccable:design-map -->
 Name: FinTrack
-Colors: primary: accent-emerald #059669; secondary: accent-amber #d97706; neutral: bg-main #f8fafc; secondary: accent-rose #e11d48
+Colors: primary: accent-emerald #047857; secondary: accent-amber #b45309; neutral: bg-main #f8fafc; secondary: accent-rose #be123c
 Fonts: system-ui (title, headline, body, label)
 Spacing: sm 8px, md 16px, lg 24px
 Radius: md 8px, lg 12px, xl 16px, full 9999px

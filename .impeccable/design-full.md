@@ -8,10 +8,17 @@ colors:
   border-subtle: "#e2e8f0"
   text-heading: "#0f172a"
   text-body: "#334155"
-  text-muted: "#64748b"
-  accent-emerald: "#059669"
-  accent-amber: "#d97706"
-  accent-rose: "#e11d48"
+  text-muted: "#586579"
+  accent-emerald: "#047857"
+  accent-amber: "#b45309"
+  accent-rose: "#be123c"
+  accent-teal: "#0f766e"
+  accent-indigo: "#4338ca"
+  chart-1: "#4f46e5"
+  chart-2: "#0284c7"
+  chart-3: "#7c3aed"
+  chart-4: "#c026d3"
+  chart-5: "#64748b"
   input-border: "#cbd5e1"
   dark-bg-main: "#020617"
   dark-surface-card: "#0f172a"
@@ -21,7 +28,9 @@ colors:
   dark-text-muted: "#94a3b8"
   dark-accent-emerald: "#10b981"
   dark-accent-amber: "#fbbf24"
-  dark-accent-rose: "#f43f5e"
+  dark-accent-rose: "#fb7185"
+  dark-accent-teal: "#2dd4bf"
+  dark-accent-indigo: "#818cf8"
 typography:
   title:
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
@@ -95,11 +104,11 @@ Cards feel solid and confident, with clear borders and firm buttons. Glass is re
 Cool slate neutrals with three semantic accents. Values below are light mode; dark counterparts are the `dark-*` tokens above.
 
 ### Primary
-- **Ledger Emerald** (#059669 light, #10b981 dark): primary actions, interactive items, income and success, focus rings (`ring-emerald-500`), scrollbar thumb.
+- **Ledger Emerald** (#047857 light, #10b981 dark): primary actions, interactive items, income and success, focus rings (`ring-emerald-500`), scrollbar thumb.
 
 ### Secondary
-- **Caution Amber** (#d97706 light, #fbbf24 dark): warnings, configuration states, partial progress.
-- **Spend Rose** (#e11d48 light, #f43f5e dark): expenses and destructive actions.
+- **Caution Amber** (#b45309 light, #fbbf24 dark): warnings, configuration states, partial progress.
+- **Spend Rose** (#be123c light, #fb7185 dark): expenses and destructive actions.
 
 ### Neutral
 - **Mist Page** (#f8fafc light, #020617 dark): page background.
