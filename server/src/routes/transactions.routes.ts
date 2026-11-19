@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { prisma } from '../prisma';
 import { mockTransactions, mockAccounts, handleDbError } from '../mockStore';
 import { requireAuth } from '../middleware/auth.middleware';
+import { canUseMockFallback } from '../utils/dbErrors';
 
 const router = Router();
 router.use(requireAuth);
@@ -15,7 +16,8 @@ router.get('/', async (req: Request, res: Response) => {
       orderBy: { date: 'desc' }
     });
     res.json({ success: true, data: transactions });
-  } catch (_err) {
+  } catch (err) {
+    if (!canUseMockFallback(err)) return handleDbError(err, res, 'Failed to load transactions');
     const filtered = mockTransactions.filter(t => t.userId === userId);
     res.json({ success: true, data: filtered });
   }
@@ -189,6 +191,21 @@ router.put('/:id', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { description, amount, category, accountId, expenseDate } = req.body;
 
+  // Only update fields the client actually sent; omitted fields stay unchanged.
+  const data: Record<string, unknown> = {};
+  if (description !== undefined) data['description'] = description;
+  if (category !== undefined) data['category'] = category;
+  if (accountId !== undefined) data['accountId'] = accountId || null;
+  if (expenseDate !== undefined) data['expenseDate'] = expenseDate ? new Date(expenseDate) : null;
+  if (amount !== undefined) {
+    const numericAmount = parseFloat(amount);
+    if (!Number.isFinite(numericAmount)) {
+      res.status(400).json({ success: false, message: 'Amount must be a valid number.' });
+      return;
+    }
+    data['amount'] = numericAmount;
+  }
+
   try {
     const existing = await prisma.transaction.findUnique({ where: { id } });
     if (!existing || existing.userId !== req.userId) {
@@ -202,18 +219,10 @@ router.put('/:id', async (req: Request, res: Response) => {
         return;
       }
     }
-    const updated = await prisma.transaction.update({
-      where: { id },
-      data: {
-        description,
-        amount: parseFloat(amount),
-        category,
-        accountId: accountId || null,
-        expenseDate: expenseDate ? new Date(expenseDate) : null
-      }
-    });
+    const updated = await prisma.transaction.update({ where: { id }, data });
     res.json({ success: true, data: updated });
-  } catch (_err) {
+  } catch (err) {
+    if (!canUseMockFallback(err)) return handleDbError(err, res, 'Failed to update transaction');
     const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);
     if (idx === -1) {
       res.status(404).json({ success: false, message: 'Transaction not found.' });
@@ -221,11 +230,11 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
     mockTransactions[idx] = {
       ...mockTransactions[idx],
-      description,
-      amount: parseFloat(amount),
-      category,
-      accountId,
-      expenseDate
+      ...(description !== undefined && { description }),
+      ...(amount !== undefined && { amount: parseFloat(amount) }),
+      ...(category !== undefined && { category }),
+      ...(accountId !== undefined && { accountId: accountId || null }),
+      ...(expenseDate !== undefined && { expenseDate })
     };
     res.json({ success: true, data: mockTransactions[idx] });
   }
@@ -283,7 +292,8 @@ router.delete('/:id', async (req: Request, res: Response) => {
     });
 
     res.json({ success: true, message: 'Transaction deleted and account balance updated.' });
-  } catch (_err) {
+  } catch (err) {
+    if (!canUseMockFallback(err)) return handleDbError(err, res, 'Failed to delete transaction');
     const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);
     if (idx === -1) {
       res.status(404).json({ success: false, message: 'Transaction not found.' });
@@ -378,8 +388,9 @@ router.post('/bulk-delete', async (req: Request, res: Response) => {
       deletedCount,
       skippedIds
     });
-  } catch (_err) {
-    // Fallback: mock deletion
+  } catch (err) {
+    if (!canUseMockFallback(err)) return handleDbError(err, res, 'Failed to delete transactions');
+    // Dev-only fallback: mock deletion
     const mockSkipped: string[] = [];
     for (const id of ids) {
       const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);

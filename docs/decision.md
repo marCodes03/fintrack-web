@@ -73,22 +73,22 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Consequences:** Any caller can read or write any user's data by passing a different `userId`. Needs replacing before handling real user data at scale.
 - **Affected features:** [authentication](features/authentication.md), all API features
 
-## D-007 — Passwords stored and compared as plain text
-- **Date:** 2026-07 (inferred)
-- **Status:** Accepted (known risk, should be superseded)
-- **Context:** The code writes `password` directly and compares with `!==`. `technical_design.md` says passwords are hashed, which conflicts with the code.
-- **Decision:** Keep as-is for now. No hashing library is used.
-- **Alternatives:** bcrypt or argon2.
-- **Consequences:** A database leak exposes every password. Fixing it needs a migration plan that follows `db-safeguard`, for example rehash on login.
+## D-007 — Passwords hashed with bcrypt, legacy plaintext upgraded on login
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** Passwords were stored and compared as plain text.
+- **Decision:** Use `bcryptjs` (cost 10). New and changed passwords are hashed. Legacy plaintext rows still verify once, then are re-saved as a hash on login (`server/src/utils/password.ts`). No schema migration.
+- **Alternatives:** argon2, or a one-off migration that hashes every row.
+- **Consequences:** Users who never log in keep a plaintext password until they do.
 - **Affected features:** [authentication](features/authentication.md)
 
 ## D-008 — Password reset by emailed 6-digit OTP, held in memory
 - **Date:** 2026-07 (inferred)
 - **Status:** Accepted
 - **Context:** Users need a way to recover access.
-- **Decision:** Generate a 6-digit OTP, store it in a server `Map`, and send it with Nodemailer over SMTP. The forgot-password response also returns `simulatedOtp` so the UI works without SMTP.
+- **Decision:** Generate a 6-digit OTP with `crypto.randomInt`, store it in a server `Map` with a 10-minute expiry and a 5-attempt cap, and send it with Nodemailer over SMTP. The forgot-password response returns `simulatedOtp` only when `NODE_ENV !== 'production'`.
 - **Alternatives:** Signed reset links, or a DB table for OTPs.
-- **Consequences:** OTPs are lost on restart, have no expiry or attempt limit, and the response leaks the code. Fine for dev only.
+- **Consequences:** OTPs are lost on restart. Production needs working SMTP. There is still no per-IP rate limiting.
 - **Affected features:** [authentication](features/authentication.md)
 
 ## D-009 — Single ledger table for income, expense, savings, and transfers
@@ -216,3 +216,12 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Edit D-021 in place (rejected: the log is append-only).
 - **Consequences:** The "Consequences" claim in D-021 about stale links is wrong; this entry supersedes it.
 - **Affected features:** none
+
+## D-021 — Local dev ports: web 4901, API 4902
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The default ports (4200, 3000) were already in use on the dev machine.
+- **Decision:** Run the Angular app on 4901 (`ng serve --port 4901`) and the API on 4902 (`PORT` in `server/.env`). The localhost API URL in `api.service.ts` and `auth.service.ts` now points to 4902.
+- **Alternatives:** Keep the defaults and free the ports.
+- **Consequences:** Anyone running locally must use these ports. The production URL is unchanged.
+- **Affected features:** [platform](features/platform.md)

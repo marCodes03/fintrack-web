@@ -48,7 +48,7 @@ export const mockAccountTypes: any[] = [
 ];
 
 // Active OTP store (in-memory)
-export const activeOtps = new Map<string, string>();
+export const activeOtps = new Map<string, { otp: string; expiresAt: number; attempts: number }>();
 
 // Helper to return database errors directly to client without masking
 export function handleDbError(err: any, res: Response, defaultMsg = 'Database operation failed') {

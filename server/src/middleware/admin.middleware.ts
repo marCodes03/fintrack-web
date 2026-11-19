@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../prisma';
-import { mockUsers } from '../mockStore';
 
 /**
  * Restricts a route to admins. Admins are listed (comma-separated emails) in the
  * ADMIN_EMAILS environment variable. Must run after requireAuth.
+ * Fails closed: any lookup error (including DB outage) is a 403, never a mock-store match.
  */
 export async function requireAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
   const admins = (process.env['ADMIN_EMAILS'] || '')
@@ -17,7 +17,7 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
     const user = await prisma.user.findUnique({ where: { id: req.userId as string } });
     email = user?.email;
   } catch {
-    email = mockUsers.find(u => u.id === req.userId)?.email;
+    email = undefined;
   }
 
   if (!email || !admins.includes(email.toLowerCase())) {

@@ -1,10 +1,16 @@
 import { Router, Request, Response } from 'express';
+import { randomInt } from 'crypto';
 import { prisma } from '../prisma';
 import { mockUsers, activeOtps, handleDbError } from '../mockStore';
 import { sendOtpEmail } from '../services/email.service';
 import { signToken } from '../utils/jwt';
+import { hashPassword, verifyPassword, safeEqual } from '../utils/password';
+import { canUseMockFallback } from '../utils/dbErrors';
 
 const router = Router();
+
+const OTP_TTL_MS = 10 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
 
 // 1. Register
 router.post('/register', async (req: Request, res: Response) => {
@@ -13,6 +19,8 @@ router.post('/register', async (req: Request, res: Response) => {
     res.status(400).json({ success: false, message: 'All fields are required.' });
     return;
   }
+
+  const passwordHash = await hashPassword(String(password));
 
   let newUser: { id: string; name: string; email: string };
   try {
@@ -23,17 +31,20 @@ router.post('/register', async (req: Request, res: Response) => {
     }
 
     newUser = await prisma.user.create({
-      data: { name, email, password }
+      data: { name, email, password: passwordHash }
     });
   } catch (err) {
-    // Fallback if database is offline
+    if (!canUseMockFallback(err)) {
+      return handleDbError(err, res, 'Failed to register');
+    }
+    // Dev-only fallback if database is offline
     const existing = mockUsers.find(u => u.email === email);
     if (existing) {
       res.status(400).json({ success: false, message: 'User with this email already exists.' });
       return;
     }
     newUser = { id: `user-mock-${Date.now()}`, name, email };
-    mockUsers.push({ ...newUser, password });
+    mockUsers.push({ ...newUser, password: passwordHash });
   }
 
   // Sign outside the DB try/catch so a signing failure never triggers the mock-user fallback.
@@ -56,17 +67,27 @@ router.post('/login', async (req: Request, res: Response) => {
   let user: { id: string; name: string; email: string };
   try {
     const dbUser = await prisma.user.findUnique({ where: { email } });
-    if (!dbUser || dbUser.password !== password) {
+    const check = dbUser ? await verifyPassword(String(password), dbUser.password) : { ok: false, needsUpgrade: false };
+    if (!dbUser || !check.ok) {
       res.status(401).json({ success: false, message: 'Invalid email or password.' });
       return;
+    }
+    if (check.needsUpgrade) {
+      // Legacy plaintext password: re-save as a bcrypt hash now that it has been verified.
+      await prisma.user.update({ where: { id: dbUser.id }, data: { password: await hashPassword(String(password)) } });
     }
     user = dbUser;
   } catch (err) {
-    const mockUser = mockUsers.find(u => u.email === email && u.password === password);
-    if (!mockUser) {
+    if (!canUseMockFallback(err)) {
+      return handleDbError(err, res, 'Failed to log in');
+    }
+    const mockUser = mockUsers.find(u => u.email === email);
+    const check = mockUser ? await verifyPassword(String(password), mockUser.password) : { ok: false, needsUpgrade: false };
+    if (!mockUser || !check.ok) {
       res.status(401).json({ success: false, message: 'Invalid email or password.' });
       return;
     }
+    if (check.needsUpgrade) mockUser.password = await hashPassword(String(password));
     user = mockUser;
   }
 
@@ -87,14 +108,16 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
     return;
   }
 
-  // Check if user exists in Prisma DB or mock store
+  // Check if user exists in Prisma DB or (dev-only) mock store
   let userExists = false;
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) userExists = true;
   } catch (err) {
-    const mockUser = mockUsers.find(u => u.email === email);
-    if (mockUser) userExists = true;
+    if (!canUseMockFallback(err)) {
+      return handleDbError(err, res, 'Failed to look up account');
+    }
+    if (mockUsers.find(u => u.email === email)) userExists = true;
   }
 
   if (!userExists) {
@@ -102,8 +125,8 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
     return;
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  activeOtps.set(email, otp);
+  const otp = randomInt(100000, 1000000).toString();
+  activeOtps.set(email, { otp, expiresAt: Date.now() + OTP_TTL_MS, attempts: 0 });
 
   try {
     // Send the real email via Nodemailer Google SMTP
@@ -112,7 +135,8 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: `OTP sent to ${email}.`,
-      simulatedOtp: otp // kept for development UI simulation
+      // Dev aid so the UI works without SMTP. Never returned in production.
+      ...(process.env['NODE_ENV'] !== 'production' ? { simulatedOtp: otp } : {})
     });
   } catch (err) {
     res.status(500).json({
@@ -131,22 +155,30 @@ router.post('/reset-password-otp', async (req: Request, res: Response) => {
     return;
   }
 
-  const storedOtp = activeOtps.get(email);
-  if (!storedOtp || storedOtp !== otp) {
+  const entry = activeOtps.get(email);
+  if (!entry || Date.now() > entry.expiresAt) {
+    activeOtps.delete(email);
+    res.status(400).json({ success: false, message: 'Invalid or expired OTP.' });
+    return;
+  }
+  if (!safeEqual(entry.otp, String(otp))) {
+    entry.attempts += 1;
+    if (entry.attempts >= OTP_MAX_ATTEMPTS) activeOtps.delete(email);
     res.status(400).json({ success: false, message: 'Invalid or expired OTP.' });
     return;
   }
 
   try {
+    const passwordHash = await hashPassword(String(newPassword));
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
       await prisma.user.update({
         where: { email },
-        data: { password: newPassword }
+        data: { password: passwordHash }
       });
     } else {
       const mockUser = mockUsers.find(u => u.email === email);
-      if (mockUser) mockUser.password = newPassword;
+      if (mockUser) mockUser.password = passwordHash;
     }
 
     activeOtps.delete(email);
@@ -167,21 +199,23 @@ router.post('/reset-password', async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
-      if (user.password !== currentPassword) {
+      const check = await verifyPassword(String(currentPassword), user.password);
+      if (!check.ok) {
         res.status(400).json({ success: false, message: 'Incorrect current password.' });
         return;
       }
       await prisma.user.update({
         where: { email },
-        data: { password: newPassword }
+        data: { password: await hashPassword(String(newPassword)) }
       });
     } else {
       const mockUser = mockUsers.find(u => u.email === email);
-      if (!mockUser || mockUser.password !== currentPassword) {
+      const check = mockUser ? await verifyPassword(String(currentPassword), mockUser.password) : { ok: false };
+      if (!mockUser || !check.ok) {
         res.status(400).json({ success: false, message: 'Incorrect current password.' });
         return;
       }
-      mockUser.password = newPassword;
+      mockUser.password = await hashPassword(String(newPassword));
     }
 
     res.json({ success: true, message: 'Password changed successfully.' });
@@ -191,4 +225,3 @@ router.post('/reset-password', async (req: Request, res: Response) => {
 });
 
 export default router;
-

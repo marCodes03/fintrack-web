@@ -17,8 +17,10 @@ Let users register, log in, recover a forgotten password, and change their passw
 
 ## Behavior
 - Forgot-password creates a 6-digit OTP, stores it in the in-memory `activeOtps` map keyed by email, and sends it with Nodemailer (SMTP configured through `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SENDER_NAME`).
-- The forgot-password response includes `simulatedOtp` so the UI works without SMTP (dev aid).
-- The OTP is deleted after a successful reset.
+- The OTP expires after 10 minutes and is invalidated after 5 wrong attempts. It is deleted after a successful reset.
+- The forgot-password response includes `simulatedOtp` only when `NODE_ENV !== 'production'` (dev aid).
+- Passwords are bcrypt hashes. Legacy plaintext passwords are re-hashed on first successful login.
+- The in-memory mock user fallback is used only outside production, and only when the database is unreachable.
 - Client session: the user object is stored in `localStorage` (`fintrack_user`). It is cleared on logout.
 - Auto-logout after 6 hours of inactivity. Activity is tracked from mouse, key, scroll, and touch events, throttled to 1 second, and checked every 10 seconds (`fintrack_last_activity`).
 - Unauthenticated users are redirected to `/login` by each page's `ngOnInit`. There are no route guards.
