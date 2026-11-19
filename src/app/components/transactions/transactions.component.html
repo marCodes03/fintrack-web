@@ -161,7 +161,7 @@
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
                       [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
                       [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
-                      [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
+                      [class.bg-accent-sky/10]="item.type === 'SAVINGS'" [class.text-accent-sky]="item.type === 'SAVINGS'"
                       [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
                       <app-icon [name]="item.type === 'INCOME' ? 'briefcase' : (item.type === 'TRANSFER' ? 'transfer' : (item.type === 'SAVINGS' ? 'coins' : 'cart'))"/>
                     </div>
@@ -174,7 +174,7 @@
                     <span class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider"
                       [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
                       [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
-                      [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
+                      [class.bg-accent-sky/10]="item.type === 'SAVINGS'" [class.text-accent-sky]="item.type === 'SAVINGS'"
                       [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
                       {{ item.type }}
                     </span>
@@ -195,7 +195,7 @@
                   <td data-cell="amount" class="px-6 py-4 font-semibold text-xs"
                     [class.text-accent-emerald]="item.type === 'INCOME'"
                     [class.text-accent-rose]="item.type === 'EXPENSE'"
-                    [class.text-accent-teal]="item.type === 'SAVINGS'"
+                    [class.text-accent-sky]="item.type === 'SAVINGS'"
                     [class.text-text-muted]="item.type === 'TRANSFER'">
                     <app-amount [value]="item.amount" [sign]="item.type === 'INCOME' || item.type === 'SAVINGS' ? '+' : (item.type === 'TRANSFER' ? '' : '-')" />
                     @if (item.type === 'TRANSFER' && item.transferFee && item.transferFee > 0) {

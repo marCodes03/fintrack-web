@@ -13,7 +13,7 @@
   --color-accent-emerald: var(--accent-emerald);
   --color-accent-amber: var(--accent-amber);
   --color-accent-rose: var(--accent-rose);
-  --color-accent-teal: var(--accent-teal);
+  --color-accent-sky: var(--accent-sky);
   --color-accent-indigo: var(--accent-indigo);
   --color-on-accent: var(--on-accent);
 
@@ -46,7 +46,7 @@
   --accent-emerald: #046c4e;
   --accent-amber: #9a4506;
   --accent-rose: #be123c;
-  --accent-teal: #0369a1;
+  --accent-sky: #0369a1;
   --accent-indigo: #4338ca;
   --on-accent: #ffffff;
 
@@ -79,7 +79,7 @@
   --accent-emerald: #10b981;
   --accent-amber: #fbbf24;
   --accent-rose: #fb7185;
-  --accent-teal: #38bdf8;
+  --accent-sky: #38bdf8;
   --accent-indigo: #818cf8;
   --on-accent: #020617;
 

@@ -395,7 +395,7 @@
           <div [class.step-back]="stepDir() === 'back'" [class.step-forward]="stepDir() === 'forward'" class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5"><app-icon name="gem"/> STEP 4: Planned Savings</span>
-              <span class="text-xs text-accent-teal font-bold">Total Savings: <app-amount [value]="totalPlannedSavings" /></span>
+              <span class="text-xs text-accent-sky font-bold">Total Savings: <app-amount [value]="totalPlannedSavings" /></span>
             </h3>
 
             <!-- Step 4 Form -->
@@ -456,7 +456,7 @@
                   </button>
                 }
                 <button type="button" (click)="addSavingsItem()" [disabled]="totalPlannedIncome <= 0"
-                  class="text-on-accent font-bold text-xs px-4 py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform] disabled:opacity-50 bg-accent-teal hover:opacity-90"
+                  class="text-on-accent font-bold text-xs px-4 py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform] disabled:opacity-50 bg-accent-sky hover:opacity-90"
                   [class.bg-accent-amber]="editingSavingsItem()" [class.hover:bg-accent-amber]="editingSavingsItem()">
                   {{ editingSavingsItem() ? 'Update Savings' : 'Save Funds' }}
                 </button>
@@ -484,7 +484,7 @@
                         <td data-cell="title" class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
                         <td data-label="Source Account (Deducted)" class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
                         <td data-label="Destination Account (Added)" class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.toAccountId) }}</td>
-                        <td data-cell="amount" class="px-4 py-2 text-accent-teal font-bold"><app-amount [value]="item.amount" /></td>
+                        <td data-cell="amount" class="px-4 py-2 text-accent-sky font-bold"><app-amount [value]="item.amount" /></td>
                         <td data-label="Transfer Fee" class="px-4 py-2 text-accent-rose font-bold"><app-amount [value]="item.transferFee || 0" /></td>
                         <td data-label="Action" class="px-4 py-2 text-right space-x-2">
                           <button type="button" (click)="editSavingsItem(item)" class="text-accent-amber hover:opacity-80 transition-colors font-bold">

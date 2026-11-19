@@ -226,7 +226,8 @@ export class DashboardComponent implements OnInit {
         actualAmount,
         actualPercentage,
         actualAchievement,
-        categories: g.categories || []
+        categories: g.categories || [],
+        isSavings: g.categories.includes('Savings') || name.toLowerCase() === 'savings'
       };
     });
   });

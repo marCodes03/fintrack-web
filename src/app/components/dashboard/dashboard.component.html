@@ -82,9 +82,9 @@
           class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Savings</h2>
-            <span class="text-xs font-semibold text-accent-teal bg-accent-teal/10 px-2 py-1 rounded-md">Savings</span>
+            <span class="text-xs font-semibold text-accent-sky bg-accent-sky/10 px-2 py-1 rounded-md">Savings</span>
           </div>
-          <p class="text-2xl lg:text-3xl font-extrabold tabular-nums text-accent-teal mt-3">
+          <p class="text-2xl lg:text-3xl font-extrabold tabular-nums text-accent-sky mt-3">
             <app-amount [value]="totalSavings()" />
           </p>
           <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
@@ -139,7 +139,7 @@
               </div>
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Savings</span>
-                <span class="text-xs font-bold text-accent-teal"><app-amount [value]="activePlanSavings()" /></span>
+                <span class="text-xs font-bold text-accent-sky"><app-amount [value]="activePlanSavings()" /></span>
               </div>
             </div>
 
@@ -165,7 +165,7 @@
       <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4 relative">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Monthly Savings Goal</h2>
-          <a routerLink="/savings" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-accent-teal hover:underline">Savings Page <app-icon name="arrow-right" class="ml-1"/></a>
+          <a routerLink="/savings" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-accent-sky hover:underline">Savings Page <app-icon name="arrow-right" class="ml-1"/></a>
         </div>
 
         @if (isLoadingDashboard()) {
@@ -208,7 +208,7 @@
           <div animate.enter="fade-enter" class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Monthly Savings Goal Set</p>
             <p class="text-sm text-text-body">Define a monthly goal to monitor your savings target progress.</p>
-            <a routerLink="/savings" class="inline-block bg-accent-teal hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
+            <a routerLink="/savings" class="inline-block bg-accent-sky hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
               Define Savings Goal
             </a>
           </div>
@@ -283,10 +283,10 @@
           <!-- Group Details Columns -->
           <div class="lg:col-span-3 flex flex-col gap-4 w-full">
           <button type="button" (click)="analyticsOpen.set(!analyticsOpen())" [attr.aria-expanded]="analyticsOpen()" aria-controls="analytics-details"
-            class="lg:hidden self-start inline-flex items-center gap-2 px-4 rounded-xl border border-input-border text-xs font-bold text-text-body hover:text-text-heading hover:bg-surface-subtle transition-[color,background-color]">
+            class="md:hidden self-start inline-flex items-center gap-2 px-4 rounded-xl border border-input-border text-xs font-bold text-text-body hover:text-text-heading hover:bg-surface-subtle transition-[color,background-color]">
             {{ analyticsOpen() ? 'Hide breakdown' : 'Show breakdown by group' }}
           </button>
-          <div id="analytics-details" [class.max-lg:hidden]="!analyticsOpen()" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+          <div id="analytics-details" [class.max-md:hidden]="!analyticsOpen()" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
             @for (group of goalGroupAnalytics(); track group.name) {
               <div class="bg-surface-subtle border border-border-subtle rounded-xl p-5 space-y-4">
                 <div class="flex items-center justify-between">
@@ -301,7 +301,7 @@
                 <div class="grid gap-4 text-xs grid-cols-1">
                   <div class="bg-surface-card p-2.5 rounded-lg border border-border-subtle">
                     <span class="text-text-muted block font-semibold mb-0.5">
-                      {{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'Saved so far' : 'Spent so far' }}
+                      {{ group.isSavings ? 'Saved so far' : 'Spent so far' }}
                     </span>
                     <span class="text-sm font-bold text-text-heading block"><app-amount [value]="group.actualAmount" /></span>
                     <span class="block text-xs font-bold text-text-muted mt-0.5">({{ group.actualPercentage }}% of income)</span>
@@ -314,14 +314,14 @@
                   <!-- Bar 2: Actual Spent Achievement relative to Baseline Goal -->
                   <div class="space-y-1">
                     <div class="flex items-center justify-between gap-3 text-xs font-semibold text-text-muted">
-                      <span>{{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'Savings target' : 'Spending limit' }}</span>
-                      <span>{{ group.actualAchievement }}% {{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'reached' : 'used' }}</span>
+                      <span>{{ group.isSavings ? 'Savings target' : 'Spending limit' }}</span>
+                      <span>{{ group.actualAchievement }}% {{ group.isSavings ? 'reached' : 'used' }}</span>
                     </div>
-                    <div class="w-full bg-bg-main rounded-full h-2 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="group.name + (group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? ' savings target reached' : ' spending limit used')" [attr.aria-valuenow]="Math.min(100, group.actualAchievement)">
+                    <div class="w-full bg-bg-main rounded-full h-2 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="group.name + (group.isSavings ? ' savings target reached' : ' spending limit used')" [attr.aria-valuenow]="Math.min(100, group.actualAchievement)">
                       <div class="h-full rounded-full transition-[width] duration-500"
-                        [class.bg-accent-teal]="group.actualAchievement <= 100"
-                        [class.bg-accent-rose]="group.actualAchievement > 100 && group.name !== 'Savings'"
-                        [class.bg-accent-emerald]="group.actualAchievement > 100 && group.name === 'Savings'"
+                        [class.bg-accent-sky]="group.actualAchievement <= 100"
+                        [class.bg-accent-rose]="group.actualAchievement > 100 && !group.isSavings"
+                        [class.bg-accent-emerald]="group.actualAchievement > 100 && group.isSavings"
                         [style.width.%]="Math.min(100, group.actualAchievement)"></div>
                     </div>
                   </div>
@@ -382,13 +382,14 @@
               }
             } @else {
               @for (item of transactions(); track item.id) {
+              <!-- These rows have no row menu, so drop the 3rem right padding the card layout reserves for it -->
               <tr class="hover:bg-table-row-hover transition-colors max-lg:pr-3!">
                 <td data-cell="title" class="px-4 py-3 font-medium text-text-heading">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center" aria-hidden="true"
                       [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
                       [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
-                      [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
+                      [class.bg-accent-sky/10]="item.type === 'SAVINGS'" [class.text-accent-sky]="item.type === 'SAVINGS'"
                       [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         @switch (item.type) {
@@ -416,7 +417,7 @@
                 <td data-cell="amount" class="px-4 py-3 text-right font-semibold tabular-nums whitespace-nowrap"
                   [class.text-accent-emerald]="item.type === 'INCOME'"
                   [class.text-accent-rose]="item.type === 'EXPENSE'"
-                  [class.text-accent-teal]="item.type === 'SAVINGS'"
+                  [class.text-accent-sky]="item.type === 'SAVINGS'"
                   [class.text-text-muted]="item.type === 'TRANSFER'">
                   <app-amount [value]="Math.abs(item.amount)" [sign]="item.type === 'INCOME' || item.type === 'SAVINGS' ? '+' : (item.type === 'TRANSFER' ? '' : '-')" />
                 </td>
