@@ -1,3 +1,4 @@
+import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +14,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, TransactionSliderComponent, CurrencyPipe, DatePipe, FormsModule],
+  imports: [IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, TransactionSliderComponent, CurrencyPipe, DatePipe, FormsModule],
   templateUrl: './transactions.component.html'
 })
 export class TransactionsComponent implements OnInit {

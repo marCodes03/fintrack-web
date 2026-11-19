@@ -1,3 +1,4 @@
+import { IconComponent } from '../icon/icon.component';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, Review } from '../../services/api.service';
@@ -9,7 +10,7 @@ import { HeaderComponent } from '../header/header.component';
 @Component({
   selector: 'app-reviews',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink, HeaderComponent],
+  imports: [IconComponent, FormsModule, CommonModule, RouterLink, HeaderComponent],
   templateUrl: './reviews.component.html'
 })
 export class ReviewsComponent implements OnInit {

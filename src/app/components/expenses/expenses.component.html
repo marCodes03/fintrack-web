@@ -13,7 +13,7 @@
         @if (selectedIds().size > 0) {
           <button (click)="handleBulkDelete()"
             class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
-            <span>🗑️</span><span>Delete Selected ({{ selectedIds().size }})</span>
+            <app-icon name="trash"/><span>Delete Selected ({{ selectedIds().size }})</span>
           </button>
         }
         <button (click)="openCreateSlider()"
@@ -25,12 +25,12 @@
 
     @if (successMessage()) {
     <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
-      <span>✅</span><span>{{ successMessage() }}</span>
+      <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
     </div>
     }
     @if (errorMessage()) {
     <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
-      <span>⚠️</span><span>{{ errorMessage() }}</span>
+      <app-icon name="alert"/><span>{{ errorMessage() }}</span>
     </div>
     }
 
@@ -167,9 +167,7 @@
                   </td>
                   <td class="px-4 py-3 font-medium text-text-heading flex items-center space-x-3">
                     <div
-                      class="w-8 h-8 rounded-lg bg-accent-rose/10 text-accent-rose flex items-center justify-center font-bold">
-                      🛒
-                    </div>
+                      class="w-8 h-8 rounded-lg bg-accent-rose/10 text-accent-rose flex items-center justify-center font-bold"><app-icon name="cart"/></div>
                     <div class="flex flex-col">
                       <span>{{ item.description }}</span>
                     </div>

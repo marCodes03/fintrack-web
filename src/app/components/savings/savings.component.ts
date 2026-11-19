@@ -1,3 +1,4 @@
+import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
@@ -14,7 +15,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-savings',
   standalone: true,
-  imports: [DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, CurrencyPipe, DatePipe, FormsModule],
+  imports: [IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, CurrencyPipe, DatePipe, FormsModule],
   templateUrl: './savings.component.html'
 })
 export class SavingsComponent implements OnInit {

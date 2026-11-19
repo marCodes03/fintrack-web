@@ -15,12 +15,12 @@
 
     @if (successMessage()) {
       <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
-        <span>✅</span><span>{{ successMessage() }}</span>
+        <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
       <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
-        <span>⚠️</span><span>{{ errorMessage() }}</span>
+        <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
 
@@ -84,7 +84,7 @@
                     [class.bg-accent-rose/10]="acc.type === 'CREDIT'" [class.text-accent-rose]="acc.type === 'CREDIT'"
                     [class.bg-accent-indigo/10]="acc.type === 'SAVINGS'" [class.text-accent-indigo]="acc.type === 'SAVINGS'"
                     [class.bg-accent-teal/10]="acc.type === 'E_WALLET'" [class.text-accent-teal]="acc.type === 'E_WALLET'">
-                    {{ acc.type === 'CASH' ? '💵' : (acc.type === 'BANK' ? '🏦' : (acc.type === 'CREDIT' ? '💳' : (acc.type === 'SAVINGS' ? '🏧' : '📱'))) }}
+                    <app-icon [name]="acc.type === 'CASH' ? 'banknote' : (acc.type === 'BANK' ? 'landmark' : (acc.type === 'CREDIT' ? 'credit-card' : (acc.type === 'SAVINGS' ? 'wallet' : 'smartphone')))" class="text-lg"/>
                   </div>
                   <div>
                     <h3 class="font-bold text-text-heading leading-tight">{{ acc.name }}</h3>

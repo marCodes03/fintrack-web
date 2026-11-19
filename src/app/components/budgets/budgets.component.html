@@ -15,12 +15,12 @@
 
     @if (successMessage()) {
       <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
-        <span>✅</span><span>{{ successMessage() }}</span>
+        <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
       <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
-        <span>⚠️</span><span>{{ errorMessage() }}</span>
+        <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
 
@@ -33,7 +33,7 @@
         </div>
         @if (!isEditingGoal()) {
           <button (click)="startEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
-            ⚙️ Configure Baseline Goal
+            <app-icon name="settings"/> Configure Baseline Goal
           </button>
         } @else {
           <div class="flex items-center space-x-2">
@@ -80,7 +80,7 @@
               <div class="flex flex-wrap gap-2 pt-2">
                 @for (cat of activeGroup.categories; track cat) {
                   <span class="text-xs font-medium text-text-body bg-surface-card border border-border-subtle px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-                    <span class="text-text-muted">📂</span>
+                    <app-icon name="folder" class="text-text-muted"/>
                     <span>{{ cat }}</span>
                   </span>
                 } @empty {
@@ -260,14 +260,14 @@
                 <!-- Implement for Period Button -->
                 <button (click)="openImplementModal(plan)"
                   class="w-full bg-accent-emerald/10 hover:bg-accent-emerald/20 text-accent-emerald border border-accent-emerald/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
-                  <span>🚀</span>
+                  <app-icon name="rocket"/>
                   <span>{{ plan.isActive ? 'Re-Implement Period' : 'Implement for Period' }}</span>
                 </button>
 
                 @if (plan.isActive) {
                   <button (click)="openDeactivateModal(plan)"
                     class="w-full bg-accent-amber/10 hover:bg-accent-amber/20 text-accent-amber border border-accent-amber/20 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
-                    <span>⏸️</span>
+                    <app-icon name="pause"/>
                     <span>Deactivate Plan</span>
                   </button>
                 }
@@ -339,14 +339,14 @@
         </label>
 
         <div class="p-3 rounded-xl bg-surface-subtle border border-border-subtle text-xs text-text-muted">
-          💡 <span class="text-text-body font-semibold">Account Routing:</span> Each line item will automatically update the account assigned to it in the budget plan blueprint.
+          <app-icon name="lightbulb"/> <span class="text-text-body font-semibold">Account Routing:</span> Each line item will automatically update the account assigned to it in the budget plan blueprint.
         </div>
       </div>
 
       <div class="flex items-center space-x-3 pt-2">
         <button (click)="executeImplementPlan()" [disabled]="isLoading()"
           class="flex-1 bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
-          <span>🚀</span><span>{{ implementExecute ? 'Activate & Execute Plan' : 'Activate Plan Only' }}</span>
+          <app-icon name="rocket"/><span>{{ implementExecute ? 'Activate & Execute Plan' : 'Activate Plan Only' }}</span>
         </button>
         <button (click)="closeImplementModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-all">
           Cancel
@@ -384,7 +384,7 @@
     <div appDialog aria-label="Deactivate budget plan" (dialogClose)="closeDeactivateModal()" class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h2 class="text-lg font-bold text-text-heading flex items-center space-x-2">
-          <span>⚠️</span>
+          <app-icon name="alert"/>
           <span>Deactivate Budget Plan</span>
         </h2>
         <p class="text-xs text-text-muted mt-2">

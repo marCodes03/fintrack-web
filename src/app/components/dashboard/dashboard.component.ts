@@ -1,3 +1,4 @@
+import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, Transaction, Account, BudgetPlan, BudgetGoal, BudgetGoalGroup } from '../../services/api.service';
@@ -9,7 +10,7 @@ import { HeaderComponent } from '../header/header.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ResetPasswordComponent, HeaderComponent, DatePipe, CurrencyPipe, RouterLink],
+  imports: [IconComponent, ResetPasswordComponent, HeaderComponent, DatePipe, CurrencyPipe, RouterLink],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {

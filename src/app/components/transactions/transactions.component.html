@@ -12,7 +12,7 @@
         @if (selectedIds().size > 0) {
           <button (click)="handleBulkDelete()"
             class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
-            <span>🗑️</span><span>Delete Selected ({{ selectedIds().size }})</span>
+            <app-icon name="trash"/><span>Delete Selected ({{ selectedIds().size }})</span>
           </button>
         }
         <button (click)="openCreateSlider()"
@@ -25,12 +25,12 @@
     <!-- Alert Messages -->
     @if (successMessage()) {
       <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
-        <span>✅</span><span>{{ successMessage() }}</span>
+        <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
       <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
-        <span>⚠️</span><span>{{ errorMessage() }}</span>
+        <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
 
@@ -163,7 +163,7 @@
                       [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
                       [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
                       [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
-                      {{ item.type === 'INCOME' ? '💼' : (item.type === 'TRANSFER' ? '🔄' : (item.type === 'SAVINGS' ? '💰' : '🛒')) }}
+                      <app-icon [name]="item.type === 'INCOME' ? 'briefcase' : (item.type === 'TRANSFER' ? 'transfer' : (item.type === 'SAVINGS' ? 'coins' : 'cart'))"/>
                     </div>
                     <span>{{ item.description }}</span>
                   </td>

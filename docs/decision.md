@@ -261,3 +261,30 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Horizontal scroll for the whole table; card list on mobile.
 - **Consequences:** No horizontal page overflow at 360, 768 or 1280px. Real-device touch and Safari remain untested.
 - **Affected features:** [dashboard](features/dashboard.md)
+
+## D-027 — Token-based accents on every page
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The all-pages audit found about 790 hard-coded accent and white color classes outside the dashboard, light-mode contrast failures, and 10 mistyped classes (`text-emerald-505`, `dark:text-slate-955`, `text-amber-550` and similar) that generated no CSS.
+- **Decision:** Every template now uses `accent-emerald|amber|rose|teal|indigo` and `text-on-accent` instead of raw `*-400/500/600` and `text-white`. Yellow maps to amber and blue to indigo. Hover on filled buttons is `hover:opacity-90`; `dark:` color overrides were removed. Typos were corrected to their intended values. Light-mode emerald is `#046c4e` and amber `#9a4506` so tinted badges stay at 4.5:1 or better.
+- **Alternatives:** Keep Tailwind palette classes and darken per element.
+- **Consequences:** A programmatic contrast check (headless Chrome, mocked API) found no failing text on 12 pages in light and dark. Sliders, modals and states that need interaction were not opened. Emoji, dialog semantics and `animate-in` classes are still open.
+- **Affected features:** all (UI)
+
+## D-028 — Shared inline-SVG icon component replaces emoji everywhere
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** After the dashboard, emoji and text glyphs (✅ ⚠️ 🗑️ ★ ➔ ⏮ and the menu, account, reference and budget-step icons) were still used as icons on every other page. They render differently per platform and are read aloud by screen readers.
+- **Decision:** Add `IconComponent` (`<app-icon name="...">`, `src/app/components/icon/icon.component.ts`): a registry of static 24px stroke SVGs that inherits `currentColor` and font size, with `aria-hidden`. All templates use it. Emoji inside `<option>` labels were dropped, since options cannot hold SVG.
+- **Alternatives:** An icon library dependency; inline SVG copied into each template.
+- **Consequences:** No new dependency. New icons are added to the registry. Icon-only buttons still need accessible names (harden pass).
+- **Affected features:** all (UI)
+
+## D-029 — Own entrance-motion CSS, smaller logo, dark theme-color
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** `animate-in`, `fade-in`, `slide-in-from-right` and `zoom-in-95` are used about 80 times but Tailwind v4 does not generate them (they come from `tailwindcss-animate`, which is not installed), so overlays appeared instantly. `logo.png` was a 61KB 300px image shown at 32 to 64px.
+- **Decision:** Define those classes in `src/styles.css` (one `enter` keyframe driven by CSS variables, exponential ease-out, duration from the existing `duration-*` class, default 250ms) and run them only under `prefers-reduced-motion: no-preference`. Resize `public/logo.png` to 128px (15KB). Add a dark `theme-color` next to the light one in `index.html`. The title and meta description in `index.html` were already set.
+- **Alternatives:** Install `tailwindcss-animate`; remove the dead classes. Real multi-size favicon was offered and not chosen.
+- **Consequences:** No new dependency and no template changes. `favicon.ico` is still the 61KB PNG.
+- **Affected features:** all (UI)

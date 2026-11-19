@@ -1,3 +1,4 @@
+import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
@@ -22,7 +23,7 @@ type SliderMode = 'create-income' | 'edit-income' | 'create-expense' | 'edit-exp
 @Component({
   selector: 'app-references',
   standalone: true,
-  imports: [DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, FormsModule, DatePipe],
+  imports: [IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, FormsModule, DatePipe],
   templateUrl: './references.component.html'
 })
 export class ReferencesComponent implements OnInit {

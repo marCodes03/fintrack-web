@@ -43,8 +43,8 @@
   --border-subtle: #e2e8f0;
   
   /* Accent text holds 4.5:1 on --surface-card and --surface-subtle */
-  --accent-emerald: #047857;
-  --accent-amber: #b45309;
+  --accent-emerald: #046c4e;
+  --accent-amber: #9a4506;
   --accent-rose: #be123c;
   --accent-teal: #0f766e;
   --accent-indigo: #4338ca;
@@ -146,4 +146,24 @@ body {
 button:not([data-compact]) {
   min-height: 40px;
   min-width: 40px;
+}
+
+/* Entrance motion for drawers, modals and backdrops.
+   Compose with: animate-in + fade-in | slide-in-from-right | zoom-in-95 (or scale-in) + duration-*.
+   Only runs when the user has not asked for reduced motion. */
+@keyframes enter {
+  from {
+    opacity: var(--enter-opacity, 1);
+    transform: translate3d(var(--enter-x, 0), 0, 0) scale(var(--enter-scale, 1));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-in {
+    animation: enter var(--tw-duration, 250ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .fade-in { --enter-opacity: 0; }
+  .slide-in-from-right { --enter-x: 100%; }
+  .zoom-in-95,
+  .scale-in { --enter-scale: 0.95; }
 }

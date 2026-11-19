@@ -9,8 +9,8 @@ colors:
   text-heading: "#0f172a"
   text-body: "#334155"
   text-muted: "#586579"
-  accent-emerald: "#047857"
-  accent-amber: "#b45309"
+  accent-emerald: "#046c4e"
+  accent-amber: "#9a4506"
   accent-rose: "#be123c"
   accent-teal: "#0f766e"
   accent-indigo: "#4338ca"
@@ -104,10 +104,10 @@ Cards feel solid and confident, with clear borders and firm buttons. Glass is re
 Cool slate neutrals with three semantic accents. Values below are light mode; dark counterparts are the `dark-*` tokens above.
 
 ### Primary
-- **Ledger Emerald** (#047857 light, #10b981 dark): primary actions, interactive items, income and success, focus rings (`ring-emerald-500`), scrollbar thumb.
+- **Ledger Emerald** (#046c4e light, #10b981 dark): primary actions, interactive items, income and success, focus rings (`ring-emerald-500`), scrollbar thumb.
 
 ### Secondary
-- **Caution Amber** (#b45309 light, #fbbf24 dark): warnings, configuration states, partial progress.
+- **Caution Amber** (#9a4506 light, #fbbf24 dark): warnings, configuration states, partial progress.
 - **Spend Rose** (#be123c light, #fb7185 dark): expenses and destructive actions.
 
 ### Neutral

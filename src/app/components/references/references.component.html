@@ -14,12 +14,12 @@
     <!-- Alert Messages -->
     @if (successMessage()) {
       <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
-        <span>✅</span><span>{{ successMessage() }}</span>
+        <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
       <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
-        <span>⚠️</span><span>{{ errorMessage() }}</span>
+        <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
 
@@ -31,7 +31,7 @@
         [class.text-on-accent]="activeTab() === 'income-categories'"
         [class.text-text-muted]="activeTab() !== 'income-categories'"
         [class.hover:text-text-body]="activeTab() !== 'income-categories'">
-        📈 Income Categories
+        <app-icon name="trending-up"/> Income Categories
       </button>
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'expense-categories'" (click)="setTab('expense-categories')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
@@ -39,7 +39,7 @@
         [class.text-on-accent]="activeTab() === 'expense-categories'"
         [class.text-text-muted]="activeTab() !== 'expense-categories'"
         [class.hover:text-text-body]="activeTab() !== 'expense-categories'">
-        🛒 Expense Categories
+        <app-icon name="cart"/> Expense Categories
       </button>
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'saving-categories'" (click)="setTab('saving-categories')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
@@ -47,7 +47,7 @@
         [class.text-on-accent]="activeTab() === 'saving-categories'"
         [class.text-text-muted]="activeTab() !== 'saving-categories'"
         [class.hover:text-text-body]="activeTab() !== 'saving-categories'">
-        💰 Saving Categories
+        <app-icon name="coins"/> Saving Categories
       </button>
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'account-types'" (click)="setTab('account-types')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
@@ -55,7 +55,7 @@
         [class.text-on-accent]="activeTab() === 'account-types'"
         [class.text-text-muted]="activeTab() !== 'account-types'"
         [class.hover:text-text-body]="activeTab() !== 'account-types'">
-        🏦 Account Types
+        <app-icon name="landmark"/> Account Types
       </button>
     </div>
 

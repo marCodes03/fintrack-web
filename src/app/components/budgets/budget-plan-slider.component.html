@@ -30,7 +30,7 @@
             <div>
               <span class="block text-[13px] uppercase font-extrabold text-accent-emerald tracking-wider">Active Plan Blueprint</span>
               <h2 class="text-sm font-bold text-text-heading flex items-center space-x-2 mt-0.5">
-                <span>📋 {{ planName || 'Untitled Budget Plan' }}</span>
+                <span class="inline-flex items-center gap-1.5"><app-icon name="clipboard"/> {{ planName || 'Untitled Budget Plan' }}</span>
                 <span class="px-2.5 py-0.5 rounded-full text-[13px] bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20 font-bold uppercase tracking-wider">{{ timePeriodLabel }}</span>
               </h2>
             </div>
@@ -58,7 +58,7 @@
               <span class="block text-[13px] uppercase font-bold text-text-muted tracking-wider">Virtual Account Balance Breakdown (₱0.00 Baseline)</span>
               @if (nonCreditAccounts.length > 3) {
                 <span class="text-[13px] text-accent-emerald font-bold flex items-center space-x-1 bg-accent-emerald/10 px-2 py-0.5 rounded-full border border-accent-emerald/20">
-                  <span>Scroll ↔</span>
+                  <span>Scroll <app-icon name="arrows-h"/></span>
                 </span>
               }
             </div>
@@ -125,7 +125,7 @@
         <!-- TAB CONTENT 1: BUDGET PLAN DETAILS -->
         @if (activeTab() === 1) {
           <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200">
-            <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider">⚙️ STEP 1: Budget Plan Details</h3>
+            <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider inline-flex items-center gap-1.5"><app-icon name="settings"/> STEP 1: Budget Plan Details</h3>
             <div class="grid grid-cols-2 gap-4">
               <!-- Plan Name -->
               <div>
@@ -160,7 +160,7 @@
 
             <div class="flex justify-end pt-2">
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2.5 rounded-xl transition-all">
-                Next: Step 2 Planned Inflow ➔
+                Next: Step 2 Planned Inflow <app-icon name="arrow-right"/>
               </button>
             </div>
           </div>
@@ -170,7 +170,7 @@
         @if (activeTab() === 2) {
           <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
-              <span>📈 STEP 2: Planned Inflow (Income & External Funding)</span>
+              <span class="inline-flex items-center gap-1.5"><app-icon name="trending-up"/> STEP 2: Planned Inflow (Income & External Funding)</span>
               <span class="text-xs text-accent-emerald font-black">Total Inflows: {{ totalPlannedIncome | currency:'PHP':'symbol-narrow' }}</span>
             </h3>
 
@@ -256,10 +256,10 @@
 
             <div class="flex justify-between pt-2">
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 1" (click)="activeTab.set(1)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
-                ⏮ Back to Step 1
+                <app-icon name="arrow-left"/> Back to Step 1
               </button>
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-all">
-                Next: Step 3 Planned Transfers ➔
+                Next: Step 3 Planned Transfers <app-icon name="arrow-right"/>
               </button>
             </div>
           </div>
@@ -269,7 +269,7 @@
         @if (activeTab() === 3) {
           <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
-              <span>🔄 STEP 3: Planned Transfers (Internal Transfers)</span>
+              <span class="inline-flex items-center gap-1.5"><app-icon name="transfer"/> STEP 3: Planned Transfers (Internal Transfers)</span>
               <span class="text-xs text-accent-indigo font-black">Total Transfers: {{ totalPlannedTransfers | currency:'PHP':'symbol-narrow' }}</span>
             </h3>
 
@@ -375,10 +375,10 @@
 
             <div class="flex justify-between pt-2">
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
-                ⏮ Back to Step 2
+                <app-icon name="arrow-left"/> Back to Step 2
               </button>
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-all">
-                Next: Step 4 Planned Savings ➔
+                Next: Step 4 Planned Savings <app-icon name="arrow-right"/>
               </button>
             </div>
           </div>
@@ -388,7 +388,7 @@
         @if (activeTab() === 4) {
           <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
-              <span>💎 STEP 4: Planned Savings</span>
+              <span class="inline-flex items-center gap-1.5"><app-icon name="gem"/> STEP 4: Planned Savings</span>
               <span class="text-xs text-accent-teal font-black">Total Savings: {{ totalPlannedSavings | currency:'PHP':'symbol-narrow' }}</span>
             </h3>
 
@@ -498,10 +498,10 @@
 
             <div class="flex justify-between pt-2">
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
-                ⏮ Back to Step 3
+                <app-icon name="arrow-left"/> Back to Step 3
               </button>
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 5" (click)="activeTab.set(5)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-all">
-                Next: Step 5 Planned Outflows ➔
+                Next: Step 5 Planned Outflows <app-icon name="arrow-right"/>
               </button>
             </div>
           </div>
@@ -511,7 +511,7 @@
         @if (activeTab() === 5) {
           <div class="space-y-4 bg-surface-subtle p-5 border border-border-subtle rounded-2xl animate-in fade-in duration-200" [class.opacity-50]="totalPlannedIncome <= 0">
             <h3 class="text-xs font-bold text-text-heading uppercase tracking-wider flex items-center justify-between">
-              <span>💸 STEP 5: Planned Outflows & Allocations (Fixed Expenses)</span>
+              <span class="inline-flex items-center gap-1.5"><app-icon name="arrow-up-right"/> STEP 5: Planned Outflows & Allocations (Fixed Expenses)</span>
               <span class="text-xs text-accent-rose font-black">Total Outflows: {{ totalPlannedOutflows | currency:'PHP':'symbol-narrow' }}</span>
             </h3>
 
@@ -603,7 +603,7 @@
 
             <div class="flex justify-between pt-2">
               <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
-                ⏮ Back to Step 4
+                <app-icon name="arrow-left"/> Back to Step 4
               </button>
             </div>
           </div>

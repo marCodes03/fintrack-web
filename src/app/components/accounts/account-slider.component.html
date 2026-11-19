@@ -35,11 +35,11 @@
             @for (at of accountTypes; track at.id) {
               <option [value]="at.code">{{ at.icon }} {{ at.label }}</option>
             } @empty {
-              <option value="CASH">💵 Cash</option>
-              <option value="BANK">🏦 Bank Account</option>
-              <option value="CREDIT">💳 Credit Card</option>
-              <option value="SAVINGS">🏧 Savings Account</option>
-              <option value="E_WALLET">📱 E-Wallet</option>
+              <option value="CASH">Cash</option>
+              <option value="BANK">Bank Account</option>
+              <option value="CREDIT">Credit Card</option>
+              <option value="SAVINGS">Savings Account</option>
+              <option value="E_WALLET">E-Wallet</option>
             }
           </select>
         </div>

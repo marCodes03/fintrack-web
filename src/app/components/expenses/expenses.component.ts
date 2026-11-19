@@ -1,3 +1,4 @@
+import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +14,7 @@ import { DatePipe, CurrencyPipe } from '@angular/common';
 @Component({
   selector: 'app-expenses',
   standalone: true,
-  imports: [HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, ExpenseSliderComponent, DatePipe, CurrencyPipe, FormsModule],
+  imports: [IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, ExpenseSliderComponent, DatePipe, CurrencyPipe, FormsModule],
   templateUrl: './expenses.component.html'
 })
 export class ExpensesComponent implements OnInit {

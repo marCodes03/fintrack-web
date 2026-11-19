@@ -7,13 +7,13 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-border-subtle pb-5">
       <div>
         <h1 class="text-2xl font-black tracking-tight text-text-heading flex items-center space-x-2.5">
-          <span>⭐</span>
+          <app-icon name="star-filled"/>
           <span>Feedback & Reviews</span>
         </h1>
         <p class="text-sm text-text-muted mt-1">We value your opinion. Share your experience with FinTrack to help us improve.</p>
       </div>
       <a routerLink="/dashboard" class="mt-4 md:mt-0 inline-flex items-center space-x-2 text-xs font-bold text-text-muted hover:text-text-heading bg-surface-subtle border border-border-subtle px-4 py-2 rounded-xl transition-all">
-        <span>←</span>
+        <app-icon name="arrow-left"/>
         <span>Back to Dashboard</span>
       </a>
     </div>
@@ -28,14 +28,14 @@
 
           @if (successMessage()) {
             <div role="status" class="p-3.5 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-xs flex items-center space-x-2">
-              <span>✅</span>
+              <app-icon name="check-circle"/>
               <span>{{ successMessage() }}</span>
             </div>
           }
 
           @if (errorMessage()) {
             <div role="alert" class="p-3.5 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-xs flex items-center space-x-2">
-              <span>⚠️</span>
+              <app-icon name="alert"/>
               <span>{{ errorMessage() }}</span>
             </div>
           }
@@ -51,9 +51,7 @@
                         (mouseleave)="clearHover()"
                         class="text-3xl transition-transform hover:scale-110 focus:outline-none duration-150">
                   <span [class.text-accent-amber]="star <= (hoverRating() || rating())"
-                        [class.text-border-strong]="star > (hoverRating() || rating())">
-                    ★
-                  </span>
+                        [class.text-border-strong]="star > (hoverRating() || rating())"><app-icon name="star-filled"/></span>
                 </button>
               }
               @if (rating() > 0) {
@@ -89,15 +87,15 @@
           <h2 class="text-xs font-bold text-text-muted uppercase tracking-wider">Review Guidelines</h2>
           <ul class="text-xs text-text-body space-y-3">
             <li class="flex items-start space-x-2">
-              <span class="text-accent-emerald font-bold">✓</span>
+              <app-icon name="check" class="text-accent-emerald"/>
               <span>Keep details relevant to features, user interface, or performance.</span>
             </li>
             <li class="flex items-start space-x-2">
-              <span class="text-accent-emerald font-bold">✓</span>
+              <app-icon name="check" class="text-accent-emerald"/>
               <span>We actively read all constructive suggestions to build new tools.</span>
             </li>
             <li class="flex items-start space-x-2">
-              <span class="text-accent-emerald font-bold">✓</span>
+              <app-icon name="check" class="text-accent-emerald"/>
               <span>Your feedback helps other budgeters get the most out of FinTrack.</span>
             </li>
           </ul>
@@ -121,7 +119,7 @@
                 @for (star of [1, 2, 3, 4, 5]; track star) {
                   <span class="text-sm" 
                         [class.text-accent-amber]="star <= item.rating" 
-                        [class.text-border-strong]="star > item.rating">★</span>
+                        [class.text-border-strong]="star > item.rating"><app-icon name="star-filled"/></span>
                 }
                 <span class="text-xs font-bold text-text-muted ml-1.5">{{ item.rating }} Stars</span>
               </div>

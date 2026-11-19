@@ -9,8 +9,8 @@ colors:
   text-heading: "#0f172a"
   text-body: "#334155"
   text-muted: "#586579"
-  accent-emerald: "#047857"
-  accent-amber: "#b45309"
+  accent-emerald: "#046c4e"
+  accent-amber: "#9a4506"
   accent-rose: "#be123c"
   accent-teal: "#0f766e"
   accent-indigo: "#4338ca"
@@ -87,7 +87,7 @@ components:
 
 <!-- impeccable:design-map -->
 Name: FinTrack
-Colors: primary: accent-emerald #047857; secondary: accent-amber #b45309; neutral: bg-main #f8fafc; secondary: accent-rose #be123c
+Colors: primary: accent-emerald #046c4e; secondary: accent-amber #9a4506; neutral: bg-main #f8fafc; secondary: accent-rose #be123c
 Fonts: system-ui (title, headline, body, label)
 Spacing: sm 8px, md 16px, lg 24px
 Radius: md 8px, lg 12px, xl 16px, full 9999px
