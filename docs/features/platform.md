@@ -15,7 +15,7 @@ Angular 22 (standalone, Signals, Tailwind 4) → Express (TypeScript) → Prisma
 - Mock IDs use prefixes: `user-mock-`, `acc-mock-`, `tx-mock-`, `bp-`, `bg-mock-`.
 
 ## API client
-- `ApiService` and `AuthService` choose the base URL by origin. `localhost` uses `http://localhost:3000/api`, and anything else uses the Render URL `https://fintrack-api-env1.onrender.com/api`.
+- `ApiService.apiUrl` is the single source of the base URL; `AuthService` and the auth interceptor read it. `localhost`/`127.0.0.1` uses `http://<hostname>:4902/api` (the server default port is 3000, so `server/.env` sets `PORT=4902`, see D-021). Anything else uses `/api`, which `vercel.json` rewrites to the Render API so the httpOnly session cookie stays first-party (D-031).
 
 ## Database and migrations
 - Prisma with `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, for migrations), for Supabase.

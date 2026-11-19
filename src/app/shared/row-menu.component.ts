@@ -21,10 +21,11 @@ export interface RowMenuItem {
     </button>
     @if (open()) {
       <div #menu role="menu" [attr.aria-label]="label" [style.top.px]="top()" [style.left.px]="left()"
+        [style.visibility]="positioned() ? 'visible' : 'hidden'"
         class="fixed z-40 min-w-44 bg-surface-card border border-border-subtle rounded-xl shadow-2xl p-1.5"
         (keydown)="onMenuKey($event)">
-        @for (item of items; track item.key) {
-          @if (item.danger && !$first) { <div role="separator" class="my-1.5 border-t border-border-subtle"></div> }
+        @for (item of items; track item.key; let i = $index) {
+          @if (dividerBefore(i)) { <div role="separator" aria-orientation="horizontal" class="my-1.5 border-t border-border-subtle"></div> }
           <button type="button" role="menuitem" data-compact
             class="w-full text-left px-3.5 py-3 rounded-lg text-sm font-semibold hover:bg-surface-subtle focus:bg-surface-subtle transition-colors"
             [class.text-accent-rose]="item.danger" [class.text-text-body]="!item.danger"
@@ -45,6 +46,13 @@ export class RowMenuComponent {
   protected open = signal(false);
   protected top = signal(0);
   protected left = signal(0);
+  protected positioned = signal(false);
+
+  /** One divider, before the first danger item that follows a non-danger item. */
+  protected dividerBefore(i: number): boolean {
+    const item = this.items[i];
+    return !!item?.danger && i > 0 && !this.items[i - 1].danger;
+  }
 
   protected toggle(ev: Event, trigger: HTMLElement): void {
     ev.stopPropagation();
@@ -59,19 +67,22 @@ export class RowMenuComponent {
 
   private show(trigger: HTMLElement): void {
     const r = trigger.getBoundingClientRect();
-    const menuWidth = 176;
-    const menuHeight = this.items.length * 48 + 20;
-    const left = Math.max(8, Math.min(r.right - menuWidth, window.innerWidth - menuWidth - 8));
-    const top = r.bottom + menuHeight > window.innerHeight ? Math.max(8, r.top - menuHeight) : r.bottom + 4;
-    this.left.set(left);
-    this.top.set(top);
+    // Provisional position below the trigger; refined once the real menu size is measured.
+    this.left.set(Math.max(8, r.right - 176));
+    this.top.set(r.bottom + 4);
+    this.positioned.set(false);
     this.open.set(true);
     // Lift the menu to <body>: animated ancestors (transform) would otherwise become the containing block of position:fixed.
     setTimeout(() => {
       const el = this.menu()?.nativeElement;
       if (!el) return;
       document.body.appendChild(el);
-      el.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+      // Measure the rendered menu instead of estimating, then flip above the trigger if it would overflow.
+      const { width, height } = el.getBoundingClientRect();
+      this.left.set(Math.max(8, Math.min(r.right - width, window.innerWidth - width - 8)));
+      this.top.set(r.bottom + 4 + height > window.innerHeight ? Math.max(8, r.top - height - 4) : r.bottom + 4);
+      this.positioned.set(true);
+      el.querySelector<HTMLElement>('[role="menuitem"]')?.focus({ preventScroll: true });
     });
   }
 

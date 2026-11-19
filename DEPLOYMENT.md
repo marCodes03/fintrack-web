@@ -75,6 +75,11 @@ If you want to run migrations from your local machine:
    - `DATABASE_URL`: *Your Supabase Transaction Pooler connection string (port 6543 with ?pgbouncer=true)*
    - `DIRECT_URL`: *Your Supabase Session Pooler connection string (port 5432)*
    - `PORT`: `3000`
+   - `NODE_ENV`: `production` *(enables secure cookies and disables the mock-store fallback)*
+   - `JWT_SECRET`: *A long random string (required)*
+   - `CORS_ORIGINS`: *Comma-separated allowed origins, e.g. `https://your-app.vercel.app`*
+   - `TRUST_PROXY_HOPS`: `2` *(Vercel, then Render; keeps rate limiting per real client IP. Confirm after deploy.)*
+   - `ADMIN_EMAILS`: *Comma-separated admin emails (optional)*
    - `SMTP_HOST`: `smtp.gmail.com`
    - `SMTP_PORT`: `587`
    - `SMTP_USER`: `marcodes.fintrack.no.reply@gmail.com`
@@ -87,27 +92,17 @@ If you want to run migrations from your local machine:
 
 ## Step 4: Update API Base URLs (Angular)
 
-We have already configured your Angular client code to dynamically determine the API endpoint using `window.location.origin`. However, if you ever need to change the target production domain, update the production URLs in these files:
+The client has a single API base URL, `apiUrl` in [api.service.ts](src/app/services/api.service.ts). `AuthService` and the HTTP interceptor both read it from there.
 
-- **Frontend API client**: [api.service.ts](src/app/services/api.service.ts)
-  ```typescript
-  private baseUrl = window.location.origin.includes('localhost')
-    ? 'http://localhost:3000/api'
-    : 'https://fintrack-api-env1.onrender.com/api'; // Make sure this matches your Render URL
-  ```
-- **Frontend Auth client**: [auth.service.ts](src/app/services/auth.service.ts)
-  ```typescript
-  private baseUrl = window.location.origin.includes('localhost')
-    ? 'http://localhost:3000/api/auth'
-    : 'https://fintrack-api-env1.onrender.com/api/auth'; // Make sure this matches your Render URL
+- **Local dev** (`localhost` / `127.0.0.1`): `http://<hostname>:4902/api`. The server's own default port is `3000`, so set `PORT=4902` in `server/.env` (see D-021 in `docs/decision.md`).
+- **Production**: `/api` (same origin). The session cookie is httpOnly, so the browser must see the API as first-party. [vercel.json](vercel.json) proxies it to Render:
+  ```json
+  { "source": "/api/:path*", "destination": "https://fintrack-api-env1.onrender.com/api/:path*" }
   ```
 
-*Since you've modified these files, remember to push them to GitHub:*
-```bash
-git add src/app/services/api.service.ts src/app/services/auth.service.ts
-git commit -m "chore: align production endpoints with Render API"
-git push origin main
-```
+If your Render URL differs, change the `destination` in `vercel.json`. Do not point the client directly at Render, because the cookie would become third-party and be blocked.
+
+Deploy the `vercel.json` rewrite and the client together.
 
 ---
 
