@@ -28,23 +28,23 @@
         <div class="rounded-2xl border p-4 shadow-md bg-surface-subtle border-border-subtle space-y-4">
           <div class="flex items-center justify-between border-b border-border-subtle pb-3">
             <div>
-              <span class="block text-[10px] uppercase font-extrabold text-emerald-500 tracking-wider">Active Plan Blueprint</span>
+              <span class="block text-[13px] uppercase font-extrabold text-emerald-500 tracking-wider">Active Plan Blueprint</span>
               <h3 class="text-sm font-bold text-text-heading flex items-center space-x-2 mt-0.5">
                 <span>📋 {{ planName || 'Untitled Budget Plan' }}</span>
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold uppercase tracking-wider">{{ timePeriodLabel }}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[13px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold uppercase tracking-wider">{{ timePeriodLabel }}</span>
               </h3>
             </div>
             <div class="flex items-center space-x-6 text-right">
               <div>
-                <span class="block text-[10px] uppercase font-semibold text-text-muted">Total Inflows</span>
+                <span class="block text-[13px] uppercase font-semibold text-text-muted">Total Inflows</span>
                 <span class="text-xs font-black text-emerald-500">{{ totalPlannedIncome | currency:'PHP':'symbol-narrow' }}</span>
               </div>
               <div>
-                <span class="block text-[10px] uppercase font-semibold text-text-muted">Total Outflows</span>
+                <span class="block text-[13px] uppercase font-semibold text-text-muted">Total Outflows</span>
                 <span class="text-xs font-black text-rose-500">{{ totalPlannedOutflows | currency:'PHP':'symbol-narrow' }}</span>
               </div>
               <div>
-                <span class="block text-[10px] uppercase font-semibold text-text-muted">Net Balance</span>
+                <span class="block text-[13px] uppercase font-semibold text-text-muted">Net Balance</span>
                 <span class="text-sm font-black" [class.text-emerald-500]="netBalance >= 0" [class.text-rose-500]="netBalance < 0">
                   {{ netBalance | currency:'PHP':'symbol-narrow' }}
                 </span>
@@ -55,9 +55,9 @@
           <!-- Virtual Balance per Account Breakdown (EXCLUDES CREDIT ACCOUNTS) -->
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="block text-[10px] uppercase font-bold text-text-muted tracking-wider">Virtual Account Balance Breakdown (₱0.00 Baseline)</span>
+              <span class="block text-[13px] uppercase font-bold text-text-muted tracking-wider">Virtual Account Balance Breakdown (₱0.00 Baseline)</span>
               @if (nonCreditAccounts.length > 3) {
-                <span class="text-[10px] text-emerald-500 font-bold flex items-center space-x-1 animate-pulse bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <span class="text-[13px] text-emerald-500 font-bold flex items-center space-x-1 animate-pulse bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   <span>Scroll ↔</span>
                 </span>
               }
@@ -70,8 +70,8 @@
                 @for (acc of nonCreditAccounts; track acc.id) {
                   <div class="min-w-[170px] bg-surface-card border border-border-subtle rounded-xl p-2.5 flex items-center justify-between shadow-xs shrink-0 hover:border-border-strong transition-all">
                     <div class="truncate mr-2">
-                      <span class="block text-[10px] font-bold text-text-heading truncate">{{ acc.name }}</span>
-                      <span class="text-[9px] text-text-muted uppercase font-semibold">{{ acc.type }}</span>
+                      <span class="block text-[13px] font-bold text-text-heading truncate">{{ acc.name }}</span>
+                      <span class="text-[13px] text-text-muted uppercase font-semibold">{{ acc.type }}</span>
                     </div>
                     <span class="text-xs font-black shrink-0" [class.text-emerald-500]="getVirtualBalance(acc.id) >= 0" [class.text-rose-500]="getVirtualBalance(acc.id) < 0">
                       ₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }}
@@ -177,7 +177,7 @@
             <!-- Step 2 Form -->
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-4">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
                 <select [(ngModel)]="newIncomeCategory" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none">
                   @for (cat of incomeCategories(); track cat.id) {
                     <option [value]="cat.name">{{ cat.name }}</option>
@@ -186,7 +186,7 @@
               </div>
 
               <div class="col-span-4">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Added To) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Added To) *</label>
                 <select [(ngModel)]="newIncomeAccountId" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }}</option>
@@ -195,7 +195,7 @@
               </div>
               
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
                 <input type="number" [(ngModel)]="newIncomeAmount" placeholder="0" min="1"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none">
               </div>
@@ -209,7 +209,7 @@
                 </button>
                 @if (editingIncomeItem()) {
                   <button type="button" (click)="cancelIncomeEdit()"
-                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[10px] py-1 rounded-lg transition-all">
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-all">
                     Cancel
                   </button>
                 }
@@ -275,13 +275,13 @@
             <!-- Step 3 Form -->
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-3">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Title / Note</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Title / Note</label>
                 <input type="text" [(ngModel)]="newTransferCategory" placeholder="e.g. Checking to Savings Transfer" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
               
               <div class="col-span-3">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
                 <select [(ngModel)]="newTransferSourceAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
@@ -291,7 +291,7 @@
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
                 <select [(ngModel)]="newTransferDestAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
@@ -301,13 +301,13 @@
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
                 <input type="number" [(ngModel)]="newTransferAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
                 <input type="number" [(ngModel)]="newTransferTransferFee" placeholder="0" min="0" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
@@ -390,7 +390,7 @@
             <!-- Step 4 Form -->
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-3">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Savings Category *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Savings Category *</label>
                 <select [(ngModel)]="newSavingsCategory" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (cat of savingCategories(); track cat.id) {
@@ -400,7 +400,7 @@
               </div>
 
               <div class="col-span-3">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
                 <select [(ngModel)]="newSavingsSourceAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
@@ -410,7 +410,7 @@
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
                 <select [(ngModel)]="newSavingsDestAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
@@ -420,13 +420,13 @@
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
                 <input type="number" [(ngModel)]="newSavingsAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
                 <input type="number" [(ngModel)]="newSavingsTransferFee" placeholder="0" min="0" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
@@ -509,7 +509,7 @@
             <!-- Step 5 Form -->
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-4">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
                 <select [(ngModel)]="newOutflowCategory" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (cat of expenseCategories(); track cat.id) {
@@ -519,7 +519,7 @@
               </div>
 
               <div class="col-span-4">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Deducted From) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Deducted From) *</label>
                 <select [(ngModel)]="newOutflowAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
@@ -529,7 +529,7 @@
               </div>
 
               <div class="col-span-2">
-                <label class="block text-[10px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
                 <input type="number" [(ngModel)]="newOutflowAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-xs text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
@@ -542,7 +542,7 @@
                 </button>
                 @if (editingOutflowItem()) {
                   <button type="button" (click)="cancelOutflowEdit()"
-                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[10px] py-1 rounded-lg transition-all">
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-all">
                     Cancel
                   </button>
                 }

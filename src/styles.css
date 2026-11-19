@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 @theme {
+  /* Nothing under 13px */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.25rem;
+
   --color-bg-main: var(--bg-main);
   --color-surface-card: var(--surface-card);
   --color-surface-subtle: var(--surface-subtle);
@@ -9,7 +13,16 @@
   --color-accent-emerald: var(--accent-emerald);
   --color-accent-amber: var(--accent-amber);
   --color-accent-rose: var(--accent-rose);
-  
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-indigo: var(--accent-indigo);
+  --color-on-accent: var(--on-accent);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
   --color-text-heading: var(--text-heading);
   --color-text-body: var(--text-body);
   --color-text-muted: var(--text-muted);
@@ -29,13 +42,24 @@
   --surface-subtle: #f1f5f9;
   --border-subtle: #e2e8f0;
   
-  --accent-emerald: #059669;
-  --accent-amber: #d97706;
-  --accent-rose: #e11d48;
-  
+  /* Accent text holds 4.5:1 on --surface-card and --surface-subtle */
+  --accent-emerald: #047857;
+  --accent-amber: #b45309;
+  --accent-rose: #be123c;
+  --accent-teal: #0f766e;
+  --accent-indigo: #4338ca;
+  --on-accent: #ffffff;
+
+  /* Data categories: hues kept off the emerald/amber/rose money meanings */
+  --chart-1: #4f46e5;
+  --chart-2: #0284c7;
+  --chart-3: #7c3aed;
+  --chart-4: #c026d3;
+  --chart-5: #64748b;
+
   --text-heading: #0f172a;
   --text-body: #334155;
-  --text-muted: #64748b;
+  --text-muted: #586579;
 
   --input-bg: #ffffff;
   --input-border: #cbd5e1;
@@ -54,8 +78,17 @@
   
   --accent-emerald: #10b981;
   --accent-amber: #fbbf24;
-  --accent-rose: #f43f5e;
-  
+  --accent-rose: #fb7185;
+  --accent-teal: #2dd4bf;
+  --accent-indigo: #818cf8;
+  --on-accent: #020617;
+
+  --chart-1: #818cf8;
+  --chart-2: #38bdf8;
+  --chart-3: #a78bfa;
+  --chart-4: #e879f9;
+  --chart-5: #94a3b8;
+
   --text-heading: #ffffff;
   --text-body: #cbd5e1;
   --text-muted: #94a3b8;
@@ -91,4 +124,20 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(16, 185, 129, 0.7);
+}
+
+/* Focus shows at once on every control (WCAG 2.1 AA); overrides focus:outline-none */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-emerald) !important;
+  outline-offset: 2px;
+}
+
+/* Under reduced motion everything rests */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

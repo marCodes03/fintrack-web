@@ -60,7 +60,7 @@
                 [class.text-text-muted]="activeDisplayGoalTab() !== groupIdx"
                 [class.hover:text-text-body]="activeDisplayGoalTab() !== groupIdx">
                 {{ group.name }} 
-                <span class="ml-1 text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+                <span class="ml-1 text-[13px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
               </button>
             } @empty {
               <div class="py-4 text-center text-text-muted text-xs italic w-full">
@@ -102,7 +102,7 @@
                 [class.text-text-heading]="activeGoalTab() === groupIdx"
                 [class.text-text-muted]="activeGoalTab() !== groupIdx"
                 [class.hover:text-text-body]="activeGoalTab() !== groupIdx">
-                {{ group.name }} <span class="ml-1 text-[10px] bg-surface-card px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+                {{ group.name }} <span class="ml-1 text-[13px] bg-surface-card px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
               </button>
             }
             <button (click)="addGroup()" class="px-4 py-2 text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-all">
@@ -128,7 +128,7 @@
                     <span class="absolute right-3 top-2 text-xs text-text-muted font-bold">%</span>
                   </div>
                   @if (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0) {
-                    <p class="text-[10px] text-emerald-500 font-medium mt-1 leading-tight">Aligned with Savings Goal ({{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}/mo)</p>
+                    <p class="text-[13px] text-emerald-500 font-medium mt-1 leading-tight">Aligned with Savings Goal ({{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}/mo)</p>
                   }
                 </div>
                 <div class="flex items-end pt-5">
@@ -157,7 +157,7 @@
                     </div>
                     @if (getCategoryOwnerGroup('Savings'); as owner) {
                       @if (owner !== group.name) {
-                        <span class="text-[9px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
+                        <span class="text-[13px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
                       }
                     }
                   </label>
@@ -175,7 +175,7 @@
                       </div>
                       @if (getCategoryOwnerGroup(cat.name); as owner) {
                         @if (owner !== group.name) {
-                          <span class="text-[9px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
+                          <span class="text-[13px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
                         }
                       }
                     </label>
@@ -213,7 +213,7 @@
               [class.border-emerald-500/50]="plan.isActive">
               
               @if (plan.isActive) {
-                <div class="absolute top-0 right-0 bg-emerald-505 text-white dark:text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl shadow-md">
+                <div class="absolute top-0 right-0 bg-emerald-505 text-white dark:text-slate-950 font-black text-[13px] uppercase px-3 py-1 rounded-bl-xl shadow-md">
                   Active Plan
                 </div>
               }
@@ -223,7 +223,7 @@
                   <div>
                     <h3 class="text-lg font-bold text-text-heading leading-tight">{{ plan.name }}</h3>
                     @if (plan.isActive && plan.startDate && plan.endDate) {
-                      <p class="text-[11px] font-semibold text-emerald-500 mt-1">
+                      <p class="text-[13px] font-semibold text-emerald-500 mt-1">
                         Period: {{ plan.startDate | date:'MMM d, y' }} — {{ plan.endDate | date:'MMM d, y' }}
                       </p>
                     }

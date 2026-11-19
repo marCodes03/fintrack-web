@@ -1,9 +1,9 @@
-<header class="border-b border-[var(--border-subtle)] bg-[var(--surface-card)]/90 backdrop-blur fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
+<header class="border-b border-[var(--border-subtle)] bg-[var(--surface-card)] fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
     <!-- Logo -->
     <a routerLink="/dashboard" class="flex items-center space-x-2.5 cursor-pointer group">
       <img src="logo.png" alt="FinTrack"
-        class="h-9 w-9 object-contain group-hover:scale-105 transition-transform drop-shadow-md" />
+        class="h-9 w-9 object-contain group-hover:scale-105 transition-transform" />
       <span class="text-xl font-bold tracking-tight text-[var(--text-heading)]">FinTrack</span>
     </a>
 
@@ -12,7 +12,7 @@
       <!-- Amount Privacy Eye Toggle -->
       <button (click)="toggleHideAmounts()"
         class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-all focus:outline-none"
-        [title]="hideAmounts() ? 'Show amounts' : 'Hide amounts'">
+        [attr.aria-label]="hideAmounts() ? 'Show amounts' : 'Hide amounts'" [attr.aria-pressed]="hideAmounts()">
         @if (hideAmounts()) {
           <svg class="h-5 w-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
@@ -29,10 +29,10 @@
       <div class="flex items-center space-x-3">
         <div class="hidden sm:block text-right">
           <p class="text-xs font-semibold text-[var(--text-heading)] leading-tight">{{ user()?.name }}</p>
-          <p class="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5">{{ user()?.email }}</p>
+          <p class="text-[13px] text-[var(--text-muted)] leading-tight mt-0.5">{{ user()?.email }}</p>
         </div>
         <!-- User avatar thumbnail -->
-        <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center font-extrabold text-slate-950 text-sm shadow-md">
+        <div class="h-8 w-8 rounded-lg bg-[var(--accent-emerald)] flex items-center justify-center font-extrabold text-[var(--on-accent)] text-sm">
           {{ user()?.name ? user()?.name?.charAt(0) : 'U' }}
         </div>
       </div>
@@ -40,7 +40,7 @@
       <!-- Hamburger Slider Menu button -->
       <button (click)="openSlider()"
         class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-all focus:outline-none"
-        title="Open Menu">
+        aria-label="Open menu">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>

@@ -232,7 +232,7 @@ export class DashboardComponent implements OnInit {
     if (analytics.length === 0) return 'conic-gradient(var(--border-subtle) 0% 100%)';
 
     let currentOffset = 0;
-    const colors = ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'];
+    const colors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
     const parts: string[] = [];
 
     analytics.forEach((g, idx) => {

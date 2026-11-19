@@ -4,12 +4,14 @@
 
   <!-- Main Content Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8">
+    <h1 class="sr-only">Dashboard</h1>
+    <p class="sr-only" role="status">{{ isLoadingDashboard() || isLoadingTransactions() ? 'Loading dashboard' : 'Dashboard loaded' }}</p>
 
     <!-- Hero / Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       @if (isLoadingDashboard()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md animate-pulse space-y-3">
+          <div class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md motion-safe:animate-pulse space-y-3">
             <div class="flex items-center justify-between">
               <div class="h-4 bg-border-subtle rounded w-1/3"></div>
               <div class="h-5 bg-border-subtle rounded w-1/4"></div>
@@ -21,23 +23,23 @@
       } @else {
         <!-- Total Net Worth Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-medium text-text-muted">Total Net Worth</p>
-            <span class="text-[10px] uppercase font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md">{{
+            <h2 class="text-sm font-medium text-text-muted">Total Net Worth</h2>
+            <span class="text-xs uppercase font-bold text-accent-emerald bg-accent-emerald/10 px-2.5 py-1 rounded-md">{{
               accounts().length }} Account(s)</span>
           </div>
-          <p class="text-3xl font-extrabold text-text-heading mt-3">
+          <p class="text-3xl font-extrabold tabular-nums text-text-heading mt-3">
             {{ hideAmounts() ? '₱ •••••' : (totalNetWorth() | currency:'PHP':'symbol-narrow') }}
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
           <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-1.5">
-            <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
-              <input type="checkbox" [checked]="includeSavingsInNetWorth()" (change)="toggleIncludeSavings()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
+            <label class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
+              <input type="checkbox" [checked]="includeSavingsInNetWorth()" (change)="toggleIncludeSavings()" class="rounded border-input-border text-accent-emerald focus:ring-accent-emerald mr-2 h-4 w-4 pointer-coarse:h-5 pointer-coarse:w-5 bg-input-bg">
               Include Savings
             </label>
-            <label class="inline-flex items-center text-[10px] font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
-              <input type="checkbox" [checked]="includeCreditInNetWorth()" (change)="toggleIncludeCredit()" class="rounded border-input-border text-emerald-500 focus:ring-emerald-500 mr-1.5 h-3.5 w-3.5 bg-input-bg">
+            <label class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
+              <input type="checkbox" [checked]="includeCreditInNetWorth()" (change)="toggleIncludeCredit()" class="rounded border-input-border text-accent-emerald focus:ring-accent-emerald mr-2 h-4 w-4 pointer-coarse:h-5 pointer-coarse:w-5 bg-input-bg">
               Include Credit
             </label>
           </div>
@@ -45,12 +47,12 @@
   
         <!-- Total Income Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-medium text-text-muted">Total Income</p>
-            <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">Inflows</span>
+            <h2 class="text-sm font-medium text-text-muted">Total Income</h2>
+            <span class="text-xs font-semibold text-accent-emerald bg-accent-emerald/10 px-2 py-1 rounded-md">Inflows</span>
           </div>
-          <p class="text-3xl font-extrabold text-emerald-500 mt-3">
+          <p class="text-3xl font-extrabold tabular-nums text-accent-emerald mt-3">
             {{ hideAmounts() ? '₱ •••••' : (totalIncome() | currency:'PHP':'symbol-narrow') }}
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of monthly recorded income</p>
@@ -58,12 +60,12 @@
   
         <!-- Total Expenses Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-medium text-text-muted">Total Expenses</p>
-            <span class="text-xs font-semibold text-rose-500 bg-rose-500/10 px-2 py-1 rounded-md">Outflows</span>
+            <h2 class="text-sm font-medium text-text-muted">Total Expenses</h2>
+            <span class="text-xs font-semibold text-accent-rose bg-accent-rose/10 px-2 py-1 rounded-md">Outflows</span>
           </div>
-          <p class="text-3xl font-extrabold text-rose-500 mt-3">
+          <p class="text-3xl font-extrabold tabular-nums text-accent-rose mt-3">
             {{ hideAmounts() ? '₱ •••••' : (totalExpenses() | currency:'PHP':'symbol-narrow') }}
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of monthly recorded expenses</p>
@@ -71,12 +73,12 @@
   
         <!-- Total Savings Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md transition-all">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-medium text-text-muted">Total Savings</p>
-            <span class="text-xs font-semibold text-teal-500 bg-teal-500/10 px-2 py-1 rounded-md">Savings</span>
+            <h2 class="text-sm font-medium text-text-muted">Total Savings</h2>
+            <span class="text-xs font-semibold text-accent-teal bg-accent-teal/10 px-2 py-1 rounded-md">Savings</span>
           </div>
-          <p class="text-3xl font-extrabold text-teal-500 mt-3">
+          <p class="text-3xl font-extrabold tabular-nums text-accent-teal mt-3">
             {{ hideAmounts() ? '₱ •••••' : (totalSavings() | currency:'PHP':'symbol-narrow') }}
           </p>
           <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
@@ -85,16 +87,16 @@
     </div>
 
     <!-- Active Budget Plan & Savings Goal Widgets Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       <!-- Active Budget Plan Widget -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4 relative transition-all">
+      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4 relative">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-text-muted uppercase tracking-wider">Active Budget Plan</span>
-          <a routerLink="/budgets" class="text-xs font-bold text-emerald-500 hover:underline">Manage Plans ➔</a>
+          <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Active Budget Plan</h2>
+          <a routerLink="/budgets" class="text-xs font-bold text-accent-emerald hover:underline">Manage Plans <span aria-hidden="true">➔</span></a>
         </div>
 
         @if (isLoadingDashboard()) {
-          <div class="animate-pulse space-y-4">
+          <div class="motion-safe:animate-pulse space-y-4">
             <div class="space-y-2">
               <div class="h-5 bg-border-subtle rounded w-2/3"></div>
               <div class="h-3 bg-border-subtle rounded w-1/2"></div>
@@ -112,32 +114,32 @@
               <div>
                 <h3 class="text-lg font-extrabold text-text-heading">{{ activeBudgetPlan()?.name }}</h3>
                 @if (activeBudgetPlan()?.startDate && activeBudgetPlan()?.endDate) {
-                  <p class="text-xs text-emerald-500 font-semibold mt-0.5">
+                  <p class="text-xs text-accent-emerald font-semibold mt-0.5">
                     Period: {{ activeBudgetPlan()?.startDate | date:'MMM d' }} — {{ activeBudgetPlan()?.endDate | date:'MMM d, y' }}
                   </p>
                 }
               </div>
-              <span class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Active</span>
+              <span class="bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20 text-xs font-bold px-2 py-0.5 rounded-md uppercase">Active</span>
             </div>
 
             <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
               <div>
-                <span class="block text-[10px] font-semibold text-text-muted uppercase">Inflow</span>
-                <span class="text-xs font-bold text-emerald-500">{{ hideAmounts() ? '₱ •••••' : ('+' + (activePlanInflows() | currency:'PHP':'symbol-narrow')) }}</span>
+                <span class="block text-xs font-semibold text-text-muted uppercase">Inflow</span>
+                <span class="text-xs font-bold text-accent-emerald">{{ hideAmounts() ? '₱ •••••' : ('+' + (activePlanInflows() | currency:'PHP':'symbol-narrow')) }}</span>
               </div>
               <div>
-                <span class="block text-[10px] font-semibold text-text-muted uppercase">Outflow</span>
-                <span class="text-xs font-bold text-rose-500">{{ hideAmounts() ? '₱ •••••' : ('-' + (activePlanOutflows() | currency:'PHP':'symbol-narrow')) }}</span>
+                <span class="block text-xs font-semibold text-text-muted uppercase">Outflow</span>
+                <span class="text-xs font-bold text-accent-rose">{{ hideAmounts() ? '₱ •••••' : ('-' + (activePlanOutflows() | currency:'PHP':'symbol-narrow')) }}</span>
               </div>
               <div>
-                <span class="block text-[10px] font-semibold text-text-muted uppercase">Savings</span>
-                <span class="text-xs font-bold text-teal-500">{{ hideAmounts() ? '₱ •••••' : (activePlanSavings() | currency:'PHP':'symbol-narrow') }}</span>
+                <span class="block text-xs font-semibold text-text-muted uppercase">Savings</span>
+                <span class="text-xs font-bold text-accent-teal">{{ hideAmounts() ? '₱ •••••' : (activePlanSavings() | currency:'PHP':'symbol-narrow') }}</span>
               </div>
             </div>
 
             <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-surface-subtle border border-border-subtle">
                <span class="text-text-muted font-medium">Net Remaining</span>
-               <span class="font-bold" [class.text-emerald-500]="activePlanRemaining() >= 0" [class.text-rose-500]="activePlanRemaining() < 0">
+               <span class="font-bold" [class.text-accent-emerald]="activePlanRemaining() >= 0" [class.text-accent-rose]="activePlanRemaining() < 0">
                  {{ hideAmounts() ? '₱ •••••' : (activePlanRemaining() | currency:'PHP':'symbol-narrow') }}
                </span>
             </div>
@@ -146,7 +148,7 @@
           <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Budget Plan Active</p>
             <p class="text-xs text-text-muted">Implement a budget plan for a date range to track allocations.</p>
-            <a routerLink="/budgets" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white dark:text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all mt-1">
+            <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-all mt-1">
               Set Up Budget Plan
             </a>
           </div>
@@ -154,14 +156,14 @@
       </div>
 
       <!-- Monthly Savings Goal Widget -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4 relative transition-all">
+      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4 relative">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-text-muted uppercase tracking-wider">Monthly Savings Goal</span>
-          <a routerLink="/savings" class="text-xs font-bold text-teal-500 hover:underline">Savings Page ➔</a>
+          <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Monthly Savings Goal</h2>
+          <a routerLink="/savings" class="text-xs font-bold text-accent-teal hover:underline">Savings Page <span aria-hidden="true">➔</span></a>
         </div>
 
         @if (isLoadingDashboard()) {
-          <div class="animate-pulse space-y-4">
+          <div class="motion-safe:animate-pulse space-y-4">
             <div class="space-y-2">
               <div class="h-8 bg-border-subtle rounded w-1/2"></div>
               <div class="h-3 bg-border-subtle rounded w-2/3"></div>
@@ -186,11 +188,11 @@
 
             <!-- Progress Bar -->
             <div class="space-y-1">
-              <div class="w-full bg-surface-subtle rounded-full h-3 overflow-hidden p-0.5 border border-border-subtle">
-                <div class="bg-gradient-to-r from-teal-500 to-emerald-400 h-full rounded-full transition-all duration-500"
+              <div class="w-full bg-surface-subtle rounded-full h-3 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-label="Monthly savings goal progress" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="savingsGoalProgressPercentage()">
+                <div class="bg-gradient-to-r from-accent-teal to-accent-emerald h-full rounded-full transition-all duration-500"
                   [style.width.%]="savingsGoalProgressPercentage()"></div>
               </div>
-              <div class="flex items-center justify-between text-[11px] font-semibold text-text-muted">
+              <div class="flex items-center justify-between text-xs font-semibold text-text-muted">
                 <span>{{ savingsGoalProgressPercentage() }}% Reached</span>
                 <span>{{ hideAmounts() ? '₱ •••••' : (Math.max(0, monthlySavingsGoal() - currentMonthSavings()) | currency:'PHP':'symbol-narrow') }} Remaining</span>
               </div>
@@ -200,7 +202,7 @@
           <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Monthly Savings Goal Set</p>
             <p class="text-xs text-text-muted">Define a monthly goal to monitor your savings target progress.</p>
-            <a routerLink="/savings" class="inline-block bg-teal-500 hover:bg-teal-600 text-white dark:text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all mt-1">
+            <a routerLink="/savings" class="inline-block bg-accent-teal hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-all mt-1">
               Define Savings Goal
             </a>
           </div>
@@ -209,11 +211,11 @@
     </div>
 
     <!-- Active Budget Plan Analytics (Baseline vs Active Plan vs Actual) -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 transition-all">
+    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5">
       <div class="flex items-center justify-between border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading flex items-center space-x-2">
-            <span>📊</span>
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
             <span>Actual vs Budget Goal Analytics</span>
           </h2>
           <p class="text-xs text-text-muted mt-0.5">Comparing baseline target percentages against current active plan blueprint and actual period expenses/savings.</p>
@@ -222,7 +224,7 @@
       </div>
 
       @if (isLoadingDashboard()) {
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-pulse">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 motion-safe:animate-pulse">
           <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-2xl border border-border-subtle w-full">
             <div class="h-4 bg-border-subtle rounded w-1/2"></div>
             <div class="w-36 h-36 rounded-full border-4 border-border-subtle bg-transparent flex items-center justify-center">
@@ -250,20 +252,20 @@
             <span class="text-xs font-bold text-text-body uppercase tracking-wider text-center">
               Actual Spent Share
             </span>
-            <div class="relative w-36 h-36 rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-105 duration-300" 
+            <div class="relative w-36 h-36 rounded-full flex items-center justify-center shadow-md motion-safe:transition-transform motion-safe:hover:scale-105 duration-300" role="img" [attr.aria-label]="'Actual spent share: ' + totalAllocatedPercentage() + '% of income'" 
                  [style.backgroundImage]="donutGradient()">
               <div class="absolute inset-3 bg-surface-card rounded-full flex flex-col items-center justify-center text-center">
-                <span class="text-[10px] font-semibold text-text-muted uppercase">Spent</span>
+                <span class="text-xs font-semibold text-text-muted uppercase">Spent</span>
                 <span class="text-lg font-black text-text-heading">{{ totalAllocatedPercentage() }}%</span>
               </div>
             </div>
             
             <!-- Legend -->
-            <div class="w-full space-y-2 pt-2 text-[10px] font-semibold">
+            <div class="w-full space-y-2 pt-2 text-xs font-semibold">
               @for (group of goalGroupAnalytics(); track group.name; let idx = $index) {
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
-                    <span class="w-2.5 h-2.5 rounded-full" [style.backgroundColor]="['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'][idx % 5]"></span>
+                    <span class="w-2.5 h-2.5 rounded-full" [style.backgroundColor]="'var(--chart-' + ((idx % 5) + 1) + ')'"></span>
                     <span class="text-text-muted">{{ group.name }}</span>
                   </div>
                   <span class="text-text-body">{{ group.actualPercentage }}%</span>
@@ -279,8 +281,8 @@
                 <div class="flex items-center justify-between">
                   <span class="text-sm font-bold text-text-heading">{{ group.name }}</span>
                   <div class="text-right">
-                    <span class="text-xs font-semibold text-text-muted block">Target Goal: <span class="text-emerald-500 font-bold">{{ group.targetPercentage }}%</span></span>
-                    <span class="text-[10px] font-bold text-text-muted block mt-0.5">({{ hideAmounts() ? '₱ •••••' : (group.targetAmount | currency:'PHP':'symbol-narrow') }})</span>
+                    <span class="text-xs font-semibold text-text-muted block">Target Goal: <span class="text-accent-emerald font-bold">{{ group.targetPercentage }}%</span></span>
+                    <span class="text-xs font-bold text-text-muted block mt-0.5">({{ hideAmounts() ? '₱ •••••' : (group.targetAmount | currency:'PHP':'symbol-narrow') }})</span>
                   </div>
                 </div>
 
@@ -291,7 +293,7 @@
                       {{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'Actual Saved' : 'Actual Spent' }}
                     </span>
                     <span class="text-sm font-bold text-text-heading block">{{ hideAmounts() ? '₱ •••••' : (group.actualAmount | currency:'PHP':'symbol-narrow') }}</span>
-                    <span class="block text-[9px] font-bold text-text-muted mt-0.5">({{ group.actualPercentage }}% of income)</span>
+                    <span class="block text-xs font-bold text-text-muted mt-0.5">({{ group.actualPercentage }}% of income)</span>
                   </div>
                 </div>
 
@@ -300,15 +302,15 @@
 
                   <!-- Bar 2: Actual Spent Achievement relative to Baseline Goal -->
                   <div class="space-y-1">
-                    <div class="flex items-center justify-between text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+                    <div class="flex items-center justify-between text-xs font-semibold text-text-muted uppercase tracking-wider">
                       <span>Progress to Goal</span>
                       <span>{{ group.actualAchievement }}% Achieved</span>
                     </div>
-                    <div class="w-full bg-bg-main rounded-full h-2 overflow-hidden p-0.5 border border-border-subtle">
+                    <div class="w-full bg-bg-main rounded-full h-2 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="group.name + ' progress to goal'" [attr.aria-valuenow]="Math.min(100, group.actualAchievement)">
                       <div class="h-full rounded-full transition-all duration-500"
-                        [class.bg-teal-500]="group.actualAchievement <= 100"
-                        [class.bg-rose-500]="group.actualAchievement > 100 && group.name !== 'Savings'"
-                        [class.bg-emerald-500]="group.actualAchievement > 100 && group.name === 'Savings'"
+                        [class.bg-accent-teal]="group.actualAchievement <= 100"
+                        [class.bg-accent-rose]="group.actualAchievement > 100 && group.name !== 'Savings'"
+                        [class.bg-accent-emerald]="group.actualAchievement > 100 && group.name === 'Savings'"
                         [style.width.%]="Math.min(100, group.actualAchievement)"></div>
                     </div>
                   </div>
@@ -320,11 +322,11 @@
       } @else {
         <div class="p-8 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-3">
           <p class="text-sm font-semibold text-text-body flex items-center justify-center space-x-2">
-            <span>ℹ️</span>
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             <span>Target Goal Analytics Unavailable</span>
           </p>
           <p class="text-xs text-text-muted">Please configure your Budget Goals to monitor allocations and spending targets.</p>
-          <a routerLink="/budgets" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white dark:text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition-all mt-1">
+          <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2 rounded-xl transition-all mt-1">
             Setup & Configure Budget Goals
           </a>
         </div>
@@ -337,26 +339,29 @@
     <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4">
       <div class="flex items-center justify-between border-b border-border-subtle pb-4">
         <h2 class="text-lg font-semibold text-text-heading">Recent Transactions</h2>
-        <a routerLink="/transactions" class="text-xs text-emerald-500 hover:underline font-bold">View All</a>
+        <a routerLink="/transactions" class="text-xs text-accent-emerald hover:underline font-bold">View All</a>
       </div>
 
-      <div class="overflow-x-auto overflow-y-auto max-h-[295px] scroll-smooth">
+      <div class="overflow-x-auto overflow-y-auto max-h-[295px] scroll-smooth" tabindex="0" role="region" aria-label="Recent transactions">
         <table class="w-full text-left text-sm text-text-body">
+          <caption class="sr-only">Recent transactions</caption>
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg rounded-lg">
             <tr>
-              <th class="px-4 py-3 rounded-l-lg">Title</th>
-              <th class="px-4 py-3">Category</th>
-              <th class="px-4 py-3">Date</th>
-              <th class="px-4 py-3 text-right rounded-r-lg">Amount</th>
+              <th scope="col" class="px-4 py-3 rounded-l-lg">Title</th>
+              <th scope="col" class="px-4 py-3">Category</th>
+              <th scope="col" class="px-4 py-3">Date</th>
+              <th scope="col" class="px-4 py-3 text-right rounded-r-lg">Amount</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border-subtle">
+          <tbody class="divide-y divide-border-subtle" [attr.aria-busy]="isLoadingTransactions()">
             @if (isLoadingTransactions()) {
               @for (i of [1, 2, 3, 4, 5]; track i) {
-                <tr class="animate-pulse">
-                  <td class="px-4 py-3 font-semibold text-text-heading flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-lg bg-border-subtle"></div>
-                    <div class="h-4 bg-border-subtle rounded w-28"></div>
+                <tr class="motion-safe:animate-pulse">
+                  <td class="px-4 py-3 font-semibold text-text-heading">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-border-subtle"></div>
+                      <div class="h-4 bg-border-subtle rounded w-28"></div>
+                    </div>
                   </td>
                   <td class="px-4 py-3"><div class="h-4 bg-border-subtle rounded w-16"></div></td>
                   <td class="px-4 py-3"><div class="h-4 bg-border-subtle rounded w-20"></div></td>
@@ -366,22 +371,40 @@
             } @else {
               @for (item of transactions(); track item.id) {
               <tr class="hover:bg-table-row-hover transition-colors">
-                <td class="px-4 py-3 font-medium text-text-heading flex items-center space-x-3">
-                  <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
-                    [class.bg-emerald-500/10]="item.type === 'INCOME'" [class.text-emerald-500]="item.type === 'INCOME'"
-                    [class.bg-rose-500/10]="item.type === 'EXPENSE'" [class.text-rose-500]="item.type === 'EXPENSE'"
-                    [class.bg-teal-500/10]="item.type === 'SAVINGS'" [class.text-teal-500]="item.type === 'SAVINGS'"
-                    [class.bg-indigo-500/10]="item.type === 'TRANSFER'" [class.text-indigo-500]="item.type === 'TRANSFER'">
-                    {{ item.type === 'INCOME' ? '💼' : (item.type === 'TRANSFER' ? '🔄' : (item.type === 'SAVINGS' ? '💰' : '🛒')) }}
+                <td class="px-4 py-3 font-medium text-text-heading">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center" aria-hidden="true"
+                      [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
+                      [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
+                      [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
+                      [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        @switch (item.type) {
+                          @case ('INCOME') {
+                            <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>
+                          }
+                          @case ('TRANSFER') {
+                            <path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>
+                          }
+                          @case ('SAVINGS') {
+                            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+                          }
+                          @default {
+                            <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                          }
+                        }
+                      </svg>
+                    </div>
+                    <span class="sr-only">{{ item.type }}:</span>
+                    <span class="min-w-0 break-words">{{ item.description }}</span>
                   </div>
-                  <span>{{ item.description }}</span>
                 </td>
                 <td class="px-4 py-3 text-text-muted">{{ item.category }}</td>
                 <td class="px-4 py-3 text-text-muted">{{ (item.expenseDate || item.date) | date:'mediumDate' }}</td>
-                <td class="px-4 py-3 text-right font-semibold"
-                  [class.text-emerald-500]="item.type === 'INCOME'"
-                  [class.text-rose-500]="item.type === 'EXPENSE'"
-                  [class.text-teal-500]="item.type === 'SAVINGS'"
+                <td class="px-4 py-3 text-right font-semibold tabular-nums"
+                  [class.text-accent-emerald]="item.type === 'INCOME'"
+                  [class.text-accent-rose]="item.type === 'EXPENSE'"
+                  [class.text-accent-teal]="item.type === 'SAVINGS'"
                   [class.text-text-muted]="item.type === 'TRANSFER'">
                   {{ hideAmounts() ? '₱ •••••' : (item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-'))) + (Math.abs(item.amount) | currency:'PHP':'symbol-narrow') }}
                 </td>
