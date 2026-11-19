@@ -9,6 +9,7 @@ import {
   mockTransactions
 } from '../mockStore';
 import { requireAuth } from '../middleware/auth.middleware';
+import { requireAdmin } from '../middleware/admin.middleware';
 
 const router = Router();
 
@@ -22,7 +23,7 @@ router.get('/income-categories', async (_req: Request, res: Response) => {
   }
 });
 
-router.post('/income-categories', requireAuth, async (req: Request, res: Response) => {
+router.post('/income-categories', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { name, description } = req.body;
   if (!name) { res.status(400).json({ success: false, message: 'Name is required.' }); return; }
   try {
@@ -35,7 +36,7 @@ router.post('/income-categories', requireAuth, async (req: Request, res: Respons
   }
 });
 
-router.put('/income-categories/:id', requireAuth, async (req: Request, res: Response) => {
+router.put('/income-categories/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { name, description, isActive } = req.body;
   try {
@@ -49,7 +50,7 @@ router.put('/income-categories/:id', requireAuth, async (req: Request, res: Resp
   }
 });
 
-router.delete('/income-categories/:id', requireAuth, async (req: Request, res: Response) => {
+router.delete('/income-categories/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
     const cat = await (prisma as any).refIncomeCategory.findUnique({ where: { id } });
@@ -79,7 +80,7 @@ router.get('/expense-categories', async (_req: Request, res: Response) => {
   }
 });
 
-router.post('/expense-categories', requireAuth, async (req: Request, res: Response) => {
+router.post('/expense-categories', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { name, description } = req.body;
   if (!name) { res.status(400).json({ success: false, message: 'Name is required.' }); return; }
   try {
@@ -92,7 +93,7 @@ router.post('/expense-categories', requireAuth, async (req: Request, res: Respon
   }
 });
 
-router.put('/expense-categories/:id', requireAuth, async (req: Request, res: Response) => {
+router.put('/expense-categories/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { name, description, isActive } = req.body;
   try {
@@ -106,7 +107,7 @@ router.put('/expense-categories/:id', requireAuth, async (req: Request, res: Res
   }
 });
 
-router.delete('/expense-categories/:id', requireAuth, async (req: Request, res: Response) => {
+router.delete('/expense-categories/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
     const cat = await (prisma as any).refExpenseCategory.findUnique({ where: { id } });
@@ -136,7 +137,7 @@ router.get('/saving-categories', async (_req: Request, res: Response) => {
   }
 });
 
-router.post('/saving-categories', requireAuth, async (req: Request, res: Response) => {
+router.post('/saving-categories', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { name, description } = req.body;
   if (!name) { res.status(400).json({ success: false, message: 'Name is required.' }); return; }
   try {
@@ -149,7 +150,7 @@ router.post('/saving-categories', requireAuth, async (req: Request, res: Respons
   }
 });
 
-router.put('/saving-categories/:id', requireAuth, async (req: Request, res: Response) => {
+router.put('/saving-categories/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { name, description, isActive } = req.body;
   try {
@@ -163,7 +164,7 @@ router.put('/saving-categories/:id', requireAuth, async (req: Request, res: Resp
   }
 });
 
-router.delete('/saving-categories/:id', requireAuth, async (req: Request, res: Response) => {
+router.delete('/saving-categories/:id', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
     const cat = await (prisma as any).refSavingCategory.findUnique({ where: { id } });

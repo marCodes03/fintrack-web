@@ -9,7 +9,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const apiUrl = inject(ApiService).apiUrl;
 
-  if (!req.url.startsWith(apiUrl)) {
+  // Only attach the token to our own API: exact match or a path/query boundary after apiUrl.
+  const isApiRequest = req.url === apiUrl || ['/', '?', '#'].some(sep => req.url.startsWith(apiUrl + sep));
+  if (!isApiRequest) {
     return next(req);
   }
 

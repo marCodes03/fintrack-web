@@ -46,7 +46,9 @@ export class AuthService {
     // Load persisted user state from localStorage if exists
     const savedUser = localStorage.getItem('fintrack_user');
     if (savedUser && !this.token()) {
-      this.logout();
+      // Legacy session without a JWT: clear state only. Pages redirect to /login themselves,
+      // so we avoid navigating while the router is still initializing.
+      this.clearSession();
     } else if (savedUser) {
       try {
         const lastActivity = localStorage.getItem(this.lastActivityKey);
@@ -143,12 +145,16 @@ export class AuthService {
     });
   }
 
-  logout(): void {
+  private clearSession(): void {
     this.currentUser.set(null);
     this.token.set(null);
     localStorage.removeItem('fintrack_user');
     localStorage.removeItem('fintrack_token');
     localStorage.removeItem(this.lastActivityKey);
+  }
+
+  logout(): void {
+    this.clearSession();
     this.router.navigate(['/login']);
   }
 

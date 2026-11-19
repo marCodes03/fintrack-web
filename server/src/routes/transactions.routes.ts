@@ -195,6 +195,13 @@ router.put('/:id', async (req: Request, res: Response) => {
       res.status(404).json({ success: false, message: 'Transaction not found.' });
       return;
     }
+    if (accountId) {
+      const ownedAccount = await prisma.account.findUnique({ where: { id: accountId } });
+      if (!ownedAccount || ownedAccount.userId !== req.userId) {
+        res.status(404).json({ success: false, message: 'Account not found.' });
+        return;
+      }
+    }
     const updated = await prisma.transaction.update({
       where: { id },
       data: {
@@ -316,11 +323,14 @@ router.post('/bulk-delete', async (req: Request, res: Response) => {
     return;
   }
 
+  const skippedIds: string[] = [];
   try {
     await prisma.$transaction(async (prismaTx) => {
       for (const id of ids) {
         const tx = await prismaTx.transaction.findUnique({ where: { id } });
-        if (tx && tx.userId === req.userId) {
+        if (!tx || tx.userId !== req.userId) {
+          skippedIds.push(id);
+        } else {
           // Balance rollback on deletion
           if (tx.type === 'INCOME' && tx.accountId) {
             await prismaTx.account.update({
@@ -361,12 +371,21 @@ router.post('/bulk-delete', async (req: Request, res: Response) => {
       }
     });
 
-    res.json({ success: true, message: `${ids.length} transactions deleted and account balances updated.` });
+    const deletedCount = ids.length - skippedIds.length;
+    res.json({
+      success: true,
+      message: `${deletedCount} transactions deleted and account balances updated.`,
+      deletedCount,
+      skippedIds
+    });
   } catch (_err) {
     // Fallback: mock deletion
+    const mockSkipped: string[] = [];
     for (const id of ids) {
       const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);
-      if (idx !== -1) {
+      if (idx === -1) {
+        mockSkipped.push(id);
+      } else {
         const tx = mockTransactions[idx];
         if (tx.type === 'INCOME' && tx.accountId) {
           const acc = mockAccounts.find(a => a.id === tx.accountId);
@@ -391,7 +410,13 @@ router.post('/bulk-delete', async (req: Request, res: Response) => {
         mockTransactions.splice(idx, 1);
       }
     }
-    res.json({ success: true, message: `${ids.length} transactions deleted (Fallback).` });
+    const mockDeleted = ids.length - mockSkipped.length;
+    res.json({
+      success: true,
+      message: `${mockDeleted} transactions deleted (Fallback).`,
+      deletedCount: mockDeleted,
+      skippedIds: mockSkipped
+    });
   }
 });
 

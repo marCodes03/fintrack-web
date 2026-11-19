@@ -12,16 +12,15 @@ import { BudgetOrchestrator } from '../services/budget.orchestrator';
 import { requireAuth } from '../middleware/auth.middleware';
 
 const router = Router();
-router.use(['/budget-plans', '/budget-goals', '/user'], requireAuth);
 
 // GET /api/budget-plans
-router.get('/budget-plans', async (req: Request, res: Response) => {
+router.get('/budget-plans', requireAuth, async (req: Request, res: Response) => {
   const result = await BudgetOrchestrator.getBudgetPlans(req.userId as string);
   res.json(result);
 });
 
 // POST /api/budget-plans
-router.post('/budget-plans', async (req: Request, res: Response) => {
+router.post('/budget-plans', requireAuth, async (req: Request, res: Response) => {
   const { name, timeframe, items } = req.body;
   if (!name || !timeframe) {
     res.status(400).json({ success: false, message: 'Name and timeframe are required.' });
@@ -32,7 +31,7 @@ router.post('/budget-plans', async (req: Request, res: Response) => {
 });
 
 // PUT /api/budget-plans/:id
-router.put('/budget-plans/:id', async (req: Request, res: Response) => {
+router.put('/budget-plans/:id', requireAuth, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { name, timeframe, items } = req.body;
   const result = await BudgetOrchestrator.updateBudgetPlan(id, req.userId as string, { name, timeframe, items });
@@ -44,7 +43,7 @@ router.put('/budget-plans/:id', async (req: Request, res: Response) => {
 });
 
 // DELETE /api/budget-plans/:id
-router.delete('/budget-plans/:id', async (req: Request, res: Response) => {
+router.delete('/budget-plans/:id', requireAuth, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
     const existing = await prisma.budgetPlan.findUnique({ where: { id } });
@@ -66,7 +65,7 @@ router.delete('/budget-plans/:id', async (req: Request, res: Response) => {
 });
 
 // Budget Plan Deactivation
-router.put('/budget-plans/:id/deactivate', async (req: Request, res: Response) => {
+router.put('/budget-plans/:id/deactivate', requireAuth, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
     const existing = await prisma.budgetPlan.findUnique({ where: { id } });
@@ -91,7 +90,7 @@ router.put('/budget-plans/:id/deactivate', async (req: Request, res: Response) =
 });
 
 // Budget Goals (Ideal Setup)
-router.get('/budget-goals', async (req: Request, res: Response) => {
+router.get('/budget-goals', requireAuth, async (req: Request, res: Response) => {
   const userId = req.userId as string;
   try {
     const goal = await prisma.budgetGoal.findUnique({
@@ -105,7 +104,7 @@ router.get('/budget-goals', async (req: Request, res: Response) => {
   }
 });
 
-router.put('/budget-goals', async (req: Request, res: Response) => {
+router.put('/budget-goals', requireAuth, async (req: Request, res: Response) => {
   const userId = req.userId as string;
   const { groups } = req.body;
   if (!groups) {
@@ -155,7 +154,7 @@ router.put('/budget-goals', async (req: Request, res: Response) => {
 });
 
 // Implement/Activate Budget Plan for a Period (Transaction Generation Engine)
-router.post('/budget-plans/:id/implement', async (req: Request, res: Response) => {
+router.post('/budget-plans/:id/implement', requireAuth, async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { startDate, endDate, accountId, expenseAccountId, savingsAccountId, execute } = req.body;
 
@@ -185,9 +184,17 @@ router.post('/budget-plans/:id/implement', async (req: Request, res: Response) =
     const targetUserId = req.userId as string;
 
     // Referenced accounts must belong to the authenticated user
-    const accountIds = [...new Set([accountId, expenseAccountId, savingsAccountId, ...plan.items.flatMap(i => [i.accountId, i.toAccountId])].filter(Boolean) as string[])];
-    const ownedCount = await prisma.account.count({ where: { id: { in: accountIds }, userId: targetUserId } });
-    if (ownedCount !== accountIds.length) {
+    // Request-supplied accounts must exist and be owned.
+    const requestAccountIds = [...new Set([accountId, expenseAccountId, savingsAccountId].filter(Boolean) as string[])];
+    const ownedRequestCount = await prisma.account.count({ where: { id: { in: requestAccountIds }, userId: targetUserId } });
+    if (ownedRequestCount !== requestAccountIds.length) {
+      res.status(404).json({ success: false, message: 'Account not found.' });
+      return;
+    }
+    // Plan-item accounts: tolerate deleted accounts, but reject any that belong to another user.
+    const itemAccountIds = [...new Set(plan.items.flatMap(i => [i.accountId, i.toAccountId]).filter(Boolean) as string[])];
+    const foreignItemCount = await prisma.account.count({ where: { id: { in: itemAccountIds }, userId: { not: targetUserId } } });
+    if (foreignItemCount > 0) {
       res.status(404).json({ success: false, message: 'Account not found.' });
       return;
     }
@@ -461,7 +468,7 @@ router.post('/budget-plans/:id/implement', async (req: Request, res: Response) =
 });
 
 // Savings Goal Endpoints
-router.get('/user/savings-goal', async (req: Request, res: Response) => {
+router.get('/user/savings-goal', requireAuth, async (req: Request, res: Response) => {
   const userId = req.userId as string;
   try {
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -472,7 +479,7 @@ router.get('/user/savings-goal', async (req: Request, res: Response) => {
   }
 });
 
-router.put('/user/savings-goal', async (req: Request, res: Response) => {
+router.put('/user/savings-goal', requireAuth, async (req: Request, res: Response) => {
   const { monthlySavingsGoal } = req.body;
   const userId = req.userId as string;
   const numericGoal = parseFloat(monthlySavingsGoal) || 0;

@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-// Token lifetime. Kept at 7 days; the Angular client additionally logs out after 6h of inactivity.
-export const TOKEN_EXPIRY = '7d';
+// Token lifetime. Matches the Angular client's 6h inactivity limit so the limit can't be bypassed
+// by calling the API directly with an old token.
+export const TOKEN_EXPIRY = '6h';
 
 export function getJwtSecret(): string {
   const secret = process.env['JWT_SECRET'];

@@ -14,6 +14,7 @@ router.post('/register', async (req: Request, res: Response) => {
     return;
   }
 
+  let newUser: { id: string; name: string; email: string };
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -21,15 +22,8 @@ router.post('/register', async (req: Request, res: Response) => {
       return;
     }
 
-    const newUser = await prisma.user.create({
+    newUser = await prisma.user.create({
       data: { name, email, password }
-    });
-
-    res.status(201).json({
-      success: true,
-      message: 'Registration successful.',
-      token: signToken(newUser.id),
-      user: { id: newUser.id, name: newUser.name, email: newUser.email }
     });
   } catch (err) {
     // Fallback if database is offline
@@ -38,15 +32,17 @@ router.post('/register', async (req: Request, res: Response) => {
       res.status(400).json({ success: false, message: 'User with this email already exists.' });
       return;
     }
-    const newUser = { id: `user-mock-${Date.now()}`, name, email, password };
-    mockUsers.push(newUser);
-    res.status(201).json({
-      success: true,
-      message: 'Registration successful.',
-      token: signToken(newUser.id),
-      user: { id: newUser.id, name: newUser.name, email: newUser.email }
-    });
+    newUser = { id: `user-mock-${Date.now()}`, name, email };
+    mockUsers.push({ ...newUser, password });
   }
+
+  // Sign outside the DB try/catch so a signing failure never triggers the mock-user fallback.
+  res.status(201).json({
+    success: true,
+    message: 'Registration successful.',
+    token: signToken(newUser.id),
+    user: { id: newUser.id, name: newUser.name, email: newUser.email }
+  });
 });
 
 // 2. Login
@@ -57,32 +53,30 @@ router.post('/login', async (req: Request, res: Response) => {
     return;
   }
 
+  let user: { id: string; name: string; email: string };
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || user.password !== password) {
+    const dbUser = await prisma.user.findUnique({ where: { email } });
+    if (!dbUser || dbUser.password !== password) {
       res.status(401).json({ success: false, message: 'Invalid email or password.' });
       return;
     }
-
-    res.json({
-      success: true,
-      message: 'Login successful.',
-      token: signToken(user.id),
-      user: { id: user.id, name: user.name, email: user.email }
-    });
+    user = dbUser;
   } catch (err) {
-    const user = mockUsers.find(u => u.email === email && u.password === password);
-    if (!user) {
+    const mockUser = mockUsers.find(u => u.email === email && u.password === password);
+    if (!mockUser) {
       res.status(401).json({ success: false, message: 'Invalid email or password.' });
       return;
     }
-    res.json({
-      success: true,
-      message: 'Login successful.',
-      token: signToken(user.id),
-      user: { id: user.id, name: user.name, email: user.email }
-    });
+    user = mockUser;
   }
+
+  // Sign outside the DB try/catch so a signing failure never triggers the mock fallback.
+  res.json({
+    success: true,
+    message: 'Login successful.',
+    token: signToken(user.id),
+    user: { id: user.id, name: user.name, email: user.email }
+  });
 });
 
 // 3. Forgot Password
