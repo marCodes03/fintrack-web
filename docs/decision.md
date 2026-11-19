@@ -324,3 +324,12 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Allow 12px labels; keep horizontally scrolling tables on phones; add 15px to the ramp.
 - **Consequences:** Dense labels are slightly larger. New templates must use token classes. The table-to-card CSS depends on `data-cell` and `data-label` attributes in each table template.
 - **Affected features:** all (UI)
+
+## D-034 — Dashboard hierarchy, plain analytics wording, savings blue
+- **Date:** 2026-11-20
+- **Status:** Accepted
+- **Context:** The dashboard critique found four equal KPI cards with empty space under three of them, jargon in the analytics block ("Denominator", "Progress to Goal 22% Achieved" on spending caps), a 4,000px page at 360px, duplicated category and date lines in the phone transaction cards, and savings teal that read almost the same as income emerald.
+- **Decision:** Net worth is a full-width hero card (larger figure) with income, expenses and savings in a row beneath. The analytics block is titled "Spending vs your plan" with plain labels ("Spent so far", "Spending limit 22% used", "Savings target 55% reached"); on phones the per-group breakdown is collapsed behind a "Show breakdown by group" toggle. Phone transaction cards drop the duplicate inline category line and the 3rem right padding reserved for a kebab menu the dashboard does not have. `--accent-teal` changes to a sky blue (`#0369a1` light, `#38bdf8` dark) so savings is distinct from income; the token name stays `accent-teal`.
+- **Alternatives:** Keep four equal cards; a new `accent-savings` token name (more edits across six components); show all analytics on phones.
+- **Consequences:** Every use of `accent-teal` (savings, budgets, references) is now blue. The phone page is about 2,900px tall instead of 4,000px.
+- **Affected features:** dashboard, savings, budgets (UI)

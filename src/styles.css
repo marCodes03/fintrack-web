@@ -46,7 +46,7 @@
   --accent-emerald: #046c4e;
   --accent-amber: #9a4506;
   --accent-rose: #be123c;
-  --accent-teal: #0f766e;
+  --accent-teal: #0369a1;
   --accent-indigo: #4338ca;
   --on-accent: #ffffff;
 
@@ -79,7 +79,7 @@
   --accent-emerald: #10b981;
   --accent-amber: #fbbf24;
   --accent-rose: #fb7185;
-  --accent-teal: #2dd4bf;
+  --accent-teal: #38bdf8;
   --accent-indigo: #818cf8;
   --on-accent: #020617;
 
@@ -235,7 +235,6 @@ a[class*="bg-accent-"]:active {
     min-height: 2.5rem;
   }
   .card-table tbody > tr:has(> td[data-cell="select"]) td[data-cell="title"] { padding-left: 2.5rem !important; }
-  .card-table td[data-cell="title"] .sm:hidden { display: none; }
   .card-table td[data-cell="title"] app-row-menu { position: absolute; top: 0.5rem; right: 0.5rem; margin: 0; }
   .card-table td[data-cell="amount"] {
     order: 0;

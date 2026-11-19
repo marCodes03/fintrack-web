@@ -12,7 +12,7 @@ colors:
   accent-emerald: "#046c4e"
   accent-amber: "#9a4506"
   accent-rose: "#be123c"
-  accent-teal: "#0f766e"
+  accent-teal: "#0369a1"
   accent-indigo: "#4338ca"
   chart-1: "#4f46e5"
   chart-2: "#0284c7"
@@ -29,7 +29,7 @@ colors:
   dark-accent-emerald: "#10b981"
   dark-accent-amber: "#fbbf24"
   dark-accent-rose: "#fb7185"
-  dark-accent-teal: "#2dd4bf"
+  dark-accent-teal: "#38bdf8"
   dark-accent-indigo: "#818cf8"
 typography:
   title:

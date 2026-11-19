@@ -29,6 +29,8 @@ export class DashboardComponent implements OnInit {
   protected readonly isResetModalOpen = signal<boolean>(false);
   protected readonly isLoadingTransactions = signal<boolean>(true);
   protected readonly isLoadingDashboard = signal<boolean>(true);
+  /** Group breakdown is collapsed on phones to keep the page short */
+  protected readonly analyticsOpen = signal<boolean>(false);
 
   protected readonly hideAmounts = this.authService.hideAmounts;
 
