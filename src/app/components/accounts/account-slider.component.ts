@@ -35,23 +35,36 @@ export class AccountSliderComponent implements OnChanges {
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  protected readonly fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors).sort()[0];
+    setTimeout(() => document.getElementById('account-slider-' + first)?.focus());
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.isOpen) {
       this.localName = this.name;
       this.localType = this.type;
       this.localBalance = this.balance;
       this.errorMessage.set(null);
+      this.fieldErrors.set({});
     }
   }
 
   onSubmit(): void {
-    if (!this.localName.trim()) {
-      this.errorMessage.set('Please give your account a name to get started!');
+    const errors: Record<string, string> = {};
+    if (!this.localName.trim()) errors['f1'] = 'Enter an account name.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+      this.fieldErrors.set({});
 
     const payload = {
       name: this.localName.trim(),
@@ -96,5 +109,6 @@ export class AccountSliderComponent implements OnChanges {
     this.localType = 'CASH';
     this.localBalance = null;
     this.errorMessage.set(null);
+      this.fieldErrors.set({});
   }
 }

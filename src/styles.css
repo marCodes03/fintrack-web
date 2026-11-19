@@ -132,13 +132,17 @@ body {
   outline-offset: 2px;
 }
 
-/* Under reduced motion everything rests */
+/* Reduced motion: no movement, no looping decoration; keep quick color and opacity
+   feedback so hover, focus and state changes still register. Spinners keep turning
+   because they are the only sign that work is in progress. */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    transition-property: color, background-color, border-color, outline-color, opacity, box-shadow, fill, stroke !important;
+    transition-duration: 120ms !important;
+  }
+  *:not(.animate-spin), ::before, ::after {
+    animation: none !important;
   }
 }
 
@@ -166,4 +170,16 @@ button:not([data-compact]) {
   .slide-in-from-right { --enter-x: 100%; }
   .zoom-in-95,
   .scale-in { --enter-scale: 0.95; }
+}
+
+/* Buttons and button-like links answer the press */
+button:not(:disabled):active,
+a[class*="bg-accent-"]:active {
+  transform: translateY(1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  button:active,
+  a:active {
+    transform: none !important;
+  }
 }

@@ -67,6 +67,15 @@ export class TransactionSliderComponent implements OnChanges {
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  protected readonly fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors).sort()[0];
+    setTimeout(() => document.getElementById('transaction-slider-' + first)?.focus());
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.isOpen) {
       this.localType = this.type;
@@ -80,6 +89,7 @@ export class TransactionSliderComponent implements OnChanges {
       this.localExpenseDate = this.expenseDate || new Date().toISOString().split('T')[0];
       this.updateDefaultCategory();
       this.errorMessage.set(null);
+      this.fieldErrors.set({});
     }
   }
 
@@ -126,22 +136,23 @@ export class TransactionSliderComponent implements OnChanges {
   }
 
   onSubmit(): void {
-    if (!this.localDescription || !this.localAmount || !this.localAccountId) {
-      this.errorMessage.set('Please fill out all required fields to record the transaction.');
-      return;
-    }
-
-    if (this.localType === 'TRANSFER' && (!this.localToAccountId || this.localAccountId === this.localToAccountId)) {
-      this.errorMessage.set('Please select a different destination account for your transfer.');
+    const errors: Record<string, string> = {};
+    if (!this.localDescription) errors['f2'] = 'Enter a title.';
+    if (!this.localAmount) errors['f3'] = 'Enter an amount above 0.';
+    if (!this.localAccountId) errors['f5'] = 'Choose an account.';
+    if (this.localType === 'TRANSFER' && (!this.localToAccountId || this.localAccountId === this.localToAccountId)) errors['f6'] = 'Choose a different destination account.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+      this.fieldErrors.set({});
 
     const payload = {
       description: this.localDescription,
-      amount: Math.abs(this.localAmount),
+      amount: Math.abs(this.localAmount ?? 0),
       type: this.localType,
       expenseType: this.localType === 'EXPENSE' ? this.localExpenseType : null,
       category: this.localType === 'TRANSFER' ? 'Transfer' : this.localCategory,

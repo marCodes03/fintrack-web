@@ -26,7 +26,7 @@
     <!-- Tab Navigation -->
     <div role="tablist" aria-label="Reference data" class="flex items-center space-x-1 bg-surface-subtle rounded-xl p-1.5 border border-border-subtle overflow-x-auto">
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'income-categories'" (click)="setTab('income-categories')"
-        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-[color,background-color,border-color,opacity,transform]"
         [class.bg-accent-emerald]="activeTab() === 'income-categories'"
         [class.text-on-accent]="activeTab() === 'income-categories'"
         [class.text-text-muted]="activeTab() !== 'income-categories'"
@@ -34,7 +34,7 @@
         <app-icon name="trending-up"/> Income Categories
       </button>
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'expense-categories'" (click)="setTab('expense-categories')"
-        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-[color,background-color,border-color,opacity,transform]"
         [class.bg-accent-emerald]="activeTab() === 'expense-categories'"
         [class.text-on-accent]="activeTab() === 'expense-categories'"
         [class.text-text-muted]="activeTab() !== 'expense-categories'"
@@ -42,7 +42,7 @@
         <app-icon name="cart"/> Expense Categories
       </button>
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'saving-categories'" (click)="setTab('saving-categories')"
-        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-[color,background-color,border-color,opacity,transform]"
         [class.bg-accent-emerald]="activeTab() === 'saving-categories'"
         [class.text-on-accent]="activeTab() === 'saving-categories'"
         [class.text-text-muted]="activeTab() !== 'saving-categories'"
@@ -50,7 +50,7 @@
         <app-icon name="coins"/> Saving Categories
       </button>
       <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'account-types'" (click)="setTab('account-types')"
-        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
+        class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-[color,background-color,border-color,opacity,transform]"
         [class.bg-accent-emerald]="activeTab() === 'account-types'"
         [class.text-on-accent]="activeTab() === 'account-types'"
         [class.text-text-muted]="activeTab() !== 'account-types'"
@@ -70,7 +70,7 @@
             <p class="text-xs text-text-muted mt-0.5">Categories available when recording income transactions.</p>
           </div>
           <button (click)="openCreateIncomeSlider()"
-            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <span>+</span><span>Add Category</span>
           </button>
         </div>
@@ -106,7 +106,7 @@
                   </td>
                 </tr>
               } @empty {
-                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No income categories configured yet.</td></tr>
+                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No income categories yet. Add one to use when recording income.</td></tr>
               }
             </tbody>
           </table>
@@ -125,7 +125,7 @@
             <p class="text-xs text-text-muted mt-0.5">Categories available when recording expense transactions.</p>
           </div>
           <button (click)="openCreateExpenseSlider()"
-            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <span>+</span><span>Add Category</span>
           </button>
         </div>
@@ -161,7 +161,7 @@
                   </td>
                 </tr>
               } @empty {
-                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No expense categories configured yet.</td></tr>
+                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No expense categories yet. Add one to use when recording expenses.</td></tr>
               }
             </tbody>
           </table>
@@ -180,7 +180,7 @@
             <p class="text-xs text-text-muted mt-0.5">Categories available when allocating savings records.</p>
           </div>
           <button (click)="openCreateSavingSlider()"
-            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <span>+</span><span>Add Category</span>
           </button>
         </div>
@@ -216,7 +216,7 @@
                   </td>
                 </tr>
               } @empty {
-                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No saving categories configured yet.</td></tr>
+                <tr><td colspan="5" class="px-6 py-10 text-center text-text-muted">No saving categories yet. Add one to use when recording savings.</td></tr>
               }
             </tbody>
           </table>
@@ -270,7 +270,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between p-5 border-b border-border-subtle">
         <h2 class="text-sm font-bold text-text-heading">{{ getSliderTitle() }}</h2>
-        <button (click)="closeSlider()"
+        <button (click)="closeSlider()" type="button" aria-label="Close"
           class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -322,7 +322,7 @@
       <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
         <button (click)="isIncomeMode() ? submitIncomeCategory() : (isSavingMode() ? submitSavingCategory() : submitExpenseCategory())"
           [disabled]="isLoading()"
-          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
+          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
           @if (isLoading()) {
             <svg class="animate-spin h-4 w-4 text-on-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -333,8 +333,8 @@
             <span>{{ editingId() ? 'Update Category' : 'Create Category' }}</span>
           }
         </button>
-        <button (click)="closeSlider()"
-          class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-sm">
+        <button (click)="closeSlider()" type="button" aria-label="Close"
+          class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm">
           Cancel
         </button>
       </div>

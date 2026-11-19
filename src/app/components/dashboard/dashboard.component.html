@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       @if (isLoadingDashboard()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 motion-safe:animate-pulse space-y-3">
+          <div role="status" aria-label="Loading" class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 motion-safe:animate-pulse space-y-3">
             <div class="flex items-center justify-between">
               <div class="h-4 bg-border-subtle rounded w-1/3"></div>
               <div class="h-5 bg-border-subtle rounded w-1/4"></div>
@@ -30,7 +30,7 @@
               accounts().length }} Account(s)</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-text-heading mt-3">
-            {{ hideAmounts() ? '₱ •••••' : (totalNetWorth() | currency:'PHP':'symbol-narrow') }}
+            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalNetWorth() | currency:'PHP':'symbol-narrow') }}}
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
           <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-1.5">
@@ -53,7 +53,7 @@
             <span class="text-xs font-semibold text-accent-emerald bg-accent-emerald/10 px-2 py-1 rounded-md">Inflows</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-accent-emerald mt-3">
-            {{ hideAmounts() ? '₱ •••••' : (totalIncome() | currency:'PHP':'symbol-narrow') }}
+            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalIncome() | currency:'PHP':'symbol-narrow') }}}
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of monthly recorded income</p>
         </div>
@@ -66,7 +66,7 @@
             <span class="text-xs font-semibold text-accent-rose bg-accent-rose/10 px-2 py-1 rounded-md">Outflows</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-accent-rose mt-3">
-            {{ hideAmounts() ? '₱ •••••' : (totalExpenses() | currency:'PHP':'symbol-narrow') }}
+            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalExpenses() | currency:'PHP':'symbol-narrow') }}}
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of monthly recorded expenses</p>
         </div>
@@ -79,7 +79,7 @@
             <span class="text-xs font-semibold text-accent-teal bg-accent-teal/10 px-2 py-1 rounded-md">Savings</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-accent-teal mt-3">
-            {{ hideAmounts() ? '₱ •••••' : (totalSavings() | currency:'PHP':'symbol-narrow') }}
+            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalSavings() | currency:'PHP':'symbol-narrow') }}}
           </p>
           <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
         </div>
@@ -96,7 +96,7 @@
         </div>
 
         @if (isLoadingDashboard()) {
-          <div class="motion-safe:animate-pulse space-y-4">
+          <div role="status" aria-label="Loading" class="motion-safe:animate-pulse space-y-4">
             <div class="space-y-2">
               <div class="h-5 bg-border-subtle rounded w-2/3"></div>
               <div class="h-3 bg-border-subtle rounded w-1/2"></div>
@@ -125,22 +125,22 @@
             <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Inflow</span>
-                <span class="text-xs font-bold text-accent-emerald">{{ hideAmounts() ? '₱ •••••' : ('+' + (activePlanInflows() | currency:'PHP':'symbol-narrow')) }}</span>
+                <span class="text-xs font-bold text-accent-emerald">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ ('+' + (activePlanInflows() | currency:'PHP':'symbol-narrow')) }}}</span>
               </div>
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Outflow</span>
-                <span class="text-xs font-bold text-accent-rose">{{ hideAmounts() ? '₱ •••••' : ('-' + (activePlanOutflows() | currency:'PHP':'symbol-narrow')) }}</span>
+                <span class="text-xs font-bold text-accent-rose">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ ('-' + (activePlanOutflows() | currency:'PHP':'symbol-narrow')) }}}</span>
               </div>
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Savings</span>
-                <span class="text-xs font-bold text-accent-teal">{{ hideAmounts() ? '₱ •••••' : (activePlanSavings() | currency:'PHP':'symbol-narrow') }}</span>
+                <span class="text-xs font-bold text-accent-teal">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanSavings() | currency:'PHP':'symbol-narrow') }}}</span>
               </div>
             </div>
 
             <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-surface-subtle border border-border-subtle">
                <span class="text-text-muted font-medium">Net Remaining</span>
                <span class="font-bold" [class.text-accent-emerald]="activePlanRemaining() >= 0" [class.text-accent-rose]="activePlanRemaining() < 0">
-                 {{ hideAmounts() ? '₱ •••••' : (activePlanRemaining() | currency:'PHP':'symbol-narrow') }}
+                 @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanRemaining() | currency:'PHP':'symbol-narrow') }}}
                </span>
             </div>
           </div>
@@ -148,7 +148,7 @@
           <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Budget Plan Active</p>
             <p class="text-xs text-text-muted">Implement a budget plan for a date range to track allocations.</p>
-            <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-all mt-1">
+            <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
               Set Up Budget Plan
             </a>
           </div>
@@ -163,7 +163,7 @@
         </div>
 
         @if (isLoadingDashboard()) {
-          <div class="motion-safe:animate-pulse space-y-4">
+          <div role="status" aria-label="Loading" class="motion-safe:animate-pulse space-y-4">
             <div class="space-y-2">
               <div class="h-8 bg-border-subtle rounded w-1/2"></div>
               <div class="h-3 bg-border-subtle rounded w-2/3"></div>
@@ -180,8 +180,8 @@
           <div class="space-y-3">
             <div>
               <p class="text-2xl font-extrabold text-text-heading">
-                {{ hideAmounts() ? '₱ •••••' : (currentMonthSavings() | currency:'PHP':'symbol-narrow') }}
-                <span class="text-xs text-text-muted font-normal">/ {{ hideAmounts() ? '₱ •••••' : (monthlySavingsGoal() | currency:'PHP':'symbol-narrow') }}</span>
+                @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (currentMonthSavings() | currency:'PHP':'symbol-narrow') }}}
+                <span class="text-xs text-text-muted font-normal">/ @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (monthlySavingsGoal() | currency:'PHP':'symbol-narrow') }}}</span>
               </p>
               <p class="text-xs text-text-muted mt-0.5">Current month savings target progress</p>
             </div>
@@ -194,7 +194,7 @@
               </div>
               <div class="flex items-center justify-between text-xs font-semibold text-text-muted">
                 <span>{{ savingsGoalProgressPercentage() }}% Reached</span>
-                <span>{{ hideAmounts() ? '₱ •••••' : (Math.max(0, monthlySavingsGoal() - currentMonthSavings()) | currency:'PHP':'symbol-narrow') }} Remaining</span>
+                <span>@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (Math.max(0, monthlySavingsGoal() - currentMonthSavings()) | currency:'PHP':'symbol-narrow') }}} Remaining</span>
               </div>
             </div>
           </div>
@@ -202,7 +202,7 @@
           <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Monthly Savings Goal Set</p>
             <p class="text-xs text-text-muted">Define a monthly goal to monitor your savings target progress.</p>
-            <a routerLink="/savings" class="inline-block bg-accent-teal hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-all mt-1">
+            <a routerLink="/savings" class="inline-block bg-accent-teal hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
               Define Savings Goal
             </a>
           </div>
@@ -220,11 +220,11 @@
           </h2>
           <p class="text-xs text-text-muted mt-0.5">Comparing baseline target percentages against current active plan blueprint and actual period expenses/savings.</p>
         </div>
-        <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income ({{ hideAmounts() ? '₱ •••••' : (activePlanInflows() | currency:'PHP':'symbol-narrow') }})</span>
+        <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income (@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanInflows() | currency:'PHP':'symbol-narrow') }}})</span>
       </div>
 
       @if (isLoadingDashboard()) {
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 motion-safe:animate-pulse">
+        <div role="status" aria-label="Loading" class="grid grid-cols-1 lg:grid-cols-4 gap-8 motion-safe:animate-pulse">
           <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-2xl border border-border-subtle w-full">
             <div class="h-4 bg-border-subtle rounded w-1/2"></div>
             <div class="w-36 h-36 rounded-full border-4 border-border-subtle bg-transparent flex items-center justify-center">
@@ -282,7 +282,7 @@
                   <span class="text-sm font-bold text-text-heading">{{ group.name }}</span>
                   <div class="text-right">
                     <span class="text-xs font-semibold text-text-muted block">Target Goal: <span class="text-accent-emerald font-bold">{{ group.targetPercentage }}%</span></span>
-                    <span class="text-xs font-bold text-text-muted block mt-0.5">({{ hideAmounts() ? '₱ •••••' : (group.targetAmount | currency:'PHP':'symbol-narrow') }})</span>
+                    <span class="text-xs font-bold text-text-muted block mt-0.5">(@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (group.targetAmount | currency:'PHP':'symbol-narrow') }}})</span>
                   </div>
                 </div>
 
@@ -292,7 +292,7 @@
                     <span class="text-text-muted block font-semibold mb-0.5">
                       {{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'Actual Saved' : 'Actual Spent' }}
                     </span>
-                    <span class="text-sm font-bold text-text-heading block">{{ hideAmounts() ? '₱ •••••' : (group.actualAmount | currency:'PHP':'symbol-narrow') }}</span>
+                    <span class="text-sm font-bold text-text-heading block">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (group.actualAmount | currency:'PHP':'symbol-narrow') }}}</span>
                     <span class="block text-xs font-bold text-text-muted mt-0.5">({{ group.actualPercentage }}% of income)</span>
                   </div>
                 </div>
@@ -325,8 +325,8 @@
             <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             <span>Target Goal Analytics Unavailable</span>
           </p>
-          <p class="text-xs text-text-muted">Please configure your Budget Goals to monitor allocations and spending targets.</p>
-          <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2 rounded-xl transition-all mt-1">
+          <p class="text-xs text-text-muted">Set your budget goals to track spending against targets.</p>
+          <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
             Setup & Configure Budget Goals
           </a>
         </div>
@@ -356,7 +356,7 @@
           <tbody class="divide-y divide-border-subtle" [attr.aria-busy]="isLoadingTransactions()">
             @if (isLoadingTransactions()) {
               @for (i of [1, 2, 3, 4, 5]; track i) {
-                <tr class="motion-safe:animate-pulse">
+                <tr aria-busy="true" class="motion-safe:animate-pulse">
                   <td class="px-4 py-3 font-semibold text-text-heading">
                     <div class="flex items-center gap-3">
                       <div class="w-8 h-8 rounded-lg bg-border-subtle"></div>
@@ -406,12 +406,12 @@
                   [class.text-accent-rose]="item.type === 'EXPENSE'"
                   [class.text-accent-teal]="item.type === 'SAVINGS'"
                   [class.text-text-muted]="item.type === 'TRANSFER'">
-                  {{ hideAmounts() ? '₱ •••••' : (item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-'))) + (Math.abs(item.amount) | currency:'PHP':'symbol-narrow') }}
+                  @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-'))) + (Math.abs(item.amount) | currency:'PHP':'symbol-narrow') }}}
                 </td>
               </tr>
               } @empty {
               <tr>
-                <td colspan="4" class="px-4 py-8 text-center text-text-muted">No transactions recorded yet.</td>
+                <td colspan="4" class="px-4 py-8 text-center text-text-muted">No transactions yet. Record income or an expense and it will show here.</td>
               </tr>
               }
             }

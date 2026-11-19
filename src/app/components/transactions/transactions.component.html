@@ -11,12 +11,12 @@
       <div class="flex items-center space-x-3">
         @if (selectedIds().size > 0) {
           <button (click)="handleBulkDelete()"
-            class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <app-icon name="trash"/><span>Delete Selected ({{ selectedIds().size }})</span>
           </button>
         }
         <button (click)="openCreateSlider()"
-          class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+          class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
           <span>+</span><span>Record Transaction</span>
         </button>
       </div>
@@ -133,7 +133,7 @@
           <tbody class="divide-y divide-border-subtle">
             @if (isLoading()) {
               @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
-                <tr class="animate-pulse">
+                <tr aria-busy="true" class="animate-pulse">
                   <td class="px-6 py-4 w-10"><div class="h-4 bg-border-subtle rounded w-4"></div></td>
                   <td class="px-6 py-4 font-semibold text-text-heading flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-lg bg-border-subtle"></div>
@@ -214,7 +214,7 @@
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="8" class="px-6 py-10 text-center text-text-muted">No transactions found matching the selected filters.</td>
+                  <td colspan="8" class="px-6 py-10 text-center text-text-muted">No transactions match these filters. Clear a filter to see more.</td>
                 </tr>
               }
             }

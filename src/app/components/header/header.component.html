@@ -12,7 +12,7 @@
     <div class="flex items-center space-x-4">
       <!-- Amount Privacy Eye Toggle -->
       <button (click)="toggleHideAmounts()"
-        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-all focus:outline-none"
+        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
         [attr.aria-label]="hideAmounts() ? 'Show amounts' : 'Hide amounts'" [attr.aria-pressed]="hideAmounts()">
         @if (hideAmounts()) {
           <svg class="h-5 w-5 text-accent-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,7 +40,7 @@
 
       <!-- Hamburger Slider Menu button -->
       <button (click)="openSlider()"
-        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-all focus:outline-none"
+        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
         aria-label="Open menu">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

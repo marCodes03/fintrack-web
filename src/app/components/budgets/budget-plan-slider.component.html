@@ -9,7 +9,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between p-5 border-b border-border-subtle">
         <h2 class="text-sm font-bold text-text-heading">{{ isEditMode ? 'Edit Budget Plan' : 'Create Budget Plan' }}</h2>
-        <button (click)="onClose()" class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
+        <button (click)="onClose()" type="button" aria-label="Close" class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -89,32 +89,32 @@
         <div class="relative group">
           <div role="tablist" aria-label="Plan steps" class="flex items-center space-x-1 border border-border-subtle bg-surface-subtle p-1.5 rounded-xl overflow-x-auto">
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 1" (click)="activeTab.set(1)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 1" [class.text-on-accent]="activeTab() === 1"
               [class.text-text-muted]="activeTab() === 1"
               [class.text-text-muted]="activeTab() !== 1" [class.hover:text-text-body]="activeTab() !== 1">
               STEP 1: Details
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 2" [class.text-on-accent]="activeTab() === 2"
               [class.text-text-muted]="activeTab() !== 2" [class.hover:text-text-body]="activeTab() !== 2">
               STEP 2: Planned Inflow
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 3" [class.text-on-accent]="activeTab() === 3"
               [class.text-text-muted]="activeTab() !== 3" [class.hover:text-text-body]="activeTab() !== 3">
               STEP 3: Planned Transfers
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 4" [class.text-on-accent]="activeTab() === 4"
               [class.text-text-muted]="activeTab() !== 4" [class.hover:text-text-body]="activeTab() !== 4">
               STEP 4: Planned Savings
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 5" (click)="activeTab.set(5)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap"
+              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 5" [class.text-on-accent]="activeTab() === 5"
               [class.text-text-muted]="activeTab() !== 5" [class.hover:text-text-body]="activeTab() !== 5">
               STEP 5: Planned Outflows
@@ -159,7 +159,7 @@
             </div>
 
             <div class="flex justify-end pt-2">
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2.5 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 Next: Step 2 Planned Inflow <app-icon name="arrow-right"/>
               </button>
             </div>
@@ -177,7 +177,7 @@
             <!-- Step 2 Form -->
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-4">
-                <label class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <label for="budget-plan-slider-f2" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
                 <select id="budget-plan-slider-f2" [(ngModel)]="newIncomeCategory" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none">
                   @for (cat of incomeCategories(); track cat.id) {
                     <option [value]="cat.name">{{ cat.name }}</option>
@@ -202,14 +202,14 @@
 
               <div class="col-span-2 flex flex-col justify-end space-y-1">
                 <button type="button" (click)="addIncomeItem()"
-                  class="w-full text-on-accent font-bold text-xs py-2 rounded-lg transition-all"
+                  class="w-full text-on-accent font-bold text-xs py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform]"
                   [class.bg-accent-emerald]="!editingIncomeItem()" [class.hover:opacity-90]="!editingIncomeItem()" [class.dark:hover:bg-accent-emerald]="!editingIncomeItem()"
                   [class.bg-accent-amber]="editingIncomeItem()" [class.hover:opacity-90]="editingIncomeItem()">
                   {{ editingIncomeItem() ? 'Update Inflow' : 'Add Inflow' }}
                 </button>
                 @if (editingIncomeItem()) {
                   <button type="button" (click)="cancelIncomeEdit()"
-                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-all">
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
                     Cancel
                   </button>
                 }
@@ -255,10 +255,10 @@
             </div>
 
             <div class="flex justify-between pt-2">
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 1" (click)="activeTab.set(1)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 1" (click)="activeTab.set(1)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 <app-icon name="arrow-left"/> Back to Step 1
               </button>
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 Next: Step 3 Planned Transfers <app-icon name="arrow-right"/>
               </button>
             </div>
@@ -319,12 +319,12 @@
               <div class="col-span-12 flex justify-end space-x-2 mt-1">
                 @if (editingTransferItem()) {
                   <button type="button" (click)="cancelTransferEdit()"
-                    class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3 py-2 rounded-lg transition-all">
+                    class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3 py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
                     Cancel Edit
                   </button>
                 }
                 <button type="button" (click)="addTransferItem()" [disabled]="totalPlannedIncome <= 0"
-                  class="text-on-accent font-bold text-xs px-4 py-2 rounded-lg transition-all disabled:opacity-50 bg-accent-indigo hover:opacity-90"
+                  class="text-on-accent font-bold text-xs px-4 py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform] disabled:opacity-50 bg-accent-indigo hover:opacity-90"
                   [class.bg-accent-amber]="editingTransferItem()" [class.hover:bg-accent-amber]="editingTransferItem()">
                   {{ editingTransferItem() ? 'Update Transfer' : 'Transfer Funds' }}
                 </button>
@@ -374,10 +374,10 @@
             </div>
 
             <div class="flex justify-between pt-2">
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 <app-icon name="arrow-left"/> Back to Step 2
               </button>
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 Next: Step 4 Planned Savings <app-icon name="arrow-right"/>
               </button>
             </div>
@@ -442,12 +442,12 @@
               <div class="col-span-12 flex justify-end space-x-2 mt-1">
                 @if (editingSavingsItem()) {
                   <button type="button" (click)="cancelSavingsEdit()"
-                    class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3 py-2 rounded-lg transition-all">
+                    class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3 py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
                     Cancel Edit
                   </button>
                 }
                 <button type="button" (click)="addSavingsItem()" [disabled]="totalPlannedIncome <= 0"
-                  class="text-on-accent font-bold text-xs px-4 py-2 rounded-lg transition-all disabled:opacity-50 bg-accent-teal hover:opacity-90"
+                  class="text-on-accent font-bold text-xs px-4 py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform] disabled:opacity-50 bg-accent-teal hover:opacity-90"
                   [class.bg-accent-amber]="editingSavingsItem()" [class.hover:bg-accent-amber]="editingSavingsItem()">
                   {{ editingSavingsItem() ? 'Update Savings' : 'Save Funds' }}
                 </button>
@@ -497,10 +497,10 @@
             </div>
 
             <div class="flex justify-between pt-2">
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 <app-icon name="arrow-left"/> Back to Step 3
               </button>
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 5" (click)="activeTab.set(5)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 5" (click)="activeTab.set(5)" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 Next: Step 5 Planned Outflows <app-icon name="arrow-right"/>
               </button>
             </div>
@@ -548,13 +548,13 @@
 
               <div class="col-span-2 flex flex-col justify-end space-y-1">
                 <button type="button" (click)="addOutflowItem()" [disabled]="totalPlannedIncome <= 0"
-                  class="w-full text-on-accent font-bold text-xs py-2 rounded-lg transition-all disabled:opacity-50 bg-accent-rose hover:opacity-90"
+                  class="w-full text-on-accent font-bold text-xs py-2 rounded-lg transition-[color,background-color,border-color,opacity,transform] disabled:opacity-50 bg-accent-rose hover:opacity-90"
                   [class.bg-accent-amber]="editingOutflowItem()" [class.hover:bg-accent-amber]="editingOutflowItem()">
                   {{ editingOutflowItem() ? 'Update Expense' : 'Allocate Expense' }}
                 </button>
                 @if (editingOutflowItem()) {
                   <button type="button" (click)="cancelOutflowEdit()"
-                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-all">
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
                     Cancel
                   </button>
                 }
@@ -602,7 +602,7 @@
             </div>
 
             <div class="flex justify-between pt-2">
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-all">
+              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 <app-icon name="arrow-left"/> Back to Step 4
               </button>
             </div>
@@ -616,14 +616,14 @@
           <p id="submit-hint" class="text-xs text-text-muted">Add a non-credit account first, then you can save this plan.</p>
         }
         <button [attr.aria-describedby]="nonCreditAccounts.length === 0 ? 'submit-hint' : null" (click)="onSubmit()" [disabled]="isLoading() || nonCreditAccounts.length === 0"
-          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
+          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
           @if (isLoading()) {
             <span>Saving Plan...</span>
           } @else {
             <span>{{ isEditMode ? 'Update Budget Plan' : 'Save Budget Plan Blueprint' }}</span>
           }
         </button>
-        <button (click)="onClose()" class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-sm">
+        <button (click)="onClose()" type="button" aria-label="Close" class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm">
           Cancel
         </button>
       </div>

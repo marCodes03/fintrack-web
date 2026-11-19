@@ -14,7 +14,7 @@
         <div class="space-y-1">
           <h2 class="text-base font-bold text-text-heading leading-snug">{{ title }}</h2>
           <p class="text-xs text-text-muted leading-normal">
-            Are you sure you want to permanently delete <strong class="text-text-body font-semibold">"{{ itemName }}"</strong>? This action is irreversible.
+            Delete <strong class="text-text-body font-semibold">"{{ itemName }}"</strong> permanently? This can't be undone.
           </p>
         </div>
       </div>
@@ -36,12 +36,12 @@
       <!-- Bottom controls -->
       <div class="flex items-center space-x-3 pt-2">
         <button type="button" (click)="onClose()"
-          class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-xs">
+          class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-xs">
           Cancel
         </button>
         <button type="button" (click)="onConfirm()" [disabled]="isConfirmDisabled()" aria-describedby="confirm-delete-hint"
-          class="flex-1 bg-accent-rose hover:opacity-90 text-on-accent font-bold py-2.5 px-4 rounded-xl transition-all text-xs disabled:opacity-30 disabled:cursor-not-allowed">
-          Delete Item
+          class="flex-1 bg-accent-rose hover:opacity-90 text-on-accent font-bold py-2.5 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+          Delete permanently
         </button>
       </div>
 

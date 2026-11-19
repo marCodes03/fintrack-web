@@ -9,7 +9,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between p-5 border-b border-border-subtle">
         <h2 class="text-sm font-bold text-text-heading">{{ isEditMode ? 'Edit Transaction' : 'Record New Transaction' }}</h2>
-        <button (click)="onClose()" class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
+        <button (click)="onClose()" type="button" aria-label="Close" class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -38,15 +38,21 @@
         <!-- Title -->
         <div>
           <label for="transaction-slider-f2" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Title *</label>
-          <input id="transaction-slider-f2" type="text" [(ngModel)]="localDescription" placeholder="e.g. Grocery Shopping or Transfer"
+          <input id="transaction-slider-f2" [attr.aria-invalid]="fieldErrors()['f2'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f2'] ? 'transaction-slider-f2-err' : null" type="text" [(ngModel)]="localDescription" placeholder="e.g. Grocery Shopping or Transfer"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
+          @if (fieldErrors()['f2']) {
+            <p id="transaction-slider-f2-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f2'] }}</p>
+          }
         </div>
 
         <!-- Amount -->
         <div>
           <label for="transaction-slider-f3" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Amount (₱) *</label>
-          <input id="transaction-slider-f3" type="number" [(ngModel)]="localAmount" placeholder="0.00" min="0.01" step="0.01"
+          <input id="transaction-slider-f3" [attr.aria-invalid]="fieldErrors()['f3'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f3'] ? 'transaction-slider-f3-err' : null" type="number" [(ngModel)]="localAmount" placeholder="0.00" min="0.01" step="0.01"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
+          @if (fieldErrors()['f3']) {
+            <p id="transaction-slider-f3-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f3'] }}</p>
+          }
         </div>
 
         <!-- Category (Non-Transfer) -->
@@ -72,22 +78,28 @@
           <label for="transaction-slider-f5" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">
             {{ localType === 'TRANSFER' ? 'Source Account *' : 'Account *' }}
           </label>
-          <select id="transaction-slider-f5" [(ngModel)]="localAccountId" class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-accent-emerald text-base">
+          <select id="transaction-slider-f5" [attr.aria-invalid]="fieldErrors()['f5'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f5'] ? 'transaction-slider-f5-err' : null" [(ngModel)]="localAccountId" class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-accent-emerald text-base">
             @for (acc of accounts; track acc.id) {
               <option [value]="acc.id">{{ acc.name }} (₱{{ acc.balance | number:'1.2-2' }}) [{{ acc.type }}]</option>
             }
           </select>
+          @if (fieldErrors()['f5']) {
+            <p id="transaction-slider-f5-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f5'] }}</p>
+          }
         </div>
 
         <!-- Destination Account & Transfer Fee (If Transfer) -->
         @if (localType === 'TRANSFER') {
           <div>
             <label for="transaction-slider-f6" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Destination Account *</label>
-            <select id="transaction-slider-f6" [(ngModel)]="localToAccountId" class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-accent-emerald text-base">
+            <select id="transaction-slider-f6" [attr.aria-invalid]="fieldErrors()['f6'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f6'] ? 'transaction-slider-f6-err' : null" [(ngModel)]="localToAccountId" class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-accent-emerald text-base">
               @for (acc of accounts; track acc.id) {
                 <option [value]="acc.id">{{ acc.name }} (₱{{ acc.balance | number:'1.2-2' }})</option>
               }
             </select>
+          @if (fieldErrors()['f6']) {
+            <p id="transaction-slider-f6-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f6'] }}</p>
+          }
           </div>
 
           <div>
@@ -111,14 +123,14 @@
           <p id="submit-hint" class="text-xs text-text-muted">Add an account first, then you can save this record.</p>
         }
         <button (click)="onSubmit()" [disabled]="isLoading() || accounts.length === 0" [attr.aria-describedby]="accounts.length === 0 ? 'submit-hint' : null"
-          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
+          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
           @if (isLoading()) {
             <span>Saving...</span>
           } @else {
             <span>{{ isEditMode ? 'Update Transaction' : 'Record Transaction' }}</span>
           }
         </button>
-        <button (click)="onClose()" class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-all text-sm">
+        <button (click)="onClose()" type="button" aria-label="Close" class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm">
           Cancel
         </button>
       </div>

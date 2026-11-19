@@ -8,7 +8,7 @@
         <p class="text-xs text-text-muted mt-1">Manage cash drawers, bank deposits, credit details, e-wallets, and savings accounts in PHP.</p>
       </div>
       <button (click)="openCreateSlider()"
-        class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+        class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
         <span>+</span><span>Add Account</span>
       </button>
     </div>
@@ -56,7 +56,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @if (isLoading()) {
           @for (i of [1, 2, 3]; track i) {
-            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 flex flex-col justify-between animate-pulse">
+            <div role="status" aria-label="Loading" class="bg-surface-card border border-border-subtle rounded-2xl p-5 flex flex-col justify-between animate-pulse">
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3 w-2/3">
                   <div class="h-10 w-10 rounded-xl bg-border-subtle"></div>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="text-right">
                   <p class="font-black text-text-heading text-lg">
-                    {{ hideAmounts() ? '₱ •••••' : (acc.balance | currency:acc.currency:'symbol-narrow') }}
+                    @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (acc.balance | currency:acc.currency:'symbol-narrow') }}}
                   </p>
                 </div>
               </div>
@@ -110,8 +110,8 @@
             </div>
           } @empty {
             <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
-              <p class="text-sm text-text-muted">No accounts added yet.</p>
-              <button (click)="openCreateSlider()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+              <p class="text-sm text-text-muted">No accounts yet. Add an account to start tracking balances.</p>
+              <button (click)="openCreateSlider()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 Create First Account
               </button>
             </div>

@@ -35,6 +35,15 @@ export class SavingsSliderComponent implements OnChanges {
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  protected readonly fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors).sort()[0];
+    setTimeout(() => document.getElementById('savings-slider-' + first)?.focus());
+  }
+
   protected localDescription = '';
   protected localAmount: number | null = null;
   protected localCategory = '';
@@ -49,6 +58,7 @@ export class SavingsSliderComponent implements OnChanges {
       this.localAccountId = this.accountId || (this.accounts.length > 0 ? this.accounts[0].id : '');
       this.localToAccountId = this.toAccountId || (this.accounts.length > 1 ? this.accounts[1].id : (this.accounts.length > 0 ? this.accounts[0].id : ''));
       this.errorMessage.set(null);
+      this.fieldErrors.set({});
     }
   }
 
@@ -71,32 +81,35 @@ export class SavingsSliderComponent implements OnChanges {
   }
 
   onSubmit(): void {
-    if (!this.localDescription || !this.localAmount || !this.localAccountId || !this.localToAccountId || !this.localCategory) {
-      this.errorMessage.set('Please fill out all required fields to log your savings.');
-      return;
-    }
-
-    if (this.localAccountId === this.localToAccountId) {
-      this.errorMessage.set('The source and destination accounts must be different.');
+    const errors: Record<string, string> = {};
+    if (!this.localDescription) errors['f1'] = 'Enter a title.';
+    if (!this.localAmount) errors['f2'] = 'Enter an amount above 0.';
+    if (!this.localCategory) errors['f3'] = 'Choose a category.';
+    if (!this.localAccountId) errors['f4'] = 'Choose a source account.';
+    if (!this.localToAccountId) errors['f5'] = 'Choose a destination account.';
+    if (!errors['f5'] && this.localAccountId === this.localToAccountId) errors['f5'] = 'Choose a different account from the source.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
 
     const sourceAcc = this.accounts.find(a => a.id === this.localAccountId);
     const availableBalance = sourceAcc ? sourceAcc.balance : 0;
 
-    if (Math.abs(this.localAmount) > availableBalance) {
+    if (Math.abs(this.localAmount ?? 0) > availableBalance) {
       const accName = sourceAcc ? sourceAcc.name : 'Selected Source Account';
       const formattedBal = availableBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      this.errorMessage.set(`Oops, there aren't enough funds in ${accName}. You currently have ₱${formattedBal} available.`);
+      this.showFieldErrors({ f2: `${accName} has only ₱${formattedBal} available.` });
       return;
     }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+      this.fieldErrors.set({});
 
     const payload = {
       description: this.localDescription,
-      amount: Math.abs(this.localAmount),
+      amount: Math.abs(this.localAmount ?? 0),
       type: 'SAVINGS',
       category: this.localCategory,
       accountId: this.localAccountId,

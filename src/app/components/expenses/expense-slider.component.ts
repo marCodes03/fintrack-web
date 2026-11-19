@@ -43,6 +43,15 @@ export class ExpenseSliderComponent implements OnChanges {
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  protected readonly fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors).sort()[0];
+    setTimeout(() => document.getElementById('expense-slider-' + first)?.focus());
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.isOpen) {
       this.localDescription = this.description;
@@ -52,21 +61,28 @@ export class ExpenseSliderComponent implements OnChanges {
       this.localExpenseType = this.expenseType;
       this.localExpenseDate = this.expenseDate || new Date().toISOString().split('T')[0];
       this.errorMessage.set(null);
+      this.fieldErrors.set({});
     }
   }
 
   onSubmit(): void {
-    if (!this.localDescription || !this.localAmount || !this.localAccountId || !this.localCategory) {
-      this.errorMessage.set('Please fill out all required fields to record your expense.');
+    const errors: Record<string, string> = {};
+    if (!this.localDescription) errors['f1'] = 'Enter a title.';
+    if (!this.localAmount) errors['f2'] = 'Enter an amount above 0.';
+    if (!this.localCategory) errors['f3'] = 'Choose a category.';
+    if (!this.localAccountId) errors['f4'] = 'Choose the account you paid from.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+      this.fieldErrors.set({});
 
     const payload = {
       description: this.localDescription,
-      amount: Math.abs(this.localAmount),
+      amount: Math.abs(this.localAmount ?? 0),
       type: 'EXPENSE',
       expenseType: this.localExpenseType,
       category: this.localCategory,
