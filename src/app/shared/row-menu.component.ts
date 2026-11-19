@@ -20,7 +20,7 @@ export interface RowMenuItem {
       </svg>
     </button>
     @if (open()) {
-      <div #menu role="menu" [attr.aria-label]="label" [style.top.px]="top()" [style.left.px]="left()"
+      <div #menu role="menu" animate.leave="menu-leave" [attr.aria-label]="label" [style.top.px]="top()" [style.left.px]="left()"
         [style.visibility]="positioned() ? 'visible' : 'hidden'"
         class="fixed z-40 min-w-44 bg-surface-card border border-border-subtle rounded-xl shadow-2xl p-1.5"
         (keydown)="onMenuKey($event)">
