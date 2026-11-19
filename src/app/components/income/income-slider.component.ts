@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
-import { DecimalPipe } from '@angular/common';
+import { MaskedAmountPipe } from '../../shared/masked-amount.pipe';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Account, RefIncomeCategory } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-income-slider',
   standalone: true,
-  imports: [DialogDirective, FormsModule, DecimalPipe],
+  imports: [DialogDirective, FormsModule, MaskedAmountPipe],
   templateUrl: './income-slider.component.html'
 })
 export class IncomeSliderComponent implements OnChanges {

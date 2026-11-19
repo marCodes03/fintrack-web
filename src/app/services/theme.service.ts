@@ -11,10 +11,14 @@ export class ThemeService {
   constructor() {
     let stored: string | null = null;
     try { stored = localStorage.getItem('theme'); } catch { /* storage blocked */ }
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    this.apply(stored ? stored === 'dark' : media.matches);
+    // Keep a single theme-color tag that follows the chosen theme (replaces the media-query pair). Done once, not per apply().
+    const metas = document.querySelectorAll('meta[name="theme-color"]');
+    metas.forEach((m, i) => (i === 0 ? m.removeAttribute('media') : m.remove()));
+
+    const media = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    this.apply(stored ? stored === 'dark' : !!media?.matches);
     // Follow the OS while the user has not chosen a theme
-    media.addEventListener('change', (e) => {
+    media?.addEventListener('change', (e) => {
       let chosen: string | null = null;
       try { chosen = localStorage.getItem('theme'); } catch { /* storage blocked */ }
       if (!chosen) this.apply(e.matches);
@@ -33,8 +37,6 @@ export class ThemeService {
     root.setAttribute('data-theme-switching', '');
     this.isDark.set(dark);
     document.documentElement.classList.toggle('dark', dark);
-    // One meta color that follows the manual choice (replaces the media-query pair)
-    document.querySelectorAll('meta[name="theme-color"]').forEach((m, i) => (i === 0 ? m.removeAttribute('media') : m.remove()));
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? DARK : LIGHT);
     void root.offsetHeight;
     requestAnimationFrame(() => root.removeAttribute('data-theme-switching'));

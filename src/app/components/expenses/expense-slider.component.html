@@ -64,7 +64,7 @@
           <label for="expense-slider-f4" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Account (Deducted From) *</label>
           <select id="expense-slider-f4" [attr.aria-invalid]="fieldErrors()['f4'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f4'] ? 'expense-slider-f4-err' : null" [(ngModel)]="localAccountId" class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2.5 text-input-text focus:outline-none focus:border-accent-emerald text-base">
             @for (acc of accounts; track acc.id) {
-              <option [value]="acc.id">{{ acc.name }} (₱{{ acc.balance | number:'1.2-2' }}) [{{ acc.type }}]</option>
+              <option [value]="acc.id">{{ acc.name }} ({{ acc.balance | maskedAmount }}) [{{ acc.type }}]</option>
             } @empty {
               <option value="" disabled>No accounts yet. Add one on the Accounts page first</option>
             }

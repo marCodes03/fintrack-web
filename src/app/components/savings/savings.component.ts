@@ -1,6 +1,7 @@
 import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
-import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { Component, signal, inject, OnInit, computed, effect } from '@angular/core';
+import { infiniteWindowScroll } from '../../shared/infinite-scroll';
 import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
@@ -22,8 +23,8 @@ import { DatePipe } from '@angular/common';
 })
 export class SavingsComponent implements OnInit {
   protected readonly rowActions: RowMenuItem[] = [
-    { key: 'edit', label: 'Edit' },
-    { key: 'delete', label: 'Delete', danger: true }
+    { key: 'edit', label: 'Edit savings record' },
+    { key: 'delete', label: 'Delete savings record', danger: true }
   ];
 
   private apiService = inject(ApiService);
@@ -105,12 +106,11 @@ export class SavingsComponent implements OnInit {
   }
 
   // Below 1024px the list grows with the page, so load more when the page nears its end
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    if (window.innerWidth >= 1024) return;
-    const doc = document.documentElement;
-    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 200) this.loadMore();
-  }
+  private readonly pageScroll = infiniteWindowScroll({
+    hasMore: () => this.itemsToShow() < this.filteredTransactions().length,
+    loadMore: () => this.loadMore(),
+    deps: () => this.itemsToShow()
+  });
 
   onContainerScroll(event: Event): void {
     const target = event.target as HTMLElement;
@@ -206,6 +206,22 @@ export class SavingsComponent implements OnInit {
     if (goal <= 0) return 0;
     return Math.min(100, Math.round((this.totalMonthSavings() / goal) * 100));
   });
+
+  protected readonly goalReached = signal<boolean>(false);
+  private lastGoalPct: number | null = null;
+
+  constructor() {
+    // Pulse once when a deposit takes the goal to 100% (not on page load)
+    effect(() => {
+      if (this.isLoading()) return;
+      const pct = this.goalProgressPercentage();
+      if (this.lastGoalPct !== null && this.lastGoalPct < 100 && pct >= 100) {
+        this.goalReached.set(true);
+        setTimeout(() => this.goalReached.set(false), 900);
+      }
+      this.lastGoalPct = pct;
+    });
+  }
 
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) {

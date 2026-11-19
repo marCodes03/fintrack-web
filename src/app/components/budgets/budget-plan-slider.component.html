@@ -74,7 +74,7 @@
                       <span class="text-xs text-text-muted uppercase font-semibold">{{ acc.type }}</span>
                     </div>
                     <span class="text-xs font-bold shrink-0" [class.text-accent-emerald]="getVirtualBalance(acc.id) >= 0" [class.text-accent-rose]="getVirtualBalance(acc.id) < 0">
-                      ₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }}
+                      {{ getVirtualBalance(acc.id) | maskedAmount }}
                     </span>
                   </div>
                 } @empty {
@@ -292,7 +292,7 @@
                 <select id="budget-plan-slider-f6" [attr.aria-invalid]="fieldErrors()['f6'] ? true : null" [attr.aria-describedby]="fieldErrors()['f6'] ? 'budget-plan-slider-f6-err' : null" [(ngModel)]="newTransferSourceAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
-                    <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
+                    <option [value]="acc.id">{{ acc.name }} ({{ getVirtualBalance(acc.id) | maskedAmount }})</option>
                   }
                 </select>
                 @if (fieldErrors()['f6']) { <p id="budget-plan-slider-f6-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f6'] }}</p> }
@@ -418,7 +418,7 @@
                 <select id="budget-plan-slider-f11" [attr.aria-invalid]="fieldErrors()['f11'] ? true : null" [attr.aria-describedby]="fieldErrors()['f11'] ? 'budget-plan-slider-f11-err' : null" [(ngModel)]="newSavingsSourceAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
-                    <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
+                    <option [value]="acc.id">{{ acc.name }} ({{ getVirtualBalance(acc.id) | maskedAmount }})</option>
                   }
                 </select>
                 @if (fieldErrors()['f11']) { <p id="budget-plan-slider-f11-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f11'] }}</p> }
@@ -545,7 +545,7 @@
                 <select id="budget-plan-slider-f16" [attr.aria-invalid]="fieldErrors()['f16'] ? true : null" [attr.aria-describedby]="fieldErrors()['f16'] ? 'budget-plan-slider-f16-err' : null" [(ngModel)]="newOutflowAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
-                    <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
+                    <option [value]="acc.id">{{ acc.name }} ({{ getVirtualBalance(acc.id) | maskedAmount }})</option>
                   }
                 </select>
                 @if (fieldErrors()['f16']) { <p id="budget-plan-slider-f16-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f16'] }}</p> }

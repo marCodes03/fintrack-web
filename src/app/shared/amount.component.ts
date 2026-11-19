@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
  * Money value that honors the header "hide amounts" toggle.
  * When hidden it shows a mask for sighted users and "Amount hidden" for screen readers.
  * The sign is part of the component so it is hidden too (it would reveal income vs expense).
+ * `currency` defaults to PHP, the schema default for accounts; pass `acc.currency` wherever an account's currency can differ.
  */
 @Component({
   selector: 'app-amount',

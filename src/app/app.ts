@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { ThemeService } from './services/theme.service';
 
@@ -17,7 +18,12 @@ export class App {
 
   constructor() {
     // After each navigation, send focus to the page content so screen readers announce the new page
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
+    // Query-string or fragment-only changes (filters, pagination) keep the user's focus and scroll position.
+    let lastPath = this.router.url.split(/[?#]/)[0];
+    this.router.events.pipe(filter((e) => e instanceof NavigationEnd), takeUntilDestroyed()).subscribe((e) => {
+      const path = e.urlAfterRedirects.split(/[?#]/)[0];
+      if (path === lastPath) return;
+      lastPath = path;
       setTimeout(() => {
         const target = document.getElementById('main-content') ?? document.querySelector<HTMLElement>('h1');
         if (target) {

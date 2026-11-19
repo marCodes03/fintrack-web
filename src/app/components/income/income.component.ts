@@ -1,6 +1,7 @@
 import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
-import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { infiniteWindowScroll } from '../../shared/infinite-scroll';
 import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -21,8 +22,8 @@ import { DatePipe } from '@angular/common';
 })
 export class IncomeComponent implements OnInit {
   protected readonly rowActions: RowMenuItem[] = [
-    { key: 'edit', label: 'Edit' },
-    { key: 'delete', label: 'Delete', danger: true }
+    { key: 'edit', label: 'Edit income' },
+    { key: 'delete', label: 'Delete income', danger: true }
   ];
 
   private apiService = inject(ApiService);
@@ -98,12 +99,11 @@ export class IncomeComponent implements OnInit {
   }
 
   // Below 1024px the list grows with the page, so load more when the page nears its end
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    if (window.innerWidth >= 1024) return;
-    const doc = document.documentElement;
-    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 200) this.loadMore();
-  }
+  private readonly pageScroll = infiniteWindowScroll({
+    hasMore: () => this.itemsToShow() < this.filteredTransactions().length,
+    loadMore: () => this.loadMore(),
+    deps: () => this.itemsToShow()
+  });
 
   onContainerScroll(event: Event): void {
     const target = event.target as HTMLElement;

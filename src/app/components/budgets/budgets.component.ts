@@ -1,6 +1,7 @@
 import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
-import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { infiniteWindowScroll } from '../../shared/infinite-scroll';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -44,12 +45,11 @@ export class BudgetsComponent implements OnInit {
   });
 
   // Below 1024px the list grows with the page, so load more when the page nears its end
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    if (window.innerWidth >= 1024) return;
-    const doc = document.documentElement;
-    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 200) this.loadMore();
-  }
+  private readonly pageScroll = infiniteWindowScroll({
+    hasMore: () => this.itemsToShow() < this.budgetPlans().length,
+    loadMore: () => this.loadMore(),
+    deps: () => this.itemsToShow()
+  });
 
   onContainerScroll(event: Event): void {
     const target = event.target as HTMLElement;

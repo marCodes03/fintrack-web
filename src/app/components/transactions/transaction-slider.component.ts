@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, Simp
 import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
+import { MaskedAmountPipe } from '../../shared/masked-amount.pipe';
 import { ApiService, Account } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-transaction-slider',
   standalone: true,
-  imports: [DialogDirective, FormsModule, DecimalPipe],
+  imports: [DialogDirective, FormsModule, MaskedAmountPipe],
   templateUrl: './transaction-slider.component.html'
 })
 export class TransactionSliderComponent implements OnChanges {
