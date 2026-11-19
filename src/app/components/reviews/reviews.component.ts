@@ -26,6 +26,7 @@ export class ReviewsComponent implements OnInit {
   protected isLoading = signal<boolean>(false);
   protected successMessage = signal<string | null>(null);
   protected errorMessage = signal<string | null>(null);
+  protected celebrate = signal<boolean>(false);
 
   protected fieldErrors = signal<Record<string, string>>({});
 
@@ -94,8 +95,10 @@ export class ReviewsComponent implements OnInit {
       next: (res) => {
         this.isLoading.set(false);
         this.successMessage.set(res.message || 'Review submitted successfully!');
-        this.rating.set(0);
         this.comment = '';
+        // Let the chosen stars pop once before the form resets
+        this.celebrate.set(true);
+        setTimeout(() => { this.rating.set(0); this.celebrate.set(false); }, 450);
         this.loadReviews();
       },
       error: (err) => {

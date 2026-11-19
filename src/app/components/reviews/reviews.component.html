@@ -51,7 +51,7 @@
                         (mouseenter)="setHover(star)" 
                         (mouseleave)="clearHover()"
                         class="text-3xl transition-transform hover:scale-110 focus:outline-none duration-150">
-                  <span [class.text-accent-amber]="star <= (hoverRating() || rating())"
+                  <span [class.star-pop]="celebrate() && star <= rating()" [style.animation-delay.ms]="star * 40" [class.text-accent-amber]="star <= (hoverRating() || rating())"
                         [class.text-border-strong]="star > (hoverRating() || rating())"><app-icon name="star-filled"/></span>
                 </button>
               }
