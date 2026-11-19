@@ -262,8 +262,10 @@ input[type="checkbox"] {
   height: 1.5rem;
 }
 
-/* Dimmed page behind drawers and modals: stronger in dark mode, where the page is already dark */
-.scrim { background-color: rgb(0 0 0 / 0.4); }
+/* Dimmed page behind drawers and modals. Below md there is no backdrop blur, so the dim is stronger to keep
+   balances behind a modal unreadable; from md up the blur does that job. Dark mode is already dark. */
+.scrim { background-color: rgb(0 0 0 / 0.6); }
+@media (min-width: 768px) { .scrim { background-color: rgb(0 0 0 / 0.4); } }
 .dark .scrim { background-color: rgb(0 0 0 / 0.6); }
 
 /* Programmatic focus on the page container after navigation needs no ring */
@@ -291,7 +293,8 @@ main[tabindex="-1"]:focus-visible { outline: none !important; }
 /* Row menu: open instantly, fade out quickly (high-frequency popover) */
 .menu-leave { animation: fade-out 120ms ease-out forwards; }
 
-/* Banners and the account reveal */
+/* Banners and the account reveal. Under prefers-reduced-motion the global rule above sets animation: none,
+   so Angular removes these nodes immediately; no extra guard is needed. */
 .reveal-leave, .banner-leave { animation: rise-out 140ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .reveal-leave { --rise: -4px; }
 .banner-leave { --rise: -4px; }
@@ -347,7 +350,8 @@ main[tabindex="-1"]:focus-visible { outline: none !important; }
 }
 
 /* A leaving element is already gone to the user: it must not catch clicks while it fades */
-.overlay-leave, .overlay-leave *, .menu-leave, .banner-leave, .reveal-leave { pointer-events: none; }
+:is(.overlay-leave, .menu-leave, .banner-leave, .reveal-leave),
+:is(.overlay-leave, .menu-leave, .banner-leave, .reveal-leave) * { pointer-events: none !important; }
 
 /* Taps respond at once: no double-tap-zoom delay on controls */
 button, a, label, select, summary, [role="button"], [role="tab"], [role="menuitem"] { touch-action: manipulation; }

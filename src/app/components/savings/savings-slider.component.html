@@ -30,7 +30,7 @@
           <input id="savings-slider-f1" [attr.aria-invalid]="fieldErrors()['f1'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f1'] ? 'savings-slider-f1-err' : null" type="text" [(ngModel)]="localDescription" placeholder="e.g. Monthly Emergency Fund Deposit"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
           @if (fieldErrors()['f1']) {
-            <p id="savings-slider-f1-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p>
+            <p id="savings-slider-f1-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p>
           }
         </div>
 
@@ -40,7 +40,7 @@
           <input id="savings-slider-f2" [attr.aria-invalid]="fieldErrors()['f2'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f2'] ? 'savings-slider-f2-err' : null" type="number" inputmode="decimal" [(ngModel)]="localAmount" placeholder="0.00" min="0.01" step="0.01"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
           @if (fieldErrors()['f2']) {
-            <p id="savings-slider-f2-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f2'] }}</p>
+            <p id="savings-slider-f2-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f2'] }}</p>
           }
         </div>
 
@@ -55,7 +55,7 @@
             }
           </select>
           @if (fieldErrors()['f3']) {
-            <p id="savings-slider-f3-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f3'] }}</p>
+            <p id="savings-slider-f3-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f3'] }}</p>
           }
         </div>
 
@@ -70,7 +70,7 @@
             }
           </select>
           @if (fieldErrors()['f4']) {
-            <p id="savings-slider-f4-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f4'] }}</p>
+            <p id="savings-slider-f4-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f4'] }}</p>
           }
         </div>
 
@@ -85,7 +85,7 @@
             }
           </select>
           @if (fieldErrors()['f5']) {
-            <p id="savings-slider-f5-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f5'] }}</p>
+            <p id="savings-slider-f5-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f5'] }}</p>
           }
         </div>
       </div>

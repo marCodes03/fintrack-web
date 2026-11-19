@@ -59,7 +59,7 @@
                 <span class="text-xs font-bold text-text-muted ml-2">({{ rating() }} / 5 stars)</span>
               }
             </div>
-            @if (fieldErrors()['rating']) { <p id="reviews-rating-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['rating'] }}</p> }
+            @if (fieldErrors()['rating']) { <p id="reviews-rating-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['rating'] }}</p> }
           </div>
 
           <!-- Review Comment Text Area -->
@@ -67,7 +67,7 @@
             <label for="reviews-f1" class="block text-xs font-semibold text-text-muted uppercase tracking-wider">Share your thoughts *</label>
             <textarea id="reviews-f1" [attr.aria-invalid]="fieldErrors()['f1'] ? true : null" [attr.aria-describedby]="fieldErrors()['f1'] ? 'reviews-f1-err' : null" [(ngModel)]="comment" rows="5" placeholder="What do you like? What can we do better? Type your feedback here..."
               class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base resize-none"></textarea>
-            @if (fieldErrors()['f1']) { <p id="reviews-f1-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p> }
+            @if (fieldErrors()['f1']) { <p id="reviews-f1-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p> }
           </div>
 
           <!-- Actions -->

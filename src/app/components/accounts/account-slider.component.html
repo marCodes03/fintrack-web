@@ -27,7 +27,7 @@
           <input id="account-slider-f1" [attr.aria-invalid]="fieldErrors()['f1'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f1'] ? 'account-slider-f1-err' : null" type="text" [(ngModel)]="localName" placeholder="e.g. BPI Savings, GCash, Wallet"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
           @if (fieldErrors()['f1']) {
-            <p id="account-slider-f1-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p>
+            <p id="account-slider-f1-err" animate.enter="banner-enter" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p>
           }
         </div>
 
