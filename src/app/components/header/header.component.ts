@@ -1,6 +1,7 @@
 import { Component, signal, inject, Output, EventEmitter } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 import { SliderMenuComponent } from '../slider-menu/slider-menu.component';
 
 @Component({
@@ -18,13 +19,11 @@ export class HeaderComponent {
   protected readonly user = this.authService.currentUser;
   protected readonly isSliderOpen = signal<boolean>(false);
   protected readonly hideAmounts = this.authService.hideAmounts;
-  protected readonly isDarkMode = signal<boolean>(document.documentElement.classList.contains('dark'));
+  private readonly theme = inject(ThemeService);
+  protected readonly isDarkMode = this.theme.isDark;
 
   toggleTheme(): void {
-    const nextDark = !this.isDarkMode();
-    this.isDarkMode.set(nextDark);
-    localStorage.setItem('theme', nextDark ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark', nextDark);
+    this.theme.toggle();
   }
 
   toggleHideAmounts(): void {

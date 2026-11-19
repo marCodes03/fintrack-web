@@ -9,17 +9,17 @@
     </a>
 
     <!-- Right-aligned profile area & hamburger button -->
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-1 sm:space-x-3">
       <!-- Amount Privacy Eye Toggle -->
       <button type="button" (click)="toggleHideAmounts()"
         class="p-2 text-text-muted hover:text-text-heading hover:bg-surface-subtle rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
         [attr.aria-label]="hideAmounts() ? 'Show amounts' : 'Hide amounts'" [attr.aria-pressed]="hideAmounts()">
         @if (hideAmounts()) {
-          <svg class="h-5 w-5 text-accent-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg animate.enter="icon-enter" class="h-5 w-5 text-accent-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
           </svg>
         } @else {
-          <svg class="h-5 w-5 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg animate.enter="icon-enter" class="h-5 w-5 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
           </svg>
@@ -31,20 +31,20 @@
         class="p-2 text-text-muted hover:text-text-heading hover:bg-surface-subtle rounded-xl transition-[color,background-color] focus:outline-none"
         [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">
         @if (isDarkMode()) {
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg animate.enter="icon-enter" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         } @else {
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg animate.enter="icon-enter" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         }
       </button>
 
       <!-- Profile Info Area -->
-      <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-3 px-1">
         <div class="hidden sm:block text-right">
           <p class="text-xs font-semibold text-text-heading leading-tight">{{ user()?.name }}</p>
           <p class="text-xs text-text-muted leading-tight mt-0.5">{{ user()?.email }}</p>
         </div>
         <!-- User avatar thumbnail -->
-        <div class="h-8 w-8 rounded-lg bg-accent-emerald flex items-center justify-center font-extrabold text-on-accent text-sm">
+        <div class="h-8 w-8 rounded-lg bg-accent-emerald flex items-center justify-center font-bold text-on-accent text-sm">
           {{ user()?.name ? user()?.name?.charAt(0) : 'U' }}
         </div>
       </div>

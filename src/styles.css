@@ -261,3 +261,42 @@ input[type="checkbox"] {
   width: 1.5rem;
   height: 1.5rem;
 }
+
+/* Dimmed page behind drawers and modals: stronger in dark mode, where the page is already dark */
+.scrim { background-color: rgb(0 0 0 / 0.4); }
+.dark .scrim { background-color: rgb(0 0 0 / 0.6); }
+
+/* Programmatic focus on the page container after navigation needs no ring */
+main[tabindex="-1"]:focus-visible { outline: none !important; }
+
+/* Motion: exits pair with the entrances above; enters only run without a reduced-motion request.
+   Enter curve cubic-bezier(0.22, 1, 0.36, 1); exits are shorter than entrances. */
+[data-theme-switching] *,
+[data-theme-switching] *::before,
+[data-theme-switching] *::after { transition: none !important; }
+
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes panel-out {
+  to { opacity: 0; transform: translate3d(var(--exit-x, 0), 0, 0) scale(var(--exit-scale, 1)); }
+}
+@keyframes rise-in { from { opacity: 0; transform: translateY(var(--rise, -4px)) scale(var(--rise-scale, 1)); } }
+@keyframes rise-out { to { opacity: 0; transform: translateY(var(--rise, -4px)); } }
+
+/* Dialogs and drawers: the whole overlay fades while the panel travels back the way it came */
+.overlay-leave { animation: fade-out 160ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.overlay-leave [role="dialog"] { animation: panel-out 160ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.overlay-leave .slide-in-from-right { --exit-x: 32px; }
+.overlay-leave .scale-in, .overlay-leave .zoom-in-95 { --exit-scale: 0.97; }
+
+/* Row menu: open instantly, fade out quickly (high-frequency popover) */
+.menu-leave { animation: fade-out 120ms ease-out forwards; }
+
+/* Banners and the account reveal */
+.reveal-leave, .banner-leave { animation: rise-out 140ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.reveal-leave { --rise: -4px; }
+.banner-leave { --rise: -4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .banner-enter { animation: rise-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .reveal-enter { --rise: -4px; animation: rise-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .icon-enter { --rise: 0px; --rise-scale: 0.7; animation: rise-in 140ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}

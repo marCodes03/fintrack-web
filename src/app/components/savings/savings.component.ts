@@ -1,3 +1,4 @@
+import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
@@ -11,12 +12,12 @@ import { HeaderComponent } from '../header/header.component';
 import { ResetPasswordComponent } from '../auth/reset-password/reset-password.component';
 import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal.component';
 import { SavingsSliderComponent } from './savings-slider.component';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-savings',
   standalone: true,
-  imports: [RowMenuComponent, IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, CurrencyPipe, DatePipe, FormsModule],
+  imports: [AmountComponent, RowMenuComponent, IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, DatePipe, FormsModule],
   templateUrl: './savings.component.html'
 })
 export class SavingsComponent implements OnInit {
@@ -101,6 +102,14 @@ export class SavingsComponent implements OnInit {
     if (this.itemsToShow() < this.filteredTransactions().length) {
       this.itemsToShow.update(val => val + 10);
     }
+  }
+
+  // Below 1024px the list grows with the page, so load more when the page nears its end
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (window.innerWidth >= 1024) return;
+    const doc = document.documentElement;
+    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 200) this.loadMore();
   }
 
   onContainerScroll(event: Event): void {

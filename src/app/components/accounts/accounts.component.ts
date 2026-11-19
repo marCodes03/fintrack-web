@@ -1,3 +1,4 @@
+import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { Router } from '@angular/router';
@@ -9,12 +10,11 @@ import { HeaderComponent } from '../header/header.component';
 import { ResetPasswordComponent } from '../auth/reset-password/reset-password.component';
 import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal.component';
 import { AccountSliderComponent } from './account-slider.component';
-import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-accounts',
   standalone: true,
-  imports: [IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, AccountSliderComponent, FormsModule, CurrencyPipe],
+  imports: [AmountComponent, IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, AccountSliderComponent, FormsModule],
   templateUrl: './accounts.component.html'
 })
 export class AccountsComponent implements OnInit {

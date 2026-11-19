@@ -4,7 +4,7 @@
   <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
-        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Accounts Management</h1>
+        <h1 class="text-2xl font-bold text-text-heading tracking-tight">Accounts Management</h1>
         <p class="text-sm text-text-body mt-1">Manage cash drawers, bank deposits, credit details, e-wallets, and savings accounts in PHP.</p>
       </div>
       <button type="button" (click)="openCreateSlider()"
@@ -14,12 +14,12 @@
     </div>
 
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
+      <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
+      <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -92,8 +92,8 @@
                   </div>
                 </div>
                 <div class="text-right">
-                  <p class="font-black text-text-heading text-lg">
-                    @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (acc.balance | currency:acc.currency:'symbol-narrow') }}}
+                  <p class="font-bold text-text-heading text-lg">
+                    <app-amount [value]="acc.balance" [currency]="acc.currency" />
                   </p>
                 </div>
               </div>
@@ -136,7 +136,7 @@
 </app-account-slider>
 
 @if (isResetModalOpen()) {
-  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+  <app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }
 
 <app-confirm-delete-modal

@@ -1,9 +1,10 @@
+import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
 import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ApiService, Account } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { BudgetPlanItem } from './budgets.component';
@@ -11,7 +12,7 @@ import { BudgetPlanItem } from './budgets.component';
 @Component({
   selector: 'app-budget-plan-slider',
   standalone: true,
-  imports: [IconComponent, DialogDirective, FormsModule, CurrencyPipe, DecimalPipe],
+  imports: [AmountComponent, IconComponent, DialogDirective, FormsModule, DecimalPipe],
   templateUrl: './budget-plan-slider.component.html'
 })
 export class BudgetPlanSliderComponent {

@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
   <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
     <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain" />
-    <h1 class="mt-6 text-3xl font-extrabold tracking-tight text-text-heading">
+    <h1 class="mt-6 text-3xl font-bold tracking-tight text-text-heading">
       Verify your email
     </h1>
     <p class="mt-2 text-sm text-text-muted">
@@ -14,19 +14,19 @@
       <form (submit)="handleVerify(); $event.preventDefault()" class="space-y-6">
 
         @if (errorMessage()) {
-          <div role="alert" class="p-3 rounded-lg bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm">
+          <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-lg bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm">
             {{ errorMessage() }}
           </div>
         }
 
         @if (successMessage()) {
-          <div role="status" class="p-3 rounded-lg bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm">
+          <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-lg bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm">
             {{ successMessage() }}
           </div>
         }
 
         @if (simulatedOtp()) {
-          <div role="status" class="p-3 rounded-lg bg-input-bg border border-input-border text-sm text-text-muted">
+          <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-lg bg-input-bg border border-input-border text-sm text-text-muted">
             Dev code (email not configured):
             <span class="font-mono text-base font-bold tracking-widest text-accent-emerald">{{ simulatedOtp() }}</span>
           </div>

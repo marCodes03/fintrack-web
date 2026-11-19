@@ -4,7 +4,7 @@
   <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
-        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Savings Allocation</h1>
+        <h1 class="text-2xl font-bold text-text-heading tracking-tight">Savings Allocation</h1>
         <p class="text-sm text-text-body mt-1">Track monthly savings goals, record deposits, and manage savings categories.</p>
       </div>
       <div class="flex items-center space-x-3">
@@ -22,12 +22,12 @@
     </div>
 
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
+      <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
+      <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -42,8 +42,8 @@
             <div>
               <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Monthly Savings Goal</p>
               <p class="text-2xl font-extrabold text-text-heading mt-1">
-                @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ totalMonthSavings() | currency:'PHP':'symbol-narrow' }}}
-                <span class="text-xs text-text-muted font-medium">/ @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ monthlySavingsGoal() > 0 ? (monthlySavingsGoal() | currency:'PHP':'symbol-narrow') : 'No goal set' }}}</span>
+                <app-amount [value]="totalMonthSavings()" />
+                <span class="text-xs text-text-muted font-medium">/ @if (monthlySavingsGoal() > 0) {<app-amount [value]="monthlySavingsGoal()" />} @else {No goal set}</span>
               </p>
             </div>
             <button type="button" (click)="openGoalModal()" class="text-xs font-bold text-accent-emerald hover:opacity-80 bg-accent-emerald/10 px-3 py-1.5 rounded-xl border border-accent-emerald/20 transition-[color,background-color,border-color,opacity,transform]">
@@ -55,12 +55,12 @@
           @if (monthlySavingsGoal() > 0) {
             <div class="space-y-1.5">
               <div class="w-full bg-surface-subtle rounded-full h-3 overflow-hidden p-0.5 border border-border-subtle">
-                <div class="bg-accent-emerald h-full rounded-full transition-all duration-500"
+                <div class="bg-accent-emerald h-full rounded-full transition-[width] duration-500"
                   [style.width.%]="goalProgressPercentage()"></div>
               </div>
               <div class="flex items-center justify-between text-3xs font-semibold text-text-muted">
                 <span>{{ goalProgressPercentage() }}% Completed</span>
-                <span>@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ Math.max(0, monthlySavingsGoal() - totalMonthSavings()) | currency:'PHP':'symbol-narrow' }}} Remaining</span>
+                <span><app-amount [value]="Math.max(0, monthlySavingsGoal() - totalMonthSavings())" /> Remaining</span>
               </div>
             </div>
           } @else {
@@ -74,7 +74,7 @@
         <!-- Total Savings Logged Card -->
         <div class="bg-surface-card border border-border-subtle rounded-xl p-6 flex flex-col justify-center space-y-2">
           <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Total Savings Transactions</p>
-          <p class="text-3xl font-extrabold text-accent-teal">{{ transactions().length }} Record(s)</p>
+          <p class="text-3xl font-bold text-accent-teal">{{ transactions().length }} Record(s)</p>
           <p class="text-xs text-text-muted">Includes all allocated savings deposits</p>
         </div>
       </div>
@@ -150,7 +150,7 @@
             Select all
           </label>
         </div>
-        <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Savings records table" (scroll)="onContainerScroll($event)">
+        <div class="overflow-x-auto lg:overflow-y-auto lg:max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Savings records table" (scroll)="onContainerScroll($event)">
           <table class="card-table w-full text-left text-sm text-text-body">
 <caption class="sr-only">Savings table</caption>
             <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
@@ -197,7 +197,7 @@
                     <td data-label="Destination Account (Added)" class="px-6 py-4 text-xs font-semibold text-accent-emerald/90">{{ getAccountName(item.toAccountId) }}</td>
                     <td data-label="Savings Category" class="px-6 py-4 text-xs font-semibold text-accent-teal">{{ item.category }}</td>
                     <td data-label="Date" class="px-6 py-4 text-xs text-text-muted">{{ (item.expenseDate || item.date) | date:'MMM d, y' }}</td>
-                    <td data-cell="amount" class="px-6 py-4 font-bold text-accent-teal">+@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ item.amount | currency:'PHP':'symbol-narrow' }}}</td>
+                    <td data-cell="amount" class="px-6 py-4 font-bold text-accent-teal"><app-amount [value]="item.amount" sign="+" /></td>
                   </tr>
                 } @empty {
                   <tr>
@@ -230,7 +230,7 @@
 <!-- Savings Goal Edit Modal -->
 @if (isGoalModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div (click)="closeGoalModal()" aria-hidden="true" class="fixed inset-0 bg-black/50 backdrop-blur-xs"></div>
+    <div (click)="closeGoalModal()" aria-hidden="true" class="fixed inset-0 scrim backdrop-blur-xs"></div>
     <div appDialog aria-label="Monthly savings goal" (dialogClose)="closeGoalModal()" class="relative bg-surface-card border border-border-subtle rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <h2 class="text-lg font-bold text-text-heading">Set Monthly Savings Goal</h2>
       <p class="text-sm text-text-body">Define your monthly target savings amount in PHP. Progress will update automatically as you deposit funds.</p>
@@ -267,7 +267,7 @@
 </app-savings-slider>
 
 @if (isResetModalOpen()) {
-  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+  <app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }
 
 <app-confirm-delete-modal

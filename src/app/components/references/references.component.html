@@ -6,19 +6,19 @@
     <!-- Page Header -->
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
-        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Reference Data</h1>
+        <h1 class="text-2xl font-bold text-text-heading tracking-tight">Reference Data</h1>
         <p class="text-sm text-text-body mt-1">Manage and configure system-wide reference lists used across all modules.</p>
       </div>
     </div>
 
     <!-- Alert Messages -->
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
+      <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
+      <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -247,7 +247,7 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <!-- Backdrop -->
     <div (click)="closeSlider()" aria-hidden="true"
-      class="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in">
+      class="fixed inset-0 scrim backdrop-blur-xs transition-opacity duration-300 animate-in fade-in">
     </div>
 
     <!-- Slider Panel -->
@@ -266,7 +266,7 @@
       <!-- Form Body -->
       <div class="flex-1 overflow-y-auto p-6 space-y-5">
         @if (errorMessage()) {
-          <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-xs">
+          <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-xs">
             {{ errorMessage() }}
           </div>
         }
@@ -331,7 +331,7 @@
 
 <!-- Reset Password Modal -->
 @if (isResetModalOpen()) {
-  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+  <app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }
 
 <!-- Confirm Delete Modal -->

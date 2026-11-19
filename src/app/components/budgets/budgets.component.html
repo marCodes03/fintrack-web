@@ -4,7 +4,7 @@
   <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
-        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Budget Plans</h1>
+        <h1 class="text-2xl font-bold text-text-heading tracking-tight">Budget Plans</h1>
         <p class="text-sm text-text-body mt-1">Design budget blueprints, allocate inflows to outflows/savings, and activate plans for target execution periods.</p>
       </div>
       <button type="button" (click)="openCreateSlider()"
@@ -14,12 +14,12 @@
     </div>
 
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
+      <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
+      <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -60,7 +60,7 @@
                 [class.text-text-muted]="activeDisplayGoalTab() !== groupIdx"
                 [class.hover:text-text-body]="activeDisplayGoalTab() !== groupIdx">
                 {{ group.name }} 
-                <span class="ml-1 text-xs font-black text-accent-emerald bg-accent-emerald/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+                <span class="ml-1 text-xs font-bold text-accent-emerald bg-accent-emerald/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
               </button>
             } @empty {
               <div class="py-4 text-center text-text-muted text-xs w-full">
@@ -128,7 +128,7 @@
                     <span class="absolute right-3 top-2 text-xs text-text-muted font-bold">%</span>
                   </div>
                   @if (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0) {
-                    <p class="text-xs text-accent-emerald font-medium mt-1 leading-tight">Aligned with Savings Goal (@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}}/mo)</p>
+                    <p class="text-xs text-accent-emerald font-medium mt-1 leading-tight">Aligned with Savings Goal (<app-amount [value]="userMonthlySavingsGoal()" />/mo)</p>
                   }
                 </div>
                 <div class="flex items-end pt-5">
@@ -190,7 +190,7 @@
 
     <!-- Budget Plans Cards Grid -->
     <div class="space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-[640px] scroll-smooth" (scroll)="onContainerScroll($event)">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:overflow-y-auto lg:max-h-[640px] scroll-smooth" (scroll)="onContainerScroll($event)">
         @if (isLoading()) {
           @for (i of [1, 2, 3]; track i) {
             <div role="status" aria-label="Loading" class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5 animate-pulse">
@@ -213,7 +213,7 @@
               [class.border-accent-emerald/50]="plan.isActive">
               
               @if (plan.isActive) {
-                <div class="absolute top-0 right-0 bg-accent-emerald text-on-accent font-black text-xs uppercase px-3 py-1 rounded-bl-xl">
+                <div class="absolute top-0 right-0 bg-accent-emerald text-on-accent font-bold text-xs uppercase px-3 py-1 rounded-bl-xl">
                   Active Plan
                 </div>
               }
@@ -234,23 +234,23 @@
                 <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
                   <div>
                     <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Inflows</span>
-                    <span class="text-xs font-bold text-accent-emerald">+@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getPlannedInflows(plan) | currency:'PHP':'symbol-narrow' }}}</span>
+                    <span class="text-xs font-bold text-accent-emerald"><app-amount [value]="getPlannedInflows(plan)" sign="+" /></span>
                   </div>
                   <div>
                     <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Outflows</span>
-                    <span class="text-xs font-bold text-accent-rose">-@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getPlannedOutflows(plan) | currency:'PHP':'symbol-narrow' }}}</span>
+                    <span class="text-xs font-bold text-accent-rose"><app-amount [value]="getPlannedOutflows(plan)" sign="-" /></span>
                   </div>
                   <div>
                     <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Savings</span>
-                    <span class="text-xs font-bold text-accent-teal">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getPlannedSavings(plan) | currency:'PHP':'symbol-narrow' }}}</span>
+                    <span class="text-xs font-bold text-accent-teal"><app-amount [value]="getPlannedSavings(plan)" /></span>
                   </div>
                 </div>
 
                 <!-- Net Remaining -->
                 <div class="flex items-center justify-between p-3 rounded-xl bg-surface-subtle border border-border-subtle">
                   <span class="text-xs font-medium text-text-muted">Net Remaining</span>
-                  <span class="text-sm font-black" [class.text-accent-emerald]="getRemainingBudget(plan) >= 0" [class.text-accent-rose]="getRemainingBudget(plan) < 0">
-                    @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getRemainingBudget(plan) | currency:'PHP':'symbol-narrow' }}}
+                  <span class="text-sm font-bold" [class.text-accent-emerald]="getRemainingBudget(plan) >= 0" [class.text-accent-rose]="getRemainingBudget(plan) < 0">
+                    <app-amount [value]="getRemainingBudget(plan)" />
                   </span>
                 </div>
               </div>
@@ -314,7 +314,7 @@
 <!-- Implement Budget Plan for Period Modal -->
 @if (isImplementModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div (click)="closeImplementModal()" aria-hidden="true" class="fixed inset-0 bg-black/50 backdrop-blur-xs"></div>
+    <div (click)="closeImplementModal()" aria-hidden="true" class="fixed inset-0 scrim backdrop-blur-xs"></div>
     <div appDialog aria-label="Implement budget plan" (dialogClose)="closeImplementModal()" class="relative bg-surface-card border border-border-subtle rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h2 class="text-lg font-bold text-text-heading">Implement Plan for Period</h2>
@@ -366,7 +366,7 @@
 </app-budget-plan-slider>
 
 @if (isResetModalOpen()) {
-  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+  <app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }
 
 <app-confirm-delete-modal
@@ -380,8 +380,8 @@
 
 <!-- Deactivate Plan Warning Modal -->
 @if (isDeactivateModalOpen()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div (click)="closeDeactivateModal()" aria-hidden="true" class="fixed inset-0 bg-black/50 backdrop-blur-xs"></div>
+  <div animate.leave="overlay-leave" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div (click)="closeDeactivateModal()" aria-hidden="true" class="fixed inset-0 scrim backdrop-blur-xs"></div>
     <div appDialog aria-label="Deactivate budget plan" (dialogClose)="closeDeactivateModal()" class="relative bg-surface-card border border-border-subtle rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h2 class="text-lg font-bold text-text-heading flex items-center space-x-2">

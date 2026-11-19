@@ -5,7 +5,7 @@
     <!-- Page Header -->
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
-        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Transactions Hub</h1>
+        <h1 class="text-2xl font-bold text-text-heading tracking-tight">Transactions Hub</h1>
         <p class="text-sm text-text-body mt-1">Record incomes, manage expenses, and process internal account-to-account transfers.</p>
       </div>
       <div class="flex items-center space-x-3">
@@ -24,12 +24,12 @@
 
     <!-- Alert Messages -->
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
+      <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
+      <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <app-icon name="alert"/><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -118,7 +118,7 @@
             Select all
           </label>
         </div>
-        <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Transactions table" (scroll)="onContainerScroll($event)">
+        <div class="overflow-x-auto lg:overflow-y-auto lg:max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Transactions table" (scroll)="onContainerScroll($event)">
         <table class="card-table w-full text-left text-sm text-text-body">
 <caption class="sr-only">Transactions table</caption>
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
@@ -197,9 +197,9 @@
                     [class.text-accent-rose]="item.type === 'EXPENSE'"
                     [class.text-accent-teal]="item.type === 'SAVINGS'"
                     [class.text-text-muted]="item.type === 'TRANSFER'">
-                    {{ item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-')) }}@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ item.amount | currency:'PHP':'symbol-narrow' }}}
+                    <app-amount [value]="item.amount" [sign]="item.type === 'INCOME' || item.type === 'SAVINGS' ? '+' : (item.type === 'TRANSFER' ? '' : '-')" />
                     @if (item.type === 'TRANSFER' && item.transferFee && item.transferFee > 0) {
-                      <span class="block text-xs text-text-muted font-normal">Fee: @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ item.transferFee | currency:'PHP':'symbol-narrow' }}}</span>
+                      <span class="block text-xs text-text-muted font-normal">Fee: <app-amount [value]="item.transferFee" /></span>
                     }
                   </td>
 
@@ -242,7 +242,7 @@
 </app-transaction-slider>
 
 @if (isResetModalOpen()) {
-  <app-reset-password (close)="closeResetModal()"></app-reset-password>
+  <app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }
 
 <app-confirm-delete-modal

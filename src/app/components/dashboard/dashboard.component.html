@@ -30,18 +30,24 @@
               accounts().length }} Account(s)</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-text-heading mt-3">
-            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalNetWorth() | currency:'PHP':'symbol-narrow') }}}
+            <app-amount [value]="totalNetWorth()" />
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of active accounts based on settings</p>
-          <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-x-4 gap-y-1.5">
-            <label class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
-              <input type="checkbox" [checked]="includeSavingsInNetWorth()" (change)="toggleIncludeSavings()" class="rounded border-input-border text-accent-emerald focus:ring-accent-emerald mr-2 h-4 w-4 pointer-coarse:h-5 pointer-coarse:w-5 bg-input-bg">
-              Include Savings
-            </label>
-            <label class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-text-muted cursor-pointer hover:text-text-heading transition-colors">
-              <input type="checkbox" [checked]="includeCreditInNetWorth()" (change)="toggleIncludeCredit()" class="rounded border-input-border text-accent-emerald focus:ring-accent-emerald mr-2 h-4 w-4 pointer-coarse:h-5 pointer-coarse:w-5 bg-input-bg">
-              Include Credit
-            </label>
+          <div class="mt-4 pt-3 border-t border-border-subtle flex flex-wrap gap-2" role="group" aria-label="Net worth includes">
+            <button type="button" (click)="toggleIncludeSavings()" [attr.aria-pressed]="includeSavingsInNetWorth()"
+              class="inline-flex items-center gap-1.5 min-h-10 px-3.5 rounded-full border text-xs font-bold transition-[color,background-color,border-color]"
+              [class.bg-accent-emerald]="includeSavingsInNetWorth()" [class.border-accent-emerald]="includeSavingsInNetWorth()" [class.text-on-accent]="includeSavingsInNetWorth()"
+              [class.bg-transparent]="!includeSavingsInNetWorth()" [class.border-input-border]="!includeSavingsInNetWorth()" [class.text-text-muted]="!includeSavingsInNetWorth()" [class.hover:text-text-heading]="!includeSavingsInNetWorth()">
+              @if (includeSavingsInNetWorth()) { <svg animate.enter="icon-enter" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5"><path d="m5 12 5 5L20 7"/></svg> }
+              Savings
+            </button>
+            <button type="button" (click)="toggleIncludeCredit()" [attr.aria-pressed]="includeCreditInNetWorth()"
+              class="inline-flex items-center gap-1.5 min-h-10 px-3.5 rounded-full border text-xs font-bold transition-[color,background-color,border-color]"
+              [class.bg-accent-emerald]="includeCreditInNetWorth()" [class.border-accent-emerald]="includeCreditInNetWorth()" [class.text-on-accent]="includeCreditInNetWorth()"
+              [class.bg-transparent]="!includeCreditInNetWorth()" [class.border-input-border]="!includeCreditInNetWorth()" [class.text-text-muted]="!includeCreditInNetWorth()" [class.hover:text-text-heading]="!includeCreditInNetWorth()">
+              @if (includeCreditInNetWorth()) { <svg animate.enter="icon-enter" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5"><path d="m5 12 5 5L20 7"/></svg> }
+              Credit
+            </button>
           </div>
         </div>
   
@@ -53,7 +59,7 @@
             <span class="text-xs font-semibold text-accent-emerald bg-accent-emerald/10 px-2 py-1 rounded-md">Inflows</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-accent-emerald mt-3">
-            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalIncome() | currency:'PHP':'symbol-narrow') }}}
+            <app-amount [value]="totalIncome()" />
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of monthly recorded income</p>
         </div>
@@ -66,7 +72,7 @@
             <span class="text-xs font-semibold text-accent-rose bg-accent-rose/10 px-2 py-1 rounded-md">Outflows</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-accent-rose mt-3">
-            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalExpenses() | currency:'PHP':'symbol-narrow') }}}
+            <app-amount [value]="totalExpenses()" />
           </p>
           <p class="text-xs text-text-muted mt-2">Sum of monthly recorded expenses</p>
         </div>
@@ -79,7 +85,7 @@
             <span class="text-xs font-semibold text-accent-teal bg-accent-teal/10 px-2 py-1 rounded-md">Savings</span>
           </div>
           <p class="text-3xl font-extrabold tabular-nums text-accent-teal mt-3">
-            @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (totalSavings() | currency:'PHP':'symbol-narrow') }}}
+            <app-amount [value]="totalSavings()" />
           </p>
           <p class="text-xs text-text-muted mt-2">Balances of savings accounts</p>
         </div>
@@ -112,7 +118,7 @@
           <div class="space-y-3">
             <div class="flex items-start justify-between">
               <div>
-                <h3 class="text-lg font-extrabold text-text-heading">{{ activeBudgetPlan()?.name }}</h3>
+                <h3 class="text-lg font-bold text-text-heading">{{ activeBudgetPlan()?.name }}</h3>
                 @if (activeBudgetPlan()?.startDate && activeBudgetPlan()?.endDate) {
                   <p class="text-xs text-accent-emerald font-semibold mt-0.5">
                     Period: {{ activeBudgetPlan()?.startDate | date:'MMM d' }} — {{ activeBudgetPlan()?.endDate | date:'MMM d, y' }}
@@ -125,22 +131,22 @@
             <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Inflow</span>
-                <span class="text-xs font-bold text-accent-emerald">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ ('+' + (activePlanInflows() | currency:'PHP':'symbol-narrow')) }}}</span>
+                <span class="text-xs font-bold text-accent-emerald"><app-amount [value]="activePlanInflows()" sign="+" /></span>
               </div>
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Outflow</span>
-                <span class="text-xs font-bold text-accent-rose">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ ('-' + (activePlanOutflows() | currency:'PHP':'symbol-narrow')) }}}</span>
+                <span class="text-xs font-bold text-accent-rose"><app-amount [value]="activePlanOutflows()" sign="-" /></span>
               </div>
               <div>
                 <span class="block text-xs font-semibold text-text-muted uppercase">Savings</span>
-                <span class="text-xs font-bold text-accent-teal">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanSavings() | currency:'PHP':'symbol-narrow') }}}</span>
+                <span class="text-xs font-bold text-accent-teal"><app-amount [value]="activePlanSavings()" /></span>
               </div>
             </div>
 
             <div class="flex items-center justify-between text-xs p-2.5 rounded-xl bg-surface-subtle border border-border-subtle">
                <span class="text-text-muted font-medium">Net Remaining</span>
                <span class="font-bold" [class.text-accent-emerald]="activePlanRemaining() >= 0" [class.text-accent-rose]="activePlanRemaining() < 0">
-                 @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanRemaining() | currency:'PHP':'symbol-narrow') }}}
+                 <app-amount [value]="activePlanRemaining()" />
                </span>
             </div>
           </div>
@@ -180,8 +186,8 @@
           <div class="space-y-3">
             <div>
               <p class="text-2xl font-extrabold text-text-heading">
-                @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (currentMonthSavings() | currency:'PHP':'symbol-narrow') }}}
-                <span class="text-xs text-text-muted font-normal">/ @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (monthlySavingsGoal() | currency:'PHP':'symbol-narrow') }}}</span>
+                <app-amount [value]="currentMonthSavings()" />
+                <span class="text-xs text-text-muted font-normal">/ <app-amount [value]="monthlySavingsGoal()" /></span>
               </p>
               <p class="text-xs text-text-muted mt-0.5">Current month savings target progress</p>
             </div>
@@ -189,12 +195,12 @@
             <!-- Progress Bar -->
             <div class="space-y-1">
               <div class="w-full bg-surface-subtle rounded-full h-3 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-label="Monthly savings goal progress" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="savingsGoalProgressPercentage()">
-                <div class="bg-accent-emerald h-full rounded-full transition-all duration-500"
+                <div class="bg-accent-emerald h-full rounded-full transition-[width] duration-500"
                   [style.width.%]="savingsGoalProgressPercentage()"></div>
               </div>
               <div class="flex items-center justify-between text-xs font-semibold text-text-muted">
                 <span>{{ savingsGoalProgressPercentage() }}% Reached</span>
-                <span>@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (Math.max(0, monthlySavingsGoal() - currentMonthSavings()) | currency:'PHP':'symbol-narrow') }}} Remaining</span>
+                <span><app-amount [value]="Math.max(0, monthlySavingsGoal() - currentMonthSavings())" /> Remaining</span>
               </div>
             </div>
           </div>
@@ -220,7 +226,7 @@
           </h2>
           <p class="text-sm text-text-body mt-0.5">Comparing baseline target percentages against current active plan blueprint and actual period expenses/savings.</p>
         </div>
-        <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income (@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanInflows() | currency:'PHP':'symbol-narrow') }}})</span>
+        <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income (<app-amount [value]="activePlanInflows()" />)</span>
       </div>
 
       @if (isLoadingDashboard()) {
@@ -256,7 +262,7 @@
                  [style.backgroundImage]="donutGradient()">
               <div class="absolute inset-3 bg-surface-card rounded-full flex flex-col items-center justify-center text-center">
                 <span class="text-xs font-semibold text-text-muted uppercase">Spent</span>
-                <span class="text-lg font-black text-text-heading">{{ totalAllocatedPercentage() }}%</span>
+                <span class="text-lg font-bold text-text-heading">{{ totalAllocatedPercentage() }}%</span>
               </div>
             </div>
             
@@ -282,7 +288,7 @@
                   <span class="text-sm font-bold text-text-heading">{{ group.name }}</span>
                   <div class="text-right">
                     <span class="text-xs font-semibold text-text-muted block">Target Goal: <span class="text-accent-emerald font-bold">{{ group.targetPercentage }}%</span></span>
-                    <span class="text-xs font-bold text-text-muted block mt-0.5">(@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (group.targetAmount | currency:'PHP':'symbol-narrow') }}})</span>
+                    <span class="text-xs font-bold text-text-muted block mt-0.5">(<app-amount [value]="group.targetAmount" />)</span>
                   </div>
                 </div>
 
@@ -292,7 +298,7 @@
                     <span class="text-text-muted block font-semibold mb-0.5">
                       {{ group.categories.includes('Savings') || group.name.toLowerCase() === 'savings' ? 'Actual Saved' : 'Actual Spent' }}
                     </span>
-                    <span class="text-sm font-bold text-text-heading block">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (group.actualAmount | currency:'PHP':'symbol-narrow') }}}</span>
+                    <span class="text-sm font-bold text-text-heading block"><app-amount [value]="group.actualAmount" /></span>
                     <span class="block text-xs font-bold text-text-muted mt-0.5">({{ group.actualPercentage }}% of income)</span>
                   </div>
                 </div>
@@ -307,7 +313,7 @@
                       <span>{{ group.actualAchievement }}% Achieved</span>
                     </div>
                     <div class="w-full bg-bg-main rounded-full h-2 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="group.name + ' progress to goal'" [attr.aria-valuenow]="Math.min(100, group.actualAchievement)">
-                      <div class="h-full rounded-full transition-all duration-500"
+                      <div class="h-full rounded-full transition-[width] duration-500"
                         [class.bg-accent-teal]="group.actualAchievement <= 100"
                         [class.bg-accent-rose]="group.actualAchievement > 100 && group.name !== 'Savings'"
                         [class.bg-accent-emerald]="group.actualAchievement > 100 && group.name === 'Savings'"
@@ -342,7 +348,7 @@
         <a routerLink="/transactions" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs text-accent-emerald hover:underline font-bold">View All</a>
       </div>
 
-      <div class="relative overflow-x-auto overflow-y-auto max-h-[295px] scroll-smooth" tabindex="0" role="region" aria-label="Recent transactions">
+      <div class="relative overflow-x-auto lg:overflow-y-auto lg:max-h-[295px] scroll-smooth" tabindex="0" role="region" aria-label="Recent transactions">
         <table class="card-table w-full text-left text-sm text-text-body">
           <caption class="sr-only">Recent transactions</caption>
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg rounded-lg">
@@ -406,7 +412,7 @@
                   [class.text-accent-rose]="item.type === 'EXPENSE'"
                   [class.text-accent-teal]="item.type === 'SAVINGS'"
                   [class.text-text-muted]="item.type === 'TRANSFER'">
-                  @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-'))) + (Math.abs(item.amount) | currency:'PHP':'symbol-narrow') }}}
+                  <app-amount [value]="Math.abs(item.amount)" [sign]="item.type === 'INCOME' || item.type === 'SAVINGS' ? '+' : (item.type === 'TRANSFER' ? '' : '-')" />
                 </td>
               </tr>
               } @empty {
@@ -423,5 +429,5 @@
 </div>
 
 @if (isResetModalOpen()) {
-<app-reset-password (close)="closeResetModal()"></app-reset-password>
+<app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }

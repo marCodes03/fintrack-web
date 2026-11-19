@@ -6,7 +6,7 @@
     <!-- Title Page Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-border-subtle pb-5">
       <div>
-        <h1 class="text-2xl font-black tracking-tight text-text-heading flex items-center space-x-2.5">
+        <h1 class="text-2xl font-bold tracking-tight text-text-heading flex items-center space-x-2.5">
           <app-icon name="star-filled"/>
           <span>Feedback & Reviews</span>
         </h1>
@@ -27,14 +27,14 @@
           <h2 class="text-base font-bold text-text-heading">Write a Review</h2>
 
           @if (successMessage()) {
-            <div role="status" class="p-3.5 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-xs flex items-center space-x-2">
+            <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3.5 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-xs flex items-center space-x-2">
               <app-icon name="check-circle"/>
               <span>{{ successMessage() }}</span>
             </div>
           }
 
           @if (errorMessage()) {
-            <div role="alert" class="p-3.5 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-xs flex items-center space-x-2">
+            <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3.5 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-xs flex items-center space-x-2">
               <app-icon name="alert"/>
               <span>{{ errorMessage() }}</span>
             </div>

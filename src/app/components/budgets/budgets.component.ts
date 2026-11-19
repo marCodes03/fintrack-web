@@ -1,3 +1,4 @@
+import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
@@ -10,7 +11,7 @@ import { HeaderComponent } from '../header/header.component';
 import { ResetPasswordComponent } from '../auth/reset-password/reset-password.component';
 import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal.component';
 import { BudgetPlanSliderComponent } from './budget-plan-slider.component';
-import { CurrencyPipe, DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
+import { DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
 
 export interface BudgetPlanItem {
   id?: string;
@@ -25,7 +26,7 @@ export interface BudgetPlanItem {
 @Component({
   selector: 'app-budgets',
   standalone: true,
-  imports: [IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, BudgetPlanSliderComponent, FormsModule, CurrencyPipe, DatePipe, DecimalPipe],
+  imports: [AmountComponent, IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, BudgetPlanSliderComponent, FormsModule, DatePipe, DecimalPipe],
   templateUrl: './budgets.component.html'
 })
 export class BudgetsComponent implements OnInit {
@@ -41,6 +42,14 @@ export class BudgetsComponent implements OnInit {
   protected readonly paginatedPlans = computed(() => {
     return this.budgetPlans().slice(0, this.itemsToShow());
   });
+
+  // Below 1024px the list grows with the page, so load more when the page nears its end
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (window.innerWidth >= 1024) return;
+    const doc = document.documentElement;
+    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 200) this.loadMore();
+  }
 
   onContainerScroll(event: Event): void {
     const target = event.target as HTMLElement;

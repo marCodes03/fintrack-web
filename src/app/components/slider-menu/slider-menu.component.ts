@@ -21,9 +21,6 @@ export class SliderMenuComponent {
   protected readonly user = this.authService.currentUser;
   protected accountOpen = signal<boolean>(false);
 
-
-
-
   onClose(): void {
     this.close.emit();
   }

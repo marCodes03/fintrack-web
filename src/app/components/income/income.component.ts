@@ -1,3 +1,4 @@
+import { AmountComponent } from '../../shared/amount.component';
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
 import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
@@ -10,12 +11,12 @@ import { HeaderComponent } from '../header/header.component';
 import { ResetPasswordComponent } from '../auth/reset-password/reset-password.component';
 import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal.component';
 import { IncomeSliderComponent } from './income-slider.component';
-import { DatePipe, CurrencyPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-income',
   standalone: true,
-  imports: [RowMenuComponent, IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, IncomeSliderComponent, DatePipe, CurrencyPipe, FormsModule],
+  imports: [AmountComponent, RowMenuComponent, IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, IncomeSliderComponent, DatePipe, FormsModule],
   templateUrl: './income.component.html'
 })
 export class IncomeComponent implements OnInit {
@@ -94,6 +95,14 @@ export class IncomeComponent implements OnInit {
     if (this.itemsToShow() < this.filteredTransactions().length) {
       this.itemsToShow.update(val => val + 10);
     }
+  }
+
+  // Below 1024px the list grows with the page, so load more when the page nears its end
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (window.innerWidth >= 1024) return;
+    const doc = document.documentElement;
+    if (window.scrollY + window.innerHeight >= doc.scrollHeight - 200) this.loadMore();
   }
 
   onContainerScroll(event: Event): void {

@@ -5,7 +5,7 @@
     class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
-        <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Expense Tracker</h1>
+        <h1 class="text-2xl font-bold text-text-heading tracking-tight">Expense Tracker</h1>
         <p class="text-sm text-text-body mt-1">Log outflows, manage date-specific & recurring bills, and trace
           expenditures across accounts.</p>
       </div>
@@ -24,12 +24,12 @@
     </div>
 
     @if (successMessage()) {
-    <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
+    <div role="status" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
       <app-icon name="check-circle"/><span>{{ successMessage() }}</span>
     </div>
     }
     @if (errorMessage()) {
-    <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
+    <div role="alert" animate.enter="banner-enter" animate.leave="banner-leave" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
       <app-icon name="alert"/><span>{{ errorMessage() }}</span>
     </div>
     }
@@ -41,7 +41,7 @@
         <div
           class="bg-surface-card border border-border-subtle rounded-xl p-6 relative overflow-hidden">
           <p class="text-sm font-medium text-text-muted">Total Month Expenses</p>
-          <p class="text-4xl font-black text-accent-rose mt-3">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ totalExpenses() | currency:'PHP':'symbol-narrow' }}}</p>
+          <p class="text-4xl font-black text-accent-rose mt-3"><app-amount [value]="totalExpenses()" /></p>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
             Select all
           </label>
         </div>
-        <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Expenses table" (scroll)="onContainerScroll($event)">
+        <div class="overflow-x-auto lg:overflow-y-auto lg:max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Expenses table" (scroll)="onContainerScroll($event)">
           <table class="card-table w-full text-left text-sm text-text-body">
 <caption class="sr-only">Expenses table</caption>
             <thead class="text-xs text-text-muted uppercase bg-table-header-bg rounded-lg">
@@ -186,7 +186,7 @@
                     {{ (item.expenseDate || item.date) | date:'mediumDate' }}
                   </td>
                   <td data-cell="amount" class="px-4 py-3 text-accent-rose font-semibold">
-                    -@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ Math.abs(item.amount) | currency:'PHP':'symbol-narrow' }}}
+                    <app-amount [value]="Math.abs(item.amount)" sign="-" />
                   </td>
                 </tr>
                 } @empty {
@@ -224,7 +224,7 @@
 </app-expense-slider>
 
 @if (isResetModalOpen()) {
-<app-reset-password (close)="closeResetModal()"></app-reset-password>
+<app-reset-password animate.leave="overlay-leave" class="block" (close)="closeResetModal()"></app-reset-password>
 }
 
 <app-confirm-delete-modal [isOpen]="isDeleteModalOpen()" [itemName]="txToDelete()?.description ?? ''"
