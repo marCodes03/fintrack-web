@@ -200,9 +200,8 @@ export class SavingsComponent implements OnInit {
   }
 
   loadData(): void {
-    const userId = this.authService.currentUser()?.id;
     this.isLoading.set(true);
-    this.apiService.getTransactions(userId).subscribe({
+    this.apiService.getTransactions().subscribe({
       next: (res) => {
         if (res.success) {
           const savingsTxs = res.data.filter(t => t.type === 'SAVINGS');
@@ -216,7 +215,7 @@ export class SavingsComponent implements OnInit {
       }
     });
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);
@@ -241,7 +240,7 @@ export class SavingsComponent implements OnInit {
       error: () => {}
     });
 
-    this.apiService.getBudgetPlans(userId).subscribe({
+    this.apiService.getBudgetPlans().subscribe({
       next: (res) => {
         if (res.success) {
           this.budgetPlans.set(res.data);
@@ -254,7 +253,7 @@ export class SavingsComponent implements OnInit {
     const userId = this.authService.currentUser()?.id || '';
     if (!userId) return;
 
-    this.apiService.getSavingsGoal(userId).subscribe({
+    this.apiService.getSavingsGoal().subscribe({
       next: (res) => {
         if (res.success) {
           this.monthlySavingsGoal.set(res.monthlySavingsGoal);
@@ -277,7 +276,7 @@ export class SavingsComponent implements OnInit {
     if (!userId) return;
 
     const newGoal = Math.max(0, this.editedGoalAmount || 0);
-    this.apiService.updateSavingsGoal(userId, newGoal).subscribe({
+    this.apiService.updateSavingsGoal(newGoal).subscribe({
       next: (res) => {
         if (res.success) {
           this.monthlySavingsGoal.set(res.monthlySavingsGoal);

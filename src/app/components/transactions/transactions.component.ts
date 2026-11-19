@@ -199,9 +199,8 @@ export class TransactionsComponent implements OnInit {
   }
 
   loadData(): void {
-    const userId = this.authService.currentUser()?.id;
     this.isLoading.set(true);
-    this.apiService.getTransactions(userId).subscribe({
+    this.apiService.getTransactions().subscribe({
       next: (res) => {
         if (res.success) {
           this.transactions.set(res.data);
@@ -214,7 +213,7 @@ export class TransactionsComponent implements OnInit {
       }
     });
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);

@@ -183,9 +183,8 @@ export class ExpensesComponent implements OnInit {
   }
 
   loadData(): void {
-    const userId = this.authService.currentUser()?.id;
     this.isLoading.set(true);
-    this.apiService.getTransactions(userId).subscribe({
+    this.apiService.getTransactions().subscribe({
       next: (res) => {
         if (res.success) {
           const expenseTxs = res.data.filter(t => t.type === 'EXPENSE');
@@ -199,7 +198,7 @@ export class ExpensesComponent implements OnInit {
       }
     });
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);
@@ -223,7 +222,7 @@ export class ExpensesComponent implements OnInit {
       error: () => {}
     });
 
-    this.apiService.getBudgetPlans(userId).subscribe({
+    this.apiService.getBudgetPlans().subscribe({
       next: (res) => {
         if (res.success) {
           this.budgetPlans.set(res.data);

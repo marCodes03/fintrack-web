@@ -1,14 +1,16 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../prisma';
+import { requireAuth } from '../middleware/auth.middleware';
 
 const router = Router();
+router.use(requireAuth);
 
 // GET /api/reviews
 router.get('/', async (req: Request, res: Response) => {
-  const userId = req.query['userId'] as string;
+  const userId = req.userId as string;
   try {
     const reviews = await prisma.review.findMany({
-      where: userId ? { userId } : {},
+      where: { userId },
       orderBy: { createdDate: 'desc' },
       include: {
         user: {
@@ -27,9 +29,10 @@ router.get('/', async (req: Request, res: Response) => {
 
 // POST /api/reviews
 router.post('/', async (req: Request, res: Response) => {
-  const { rating, comment, userId } = req.body;
+  const { rating, comment } = req.body;
+  const userId = req.userId as string;
 
-  if (rating === undefined || rating === null || !comment || !userId) {
+  if (rating === undefined || rating === null || !comment) {
     res.status(400).json({ success: false, message: 'Please provide rating, comment, and ensure you are logged in.' });
     return;
   }

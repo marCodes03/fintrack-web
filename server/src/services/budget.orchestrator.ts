@@ -1,4 +1,3 @@
-import { prisma } from '../prisma';
 import {
   getBudgetPlansFromDb,
   createBudgetPlanInDb,
@@ -16,13 +15,13 @@ export class BudgetOrchestrator {
   /**
    * Retrieves budget plans from the database. Falls back to mockStore if database fails.
    */
-  static async getBudgetPlans(userId?: string) {
+  static async getBudgetPlans(userId: string) {
     try {
       const plans = await getBudgetPlansFromDb(userId);
       return { success: true, data: plans };
     } catch (err) {
       console.warn('DB error on getBudgetPlans, self-annealing with mock fallback:', err);
-      const plans = userId ? mockBudgetPlans.filter((p) => p.userId === userId) : mockBudgetPlans;
+      const plans = mockBudgetPlans.filter((p) => p.userId === userId);
       return { success: true, data: plans };
     }
   }
@@ -31,17 +30,10 @@ export class BudgetOrchestrator {
    * Creates a budget plan. If the database fails, self-anneals by creating it in the mock store.
    */
   static async createBudgetPlan(data: BudgetPlanInput) {
-    let targetUserId = data.userId;
+    const targetUserId = data.userId;
     try {
-      if (!targetUserId) {
-        const defaultUser = await prisma.user.findFirst();
-        if (defaultUser) targetUserId = defaultUser.id;
-      }
-
-      if (targetUserId) {
-        const plan = await createBudgetPlanInDb(data, targetUserId);
-        return { success: true, data: plan };
-      }
+      const plan = await createBudgetPlanInDb(data, targetUserId);
+      return { success: true, data: plan };
     } catch (err) {
       console.warn('DB error on createBudgetPlan, self-annealing with mock fallback:', err);
     }
@@ -51,7 +43,7 @@ export class BudgetOrchestrator {
       id: `bp-${Date.now()}`,
       name: data.name,
       timeframe: data.timeframe,
-      userId: targetUserId || 'user-default-1',
+      userId: targetUserId,
       createdDate: new Date().toISOString(),
       updatedDate: new Date().toISOString(),
       items: (data.items || []).map((i) => ({
@@ -71,13 +63,14 @@ export class BudgetOrchestrator {
   /**
    * Updates a budget plan. Self-anneals by updating in-memory mock store if database fails.
    */
-  static async updateBudgetPlan(id: string, data: Partial<BudgetPlanInput>) {
+  static async updateBudgetPlan(id: string, userId: string, data: Partial<BudgetPlanInput>) {
     try {
-      const updated = await updateBudgetPlanInDb(id, data);
+      const updated = await updateBudgetPlanInDb(id, userId, data);
+      if (!updated) return { success: false, message: 'Budget plan not found.' };
       return { success: true, data: updated };
     } catch (err) {
       console.warn('DB error on updateBudgetPlan, self-annealing with mock fallback:', err);
-      const index = mockBudgetPlans.findIndex((p) => p.id === id);
+      const index = mockBudgetPlans.findIndex((p) => p.id === id && p.userId === userId);
       if (index !== -1) {
         const existing = mockBudgetPlans[index];
         const updated = {

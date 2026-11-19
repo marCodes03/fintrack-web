@@ -1,27 +1,30 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../prisma';
 import { mockTransactions, mockAccounts, handleDbError } from '../mockStore';
+import { requireAuth } from '../middleware/auth.middleware';
 
 const router = Router();
+router.use(requireAuth);
 
 // GET /api/transactions
 router.get('/', async (req: Request, res: Response) => {
-  const userId = req.query['userId'] as string;
+  const userId = req.userId as string;
   try {
     const transactions = await prisma.transaction.findMany({
-      where: userId ? { userId } : {},
+      where: { userId },
       orderBy: { date: 'desc' }
     });
     res.json({ success: true, data: transactions });
   } catch (_err) {
-    const filtered = userId ? mockTransactions.filter(t => t.userId === userId) : mockTransactions;
+    const filtered = mockTransactions.filter(t => t.userId === userId);
     res.json({ success: true, data: filtered });
   }
 });
 
 // POST /api/transactions
 router.post('/', async (req: Request, res: Response) => {
-  const { description, amount, type, expenseType, category, accountId, toAccountId, transferFee, expenseDate, userId } = req.body;
+  const { description, amount, type, expenseType, category, accountId, toAccountId, transferFee, expenseDate } = req.body;
+  const userId = req.userId as string;
 
   if (!description || amount === undefined || !type) {
     res.status(400).json({ success: false, message: 'Description, amount, and type are required.' });
@@ -32,14 +35,16 @@ router.post('/', async (req: Request, res: Response) => {
   const numericFee = parseFloat(transferFee) || 0;
 
   try {
-    let targetUserId = userId;
-    if (!targetUserId) {
-      const defaultUser = await prisma.user.findFirst();
-      if (defaultUser) targetUserId = defaultUser.id;
-    }
-
-    if (targetUserId) {
+    if (!userId.startsWith('user-mock-')) {
       const result = await prisma.$transaction(async (tx) => {
+        // Referenced accounts must belong to the authenticated user
+        for (const refId of [accountId, toAccountId]) {
+          if (refId) {
+            const owned = await tx.account.findUnique({ where: { id: refId } });
+            if (!owned || owned.userId !== userId) throw new Error('Account not found.');
+          }
+        }
+
         // Zero-balance enforcement for NON-CREDIT accounts
         if (accountId && (type === 'EXPENSE' || type === 'TRANSFER' || (type === 'SAVINGS' && toAccountId))) {
           const srcAcc = await tx.account.findUnique({ where: { id: accountId } });
@@ -62,7 +67,7 @@ router.post('/', async (req: Request, res: Response) => {
             toAccountId: toAccountId || null,
             transferFee: numericFee,
             expenseDate: expenseDate ? new Date(expenseDate) : null,
-            userId: targetUserId
+            userId
           }
         });
 
@@ -109,6 +114,10 @@ router.post('/', async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     console.error('Prisma Error in POST /api/transactions:', err);
+    if (err.message === 'Account not found.') {
+      res.status(404).json({ success: false, message: 'Account not found.' });
+      return;
+    }
     if (err.message && err.message.includes('Insufficient account balance')) {
       res.status(400).json({ success: false, message: err.message });
       return;
@@ -117,6 +126,12 @@ router.post('/', async (req: Request, res: Response) => {
   }
 
   // Fallback mode
+  for (const refId of [accountId, toAccountId]) {
+    if (refId && !mockAccounts.some(a => a.id === refId && a.userId === userId)) {
+      res.status(404).json({ success: false, message: 'Account not found.' });
+      return;
+    }
+  }
   if (accountId && (type === 'EXPENSE' || type === 'TRANSFER' || (type === 'SAVINGS' && toAccountId))) {
     const srcAcc = mockAccounts.find(a => a.id === accountId);
     if (srcAcc && srcAcc.type !== 'CREDIT') {
@@ -139,6 +154,7 @@ router.post('/', async (req: Request, res: Response) => {
     toAccountId,
     transferFee: numericFee,
     expenseDate,
+    userId,
     date: new Date().toISOString()
   };
 
@@ -174,6 +190,11 @@ router.put('/:id', async (req: Request, res: Response) => {
   const { description, amount, category, accountId, expenseDate } = req.body;
 
   try {
+    const existing = await prisma.transaction.findUnique({ where: { id } });
+    if (!existing || existing.userId !== req.userId) {
+      res.status(404).json({ success: false, message: 'Transaction not found.' });
+      return;
+    }
     const updated = await prisma.transaction.update({
       where: { id },
       data: {
@@ -186,7 +207,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     });
     res.json({ success: true, data: updated });
   } catch (_err) {
-    const idx = mockTransactions.findIndex(t => t.id === id);
+    const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);
     if (idx === -1) {
       res.status(404).json({ success: false, message: 'Transaction not found.' });
       return;
@@ -209,7 +230,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
   try {
     const tx = await prisma.transaction.findUnique({ where: { id } });
-    if (!tx) {
+    if (!tx || tx.userId !== req.userId) {
       res.status(404).json({ success: false, message: 'Transaction not found.' });
       return;
     }
@@ -256,7 +277,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     res.json({ success: true, message: 'Transaction deleted and account balance updated.' });
   } catch (_err) {
-    const idx = mockTransactions.findIndex(t => t.id === id);
+    const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);
     if (idx === -1) {
       res.status(404).json({ success: false, message: 'Transaction not found.' });
       return;
@@ -299,7 +320,7 @@ router.post('/bulk-delete', async (req: Request, res: Response) => {
     await prisma.$transaction(async (prismaTx) => {
       for (const id of ids) {
         const tx = await prismaTx.transaction.findUnique({ where: { id } });
-        if (tx) {
+        if (tx && tx.userId === req.userId) {
           // Balance rollback on deletion
           if (tx.type === 'INCOME' && tx.accountId) {
             await prismaTx.account.update({
@@ -344,7 +365,7 @@ router.post('/bulk-delete', async (req: Request, res: Response) => {
   } catch (_err) {
     // Fallback: mock deletion
     for (const id of ids) {
-      const idx = mockTransactions.findIndex(t => t.id === id);
+      const idx = mockTransactions.findIndex(t => t.id === id && t.userId === req.userId);
       if (idx !== -1) {
         const tx = mockTransactions[idx];
         if (tx.type === 'INCOME' && tx.accountId) {

@@ -60,7 +60,6 @@ export class ExpenseSliderComponent implements OnChanges {
       return;
     }
 
-    const userId = this.authService.currentUser()?.id || 'user-default-1';
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -71,8 +70,7 @@ export class ExpenseSliderComponent implements OnChanges {
       expenseType: this.localExpenseType,
       category: this.localCategory,
       accountId: this.localAccountId,
-      expenseDate: this.localExpenseDate,
-      userId
+      expenseDate: this.localExpenseDate
     };
 
     if (this.isEditMode && this.editingId) {

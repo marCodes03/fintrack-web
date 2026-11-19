@@ -135,7 +135,6 @@ export class TransactionSliderComponent implements OnChanges {
       return;
     }
 
-    const userId = this.authService.currentUser()?.id || 'user-default-1';
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -148,8 +147,7 @@ export class TransactionSliderComponent implements OnChanges {
       accountId: this.localAccountId,
       toAccountId: this.localType === 'TRANSFER' ? this.localToAccountId : null,
       transferFee: this.localType === 'TRANSFER' ? (this.localTransferFee || 0) : 0,
-      expenseDate: this.localExpenseDate,
-      userId
+      expenseDate: this.localExpenseDate
     };
 
     if (this.isEditMode && this.editingId) {

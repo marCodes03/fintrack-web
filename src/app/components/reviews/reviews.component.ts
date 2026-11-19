@@ -38,7 +38,7 @@ export class ReviewsComponent implements OnInit {
     const userId = this.authService.currentUser()?.id;
     if (!userId) return;
 
-    this.apiService.getReviews(userId).subscribe({
+    this.apiService.getReviews().subscribe({
       next: (res) => {
         if (res.success) {
           this.reviews.set(res.data);
@@ -80,7 +80,7 @@ export class ReviewsComponent implements OnInit {
     this.errorMessage.set(null);
     this.successMessage.set(null);
 
-    this.apiService.submitReview(this.rating(), this.comment.trim(), userId).subscribe({
+    this.apiService.submitReview(this.rating(), this.comment.trim()).subscribe({
       next: (res) => {
         this.isLoading.set(false);
         this.successMessage.set(res.message || 'Review submitted successfully!');

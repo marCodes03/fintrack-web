@@ -12,7 +12,7 @@ export interface BudgetPlanItemInput {
 export interface BudgetPlanInput {
   name: string;
   timeframe: string;
-  userId?: string;
+  userId: string;
   items?: BudgetPlanItemInput[];
 }
 
@@ -21,16 +21,15 @@ export interface BudgetPlanInput {
  * Contains only deterministic data fetching, insertion, updates, and validations.
  */
 
-export async function getBudgetPlansFromDb(userId?: string) {
+export async function getBudgetPlansFromDb(userId: string) {
   return await prisma.budgetPlan.findMany({
-    where: userId ? { userId } : {},
+    where: { userId },
     include: { items: true },
     orderBy: { createdDate: 'desc' }
   });
 }
 
-export async function createBudgetPlanInDb(data: BudgetPlanInput, fallbackUserId: string) {
-  const targetUserId = data.userId || fallbackUserId;
+export async function createBudgetPlanInDb(data: BudgetPlanInput, targetUserId: string) {
   const items = data.items || [];
 
   return await prisma.budgetPlan.create({
@@ -53,8 +52,12 @@ export async function createBudgetPlanInDb(data: BudgetPlanInput, fallbackUserId
   });
 }
 
-export async function updateBudgetPlanInDb(id: string, data: Partial<BudgetPlanInput>) {
+/** Returns null if the plan doesn't exist or isn't owned by userId. */
+export async function updateBudgetPlanInDb(id: string, userId: string, data: Partial<BudgetPlanInput>) {
   return await prisma.$transaction(async (tx) => {
+    const existing = await tx.budgetPlan.findUnique({ where: { id } });
+    if (!existing || existing.userId !== userId) return null;
+
     if (data.items) {
       await tx.budgetPlanItem.deleteMany({ where: { budgetPlanId: id } });
     }

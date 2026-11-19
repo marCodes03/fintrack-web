@@ -90,7 +90,6 @@ export class SavingsSliderComponent implements OnChanges {
       return;
     }
 
-    const userId = this.authService.currentUser()?.id || 'user-default-1';
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -100,8 +99,7 @@ export class SavingsSliderComponent implements OnChanges {
       type: 'SAVINGS',
       category: this.localCategory,
       accountId: this.localAccountId,
-      toAccountId: this.localToAccountId,
-      userId
+      toAccountId: this.localToAccountId
     };
 
     if (this.isEditMode && this.editingId) {

@@ -284,7 +284,7 @@ export class DashboardComponent implements OnInit {
     this.isLoadingTransactions.set(true);
     this.isLoadingDashboard.set(true);
 
-    this.apiService.getTransactions(userId).subscribe({
+    this.apiService.getTransactions().subscribe({
       next: (res) => {
         if (res.success) {
           this.transactions.set(res.data);
@@ -299,7 +299,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);
@@ -312,7 +312,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    this.apiService.getBudgetPlans(userId).subscribe({
+    this.apiService.getBudgetPlans().subscribe({
       next: (res) => {
         if (res.success) {
           this.budgetPlans.set(res.data);
@@ -326,7 +326,7 @@ export class DashboardComponent implements OnInit {
     });
 
     if (userId) {
-      this.apiService.getSavingsGoal(userId).subscribe({
+      this.apiService.getSavingsGoal().subscribe({
         next: (res) => {
           if (res.success) {
             this.monthlySavingsGoal.set(res.monthlySavingsGoal);
@@ -334,7 +334,7 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-      this.apiService.getBudgetGoal(userId).subscribe({
+      this.apiService.getBudgetGoal().subscribe({
         next: (res) => {
           if (res.success) {
             this.budgetGoal.set(res.data);

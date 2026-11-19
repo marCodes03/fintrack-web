@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface HealthResponse {
@@ -135,22 +135,19 @@ export class ApiService {
     return this.http.get<HealthResponse>(`${this.baseUrl}/health`);
   }
 
-  getTransactions(userId?: string): Observable<{ success: boolean; data: Transaction[] }> {
-    const params = userId ? new HttpParams().set('userId', userId) : undefined;
-    return this.http.get<{ success: boolean; data: Transaction[] }>(`${this.baseUrl}/transactions`, { params });
+  getTransactions(): Observable<{ success: boolean; data: Transaction[] }> {
+    return this.http.get<{ success: boolean; data: Transaction[] }>(`${this.baseUrl}/transactions`);
   }
 
-  getAccounts(userId?: string): Observable<{ success: boolean; data: Account[] }> {
-    const params = userId ? new HttpParams().set('userId', userId) : undefined;
-    return this.http.get<{ success: boolean; data: Account[] }>(`${this.baseUrl}/accounts`, { params });
+  getAccounts(): Observable<{ success: boolean; data: Account[] }> {
+    return this.http.get<{ success: boolean; data: Account[] }>(`${this.baseUrl}/accounts`);
   }
 
-  getBudgetPlans(userId?: string): Observable<{ success: boolean; data: BudgetPlan[] }> {
-    const params = userId ? new HttpParams().set('userId', userId) : undefined;
-    return this.http.get<{ success: boolean; data: BudgetPlan[] }>(`${this.baseUrl}/budget-plans`, { params });
+  getBudgetPlans(): Observable<{ success: boolean; data: BudgetPlan[] }> {
+    return this.http.get<{ success: boolean; data: BudgetPlan[] }>(`${this.baseUrl}/budget-plans`);
   }
 
-  implementBudgetPlan(planId: string, payload: { startDate: string; endDate: string; accountId: string; expenseAccountId?: string; savingsAccountId?: string; userId: string }): Observable<{ success: boolean; message: string; data: BudgetPlan }> {
+  implementBudgetPlan(planId: string, payload: { startDate: string; endDate: string; accountId: string; expenseAccountId?: string; savingsAccountId?: string }): Observable<{ success: boolean; message: string; data: BudgetPlan }> {
     return this.http.post<{ success: boolean; message: string; data: BudgetPlan }>(`${this.baseUrl}/budget-plans/${planId}/implement`, payload);
   }
 
@@ -158,23 +155,21 @@ export class ApiService {
     return this.http.put<{ success: boolean; message: string; data: BudgetPlan }>(`${this.baseUrl}/budget-plans/${planId}/deactivate`, {});
   }
 
-  getBudgetGoal(userId: string): Observable<{ success: boolean; data: BudgetGoal }> {
-    const params = new HttpParams().set('userId', userId);
-    return this.http.get<{ success: boolean; data: BudgetGoal }>(`${this.baseUrl}/budget-goals`, { params });
+  getBudgetGoal(): Observable<{ success: boolean; data: BudgetGoal }> {
+    return this.http.get<{ success: boolean; data: BudgetGoal }>(`${this.baseUrl}/budget-goals`);
   }
 
-  updateBudgetGoal(userId: string, groups: BudgetGoalGroup[]): Observable<{ success: boolean; data: BudgetGoal }> {
-    return this.http.put<{ success: boolean; data: BudgetGoal }>(`${this.baseUrl}/budget-goals`, { userId, groups });
+  updateBudgetGoal(groups: BudgetGoalGroup[]): Observable<{ success: boolean; data: BudgetGoal }> {
+    return this.http.put<{ success: boolean; data: BudgetGoal }>(`${this.baseUrl}/budget-goals`, { groups });
   }
 
 
-  getSavingsGoal(userId: string): Observable<{ success: boolean; monthlySavingsGoal: number }> {
-    const params = new HttpParams().set('userId', userId);
-    return this.http.get<{ success: boolean; monthlySavingsGoal: number }>(`${this.baseUrl}/user/savings-goal`, { params });
+  getSavingsGoal(): Observable<{ success: boolean; monthlySavingsGoal: number }> {
+    return this.http.get<{ success: boolean; monthlySavingsGoal: number }>(`${this.baseUrl}/user/savings-goal`);
   }
 
-  updateSavingsGoal(userId: string, monthlySavingsGoal: number): Observable<{ success: boolean; monthlySavingsGoal: number }> {
-    return this.http.put<{ success: boolean; monthlySavingsGoal: number }>(`${this.baseUrl}/user/savings-goal`, { userId, monthlySavingsGoal });
+  updateSavingsGoal(monthlySavingsGoal: number): Observable<{ success: boolean; monthlySavingsGoal: number }> {
+    return this.http.put<{ success: boolean; monthlySavingsGoal: number }>(`${this.baseUrl}/user/savings-goal`, { monthlySavingsGoal });
   }
 
   // Reference endpoints
@@ -194,12 +189,11 @@ export class ApiService {
     return this.http.get<{ success: boolean; data: RefAccountType[] }>(`${this.baseUrl}/refs/account-types`);
   }
 
-  submitReview(rating: number, comment: string, userId: string): Observable<{ success: boolean; message: string; data: Review }> {
-    return this.http.post<{ success: boolean; message: string; data: Review }>(`${this.baseUrl}/reviews`, { rating, comment, userId });
+  submitReview(rating: number, comment: string): Observable<{ success: boolean; message: string; data: Review }> {
+    return this.http.post<{ success: boolean; message: string; data: Review }>(`${this.baseUrl}/reviews`, { rating, comment });
   }
 
-  getReviews(userId?: string): Observable<{ success: boolean; data: Review[] }> {
-    const params = userId ? new HttpParams().set('userId', userId) : undefined;
-    return this.http.get<{ success: boolean; data: Review[] }>(`${this.baseUrl}/reviews`, { params });
+  getReviews(): Observable<{ success: boolean; data: Review[] }> {
+    return this.http.get<{ success: boolean; data: Review[] }>(`${this.baseUrl}/reviews`);
   }
 }

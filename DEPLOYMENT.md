@@ -37,6 +37,7 @@ You can let Render run migrations automatically during deployment.
    npx prisma migrate deploy && node prisma/seed.js && npm start
    ```
 2. Set your Environment Variables:
+   - `JWT_SECRET`: **Required.** A long random string used to sign login tokens (e.g. `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`). The server refuses to start without it.
    - `DATABASE_URL`: Set to your **Transaction Pooler** connection string (port `6543` with `?pgbouncer=true`).
    - `DIRECT_URL`: Set to your **Session Pooler** connection string (port `5432`).
 

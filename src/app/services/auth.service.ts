@@ -13,6 +13,7 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   user?: User;
+  token?: string;
 }
 
 @Injectable({
@@ -28,6 +29,13 @@ export class AuthService {
   // Manage logged-in user state reactively using signal
   readonly currentUser = signal<User | null>(null);
 
+  // JWT issued by the server at login (persisted in localStorage)
+  readonly token = signal<string | null>(localStorage.getItem('fintrack_token'));
+
+  getToken(): string | null {
+    return this.token();
+  }
+
   // Global hide amounts signal (persists in localStorage)
   readonly hideAmounts = signal<boolean>(localStorage.getItem('fintrack_hide_amounts') === 'true');
 
@@ -37,7 +45,9 @@ export class AuthService {
   constructor() {
     // Load persisted user state from localStorage if exists
     const savedUser = localStorage.getItem('fintrack_user');
-    if (savedUser) {
+    if (savedUser && !this.token()) {
+      this.logout();
+    } else if (savedUser) {
       try {
         const lastActivity = localStorage.getItem(this.lastActivityKey);
         const now = Date.now();
@@ -100,7 +110,9 @@ export class AuthService {
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, { email, password }).pipe(
       tap((res) => {
-        if (res.success && res.user) {
+        if (res.success && res.user && res.token) {
+          this.token.set(res.token);
+          localStorage.setItem('fintrack_token', res.token);
           this.currentUser.set(res.user);
           localStorage.setItem('fintrack_user', JSON.stringify(res.user));
           this.updateActivity();
@@ -133,7 +145,9 @@ export class AuthService {
 
   logout(): void {
     this.currentUser.set(null);
+    this.token.set(null);
     localStorage.removeItem('fintrack_user');
+    localStorage.removeItem('fintrack_token');
     localStorage.removeItem(this.lastActivityKey);
     this.router.navigate(['/login']);
   }

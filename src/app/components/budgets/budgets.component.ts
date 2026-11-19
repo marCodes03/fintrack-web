@@ -112,7 +112,7 @@ export class BudgetsComponent implements OnInit {
     const userId = this.authService.currentUser()?.id;
     
     if (userId) {
-      this.apiService.getSavingsGoal(userId).subscribe({
+      this.apiService.getSavingsGoal().subscribe({
         next: (res) => {
           if (res.success) {
             this.userMonthlySavingsGoal.set(res.monthlySavingsGoal || 0);
@@ -122,7 +122,7 @@ export class BudgetsComponent implements OnInit {
     }
 
     this.isLoading.set(true);
-    this.apiService.getBudgetPlans(userId).subscribe({
+    this.apiService.getBudgetPlans().subscribe({
       next: (res) => {
         if (res.success) {
           this.budgetPlans.set(res.data);
@@ -135,7 +135,7 @@ export class BudgetsComponent implements OnInit {
       }
     });
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);
@@ -147,7 +147,7 @@ export class BudgetsComponent implements OnInit {
     });
 
     if (userId) {
-      this.apiService.getBudgetGoal(userId).subscribe({
+      this.apiService.getBudgetGoal().subscribe({
         next: (res) => {
           if (res.success) {
             this.budgetGoal.set(res.data);
@@ -318,7 +318,6 @@ export class BudgetsComponent implements OnInit {
       return;
     }
 
-    const userId = this.authService.currentUser()?.id || '';
     const defaultAccId = this.accounts().length > 0 ? this.accounts()[0].id : '';
     this.isLoading.set(true);
     this.errorMessage.set(null);
@@ -327,7 +326,6 @@ export class BudgetsComponent implements OnInit {
       startDate: this.implementStartDate,
       endDate: this.implementEndDate,
       accountId: this.implementAccountId || defaultAccId,
-      userId,
       execute: this.implementExecute
     };
 
@@ -541,7 +539,7 @@ export class BudgetsComponent implements OnInit {
     this.errorMessage.set(null);
     this.successMessage.set(null);
 
-    this.apiService.updateBudgetGoal(userId, this.goalGroupsEdit()).subscribe({
+    this.apiService.updateBudgetGoal(this.goalGroupsEdit()).subscribe({
       next: (res) => {
         this.isLoading.set(false);
         this.successMessage.set('Your baseline budget goal targets have been updated successfully!');

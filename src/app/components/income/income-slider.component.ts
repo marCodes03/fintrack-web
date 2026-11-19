@@ -54,7 +54,6 @@ export class IncomeSliderComponent implements OnChanges {
       return;
     }
 
-    const userId = this.authService.currentUser()?.id || 'user-default-1';
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -63,8 +62,7 @@ export class IncomeSliderComponent implements OnChanges {
       amount: Math.abs(this.localAmount),
       type: 'INCOME',
       category: this.localCategory,
-      accountId: this.localAccountId,
-      userId
+      accountId: this.localAccountId
     };
 
     if (this.isEditMode && this.editingId) {

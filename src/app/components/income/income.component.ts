@@ -172,9 +172,8 @@ export class IncomeComponent implements OnInit {
   }
 
   loadData(): void {
-    const userId = this.authService.currentUser()?.id;
     this.isLoading.set(true);
-    this.apiService.getTransactions(userId).subscribe({
+    this.apiService.getTransactions().subscribe({
       next: (res) => {
         if (res.success) {
           const incomeTxs = res.data.filter(t => t.type === 'INCOME');
@@ -188,7 +187,7 @@ export class IncomeComponent implements OnInit {
       }
     });
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);

@@ -9,24 +9,25 @@ import {
   handleDbError
 } from '../mockStore';
 import { BudgetOrchestrator } from '../services/budget.orchestrator';
+import { requireAuth } from '../middleware/auth.middleware';
 
 const router = Router();
+router.use(['/budget-plans', '/budget-goals', '/user'], requireAuth);
 
 // GET /api/budget-plans
 router.get('/budget-plans', async (req: Request, res: Response) => {
-  const userId = req.query['userId'] as string;
-  const result = await BudgetOrchestrator.getBudgetPlans(userId);
+  const result = await BudgetOrchestrator.getBudgetPlans(req.userId as string);
   res.json(result);
 });
 
 // POST /api/budget-plans
 router.post('/budget-plans', async (req: Request, res: Response) => {
-  const { name, timeframe, userId, items } = req.body;
+  const { name, timeframe, items } = req.body;
   if (!name || !timeframe) {
     res.status(400).json({ success: false, message: 'Name and timeframe are required.' });
     return;
   }
-  const result = await BudgetOrchestrator.createBudgetPlan({ name, timeframe, userId, items });
+  const result = await BudgetOrchestrator.createBudgetPlan({ name, timeframe, userId: req.userId as string, items });
   res.status(201).json(result);
 });
 
@@ -34,7 +35,7 @@ router.post('/budget-plans', async (req: Request, res: Response) => {
 router.put('/budget-plans/:id', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   const { name, timeframe, items } = req.body;
-  const result = await BudgetOrchestrator.updateBudgetPlan(id, { name, timeframe, items });
+  const result = await BudgetOrchestrator.updateBudgetPlan(id, req.userId as string, { name, timeframe, items });
   if (!result.success) {
     res.status(404).json(result);
     return;
@@ -46,10 +47,15 @@ router.put('/budget-plans/:id', async (req: Request, res: Response) => {
 router.delete('/budget-plans/:id', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
+    const existing = await prisma.budgetPlan.findUnique({ where: { id } });
+    if (!existing || existing.userId !== req.userId) {
+      res.status(404).json({ success: false, message: 'Budget plan not found.' });
+      return;
+    }
     await prisma.budgetPlan.delete({ where: { id } });
     res.json({ success: true, message: 'Budget plan deleted.' });
   } catch (_err) {
-    const idx = mockBudgetPlans.findIndex(p => p.id === id);
+    const idx = mockBudgetPlans.findIndex(p => p.id === id && p.userId === req.userId);
     if (idx === -1) {
       res.status(404).json({ success: false, message: 'Budget plan not found.' });
       return;
@@ -63,13 +69,18 @@ router.delete('/budget-plans/:id', async (req: Request, res: Response) => {
 router.put('/budget-plans/:id/deactivate', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
   try {
+    const existing = await prisma.budgetPlan.findUnique({ where: { id } });
+    if (!existing || existing.userId !== req.userId) {
+      res.status(404).json({ success: false, message: 'Budget plan not found' });
+      return;
+    }
     const plan = await prisma.budgetPlan.update({
       where: { id },
       data: { isActive: false }
     });
     res.json({ success: true, data: plan });
   } catch (_err) {
-    const p = mockBudgetPlans.find(p => p.id === id);
+    const p = mockBudgetPlans.find(p => p.id === id && p.userId === req.userId);
     if (!p) {
       res.status(404).json({ success: false, message: 'Budget plan not found' });
       return;
@@ -81,11 +92,7 @@ router.put('/budget-plans/:id/deactivate', async (req: Request, res: Response) =
 
 // Budget Goals (Ideal Setup)
 router.get('/budget-goals', async (req: Request, res: Response) => {
-  const userId = req.query['userId'] as string;
-  if (!userId) {
-    res.status(400).json({ success: false, message: 'Please log in to view your budget goals.' });
-    return;
-  }
+  const userId = req.userId as string;
   try {
     const goal = await prisma.budgetGoal.findUnique({
       where: { userId },
@@ -99,9 +106,9 @@ router.get('/budget-goals', async (req: Request, res: Response) => {
 });
 
 router.put('/budget-goals', async (req: Request, res: Response) => {
-  const userId = (req.query['userId'] as string) || req.body.userId;
+  const userId = req.userId as string;
   const { groups } = req.body;
-  if (!userId || !groups) {
+  if (!groups) {
     res.status(400).json({ success: false, message: 'Please log in and define your budget groups before saving.' });
     return;
   }
@@ -150,7 +157,7 @@ router.put('/budget-goals', async (req: Request, res: Response) => {
 // Implement/Activate Budget Plan for a Period (Transaction Generation Engine)
 router.post('/budget-plans/:id/implement', async (req: Request, res: Response) => {
   const id = req.params['id'] as string;
-  const { startDate, endDate, accountId, expenseAccountId, savingsAccountId, userId, execute } = req.body;
+  const { startDate, endDate, accountId, expenseAccountId, savingsAccountId, execute } = req.body;
 
   if (!startDate || !endDate || !accountId) {
     res.status(400).json({ success: false, message: 'Start date, end date, and account are required to implement a budget plan.' });
@@ -171,7 +178,19 @@ router.post('/budget-plans/:id/implement', async (req: Request, res: Response) =
       return;
     }
 
-    const targetUserId = userId || plan.userId;
+    if (plan.userId !== req.userId) {
+      res.status(404).json({ success: false, message: 'Budget plan not found.' });
+      return;
+    }
+    const targetUserId = req.userId as string;
+
+    // Referenced accounts must belong to the authenticated user
+    const accountIds = [...new Set([accountId, expenseAccountId, savingsAccountId, ...plan.items.flatMap(i => [i.accountId, i.toAccountId])].filter(Boolean) as string[])];
+    const ownedCount = await prisma.account.count({ where: { id: { in: accountIds }, userId: targetUserId } });
+    if (ownedCount !== accountIds.length) {
+      res.status(404).json({ success: false, message: 'Account not found.' });
+      return;
+    }
 
     let timePeriod = plan.name || `${startDate} - ${endDate}`;
     if (plan.timeframe) {
@@ -339,7 +358,7 @@ router.post('/budget-plans/:id/implement', async (req: Request, res: Response) =
 
     res.json({ success: true, message: 'Budget plan activated and actual transactions recorded!', data: result });
   } catch (err: any) {
-    const plan = mockBudgetPlans.find(p => p.id === id);
+    const plan = mockBudgetPlans.find(p => p.id === id && p.userId === req.userId);
     if (plan) {
       let timePeriod = plan.name || `${startDate} - ${endDate}`;
       if (plan.timeframe) {
@@ -443,11 +462,7 @@ router.post('/budget-plans/:id/implement', async (req: Request, res: Response) =
 
 // Savings Goal Endpoints
 router.get('/user/savings-goal', async (req: Request, res: Response) => {
-  const userId = req.query['userId'] as string;
-  if (!userId) {
-    res.status(400).json({ success: false, message: 'userId is required.' });
-    return;
-  }
+  const userId = req.userId as string;
   try {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     res.json({ success: true, monthlySavingsGoal: user?.monthlySavingsGoal || 0 });
@@ -458,11 +473,8 @@ router.get('/user/savings-goal', async (req: Request, res: Response) => {
 });
 
 router.put('/user/savings-goal', async (req: Request, res: Response) => {
-  const { userId, monthlySavingsGoal } = req.body;
-  if (!userId) {
-    res.status(400).json({ success: false, message: 'userId is required.' });
-    return;
-  }
+  const { monthlySavingsGoal } = req.body;
+  const userId = req.userId as string;
   const numericGoal = parseFloat(monthlySavingsGoal) || 0;
   try {
     const user = await prisma.user.update({

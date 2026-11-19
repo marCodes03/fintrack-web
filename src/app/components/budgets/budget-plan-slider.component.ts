@@ -134,9 +134,8 @@ export class BudgetPlanSliderComponent {
   }
 
   loadCategories(): void {
-    const userId = this.authService.currentUser()?.id;
 
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);
@@ -567,13 +566,9 @@ export class BudgetPlanSliderComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const user = this.authService.currentUser();
-    const userId = user ? user.id : '';
-
     const payload = {
       name: this.planName,
       timeframe: this.getTimeframeJson(),
-      userId,
       items: this.planItems().map(i => ({
         type: i.type,
         categoryName: i.categoryName,

@@ -94,9 +94,8 @@ export class AccountsComponent implements OnInit {
   }
 
   loadAccounts(): void {
-    const userId = this.authService.currentUser()?.id;
     this.isLoading.set(true);
-    this.apiService.getAccounts(userId).subscribe({
+    this.apiService.getAccounts().subscribe({
       next: (res) => {
         if (res.success) {
           this.accounts.set(res.data);

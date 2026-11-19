@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { prisma } from '../prisma';
 import { mockUsers, activeOtps, handleDbError } from '../mockStore';
 import { sendOtpEmail } from '../services/email.service';
+import { signToken } from '../utils/jwt';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.post('/register', async (req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       message: 'Registration successful.',
+      token: signToken(newUser.id),
       user: { id: newUser.id, name: newUser.name, email: newUser.email }
     });
   } catch (err) {
@@ -41,6 +43,7 @@ router.post('/register', async (req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       message: 'Registration successful.',
+      token: signToken(newUser.id),
       user: { id: newUser.id, name: newUser.name, email: newUser.email }
     });
   }
@@ -64,6 +67,7 @@ router.post('/login', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'Login successful.',
+      token: signToken(user.id),
       user: { id: user.id, name: user.name, email: user.email }
     });
   } catch (err) {
@@ -75,6 +79,7 @@ router.post('/login', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'Login successful.',
+      token: signToken(user.id),
       user: { id: user.id, name: user.name, email: user.email }
     });
   }

@@ -49,7 +49,6 @@ export class AccountSliderComponent implements OnChanges {
       return;
     }
 
-    const userId = this.authService.currentUser()?.id || 'user-default-1';
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -57,8 +56,7 @@ export class AccountSliderComponent implements OnChanges {
       name: this.localName.trim(),
       type: this.localType,
       balance: this.localBalance || 0,
-      currency: 'PHP',
-      userId
+      currency: 'PHP'
     };
 
     if (this.isEditMode && this.editingId) {

@@ -10,6 +10,11 @@ import budgetsRouter from './routes/budgets.routes';
 import referenceRouter from './routes/reference.routes';
 import reviewsRouter from './routes/reviews.routes';
 
+if (!process.env['JWT_SECRET']) {
+  console.error('FATAL: JWT_SECRET environment variable is not set. Refusing to start.');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env['PORT'] || 3000;
 
