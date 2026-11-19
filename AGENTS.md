@@ -55,4 +55,5 @@ If a skill is missing, install it per `docs/required-skills.md`. If a skill conf
 - `PRODUCT.md` — product users, purpose, and constraints
 - `design.md` — visual design system (tokens, components)
 - `docs/architecture.md` — stack, data model, API routes, security
+- `docs/ui-quality.md` — how to re-check UI quality (contrast, icons, dialogs, motion)
 - `DEPLOYMENT.md` — deployment guide

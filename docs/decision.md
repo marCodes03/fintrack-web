@@ -306,3 +306,12 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Cross-site `SameSite=None` cookie with CSRF tokens (breaks on Safari); keep `localStorage`.
 - **Consequences:** The rewrite and the client must deploy together. `TRUST_PROXY_HOPS` must match the real proxy count or rate limiting sees the wrong IP. There is still no server-side revocation: logout clears the cookie, but a copied token works until it expires (6h).
 - **Affected features:** [authentication](features/authentication.md)
+
+## D-030 — Accessible names, real favicon, targeted reduced motion
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The all-pages audit found icon-only buttons with no accessible name, table headers without `scope`, a `favicon.ico` that was a renamed 61KB PNG, and a global reduced-motion rule that set every duration to 0.01ms (removing useful hover and focus feedback). Rendering the overlays also showed the budget plan step tabs overlapping, and the active tab carrying a conflicting muted text class.
+- **Decision:** Close buttons, password show/hide toggles and star ratings get `aria-label` (toggles and stars also `aria-pressed`); every `<th>` has `scope="col"`. `favicon.ico` is now a real 16/32/48px ICO (6KB) with a 32px PNG link. Under reduced motion, animations stop (spinners keep turning) and transitions shorten to 120ms on color and opacity only. Step tabs use `grow shrink-0` so labels cannot overlap, and the stray muted class on the active tab was removed. Added `docs/ui-quality.md`.
+- **Alternatives:** Keep the global 0.01ms rule; generate favicons with an image tool.
+- **Consequences:** The confirm-delete modal could not be opened in the mocked render and was checked from source only.
+- **Affected features:** all (UI)

@@ -89,32 +89,31 @@
         <div class="relative group">
           <div role="tablist" aria-label="Plan steps" class="flex items-center space-x-1 border border-border-subtle bg-surface-subtle p-1.5 rounded-xl overflow-x-auto">
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 1" (click)="activeTab.set(1)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
+              class="grow shrink-0 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 1" [class.text-on-accent]="activeTab() === 1"
-              [class.text-text-muted]="activeTab() === 1"
               [class.text-text-muted]="activeTab() !== 1" [class.hover:text-text-body]="activeTab() !== 1">
               STEP 1: Details
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 2" (click)="activeTab.set(2)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
+              class="grow shrink-0 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 2" [class.text-on-accent]="activeTab() === 2"
               [class.text-text-muted]="activeTab() !== 2" [class.hover:text-text-body]="activeTab() !== 2">
               STEP 2: Planned Inflow
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 3" (click)="activeTab.set(3)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
+              class="grow shrink-0 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 3" [class.text-on-accent]="activeTab() === 3"
               [class.text-text-muted]="activeTab() !== 3" [class.hover:text-text-body]="activeTab() !== 3">
               STEP 3: Planned Transfers
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 4" (click)="activeTab.set(4)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
+              class="grow shrink-0 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 4" [class.text-on-accent]="activeTab() === 4"
               [class.text-text-muted]="activeTab() !== 4" [class.hover:text-text-body]="activeTab() !== 4">
               STEP 4: Planned Savings
             </button>
             <button type="button" role="tab" [attr.aria-selected]="activeTab() === 5" (click)="activeTab.set(5)"
-              class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
+              class="grow shrink-0 py-2 px-3 rounded-lg text-xs font-bold transition-[color,background-color,border-color,opacity,transform] text-center whitespace-nowrap"
               [class.bg-accent-emerald]="activeTab() === 5" [class.text-on-accent]="activeTab() === 5"
               [class.text-text-muted]="activeTab() !== 5" [class.hover:text-text-body]="activeTab() !== 5">
               STEP 5: Planned Outflows
