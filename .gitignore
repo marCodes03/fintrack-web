@@ -51,3 +51,8 @@ Thumbs.db
 # Temporary artifacts
 *.zip
 /skill_extracted/
+
+# Externally-sourced agent skills (see docs/required-skills.md)
+.agents/skills/*
+!.agents/skills/db-safeguard/
+!.agents/skills/humanizer/
