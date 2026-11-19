@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { ApiService } from './api.service';
 
 export interface User {
   id: string;
@@ -22,9 +23,7 @@ export interface AuthResponse {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private baseUrl = window.location.origin.includes('localhost')
-    ? 'http://localhost:3000/api/auth'
-    : 'https://fintrack-api-env1.onrender.com/api/auth';
+  private baseUrl = `${inject(ApiService).apiUrl}/auth`;
 
   // Manage logged-in user state reactively using signal
   readonly currentUser = signal<User | null>(null);
