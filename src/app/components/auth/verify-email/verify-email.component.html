@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-200">
   <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
     <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain" />
     <h1 class="mt-6 text-3xl font-bold tracking-tight text-text-heading">
@@ -36,7 +36,7 @@
           <label for="email" class="block text-sm font-medium text-text-muted">Email address</label>
           <div class="mt-1">
             <input id="email" name="email" type="email" autocomplete="email" required [(ngModel)]="email"
-              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-[border-color,box-shadow] text-base">
           </div>
         </div>
 
@@ -44,7 +44,7 @@
           <label for="otp" class="block text-sm font-medium text-text-muted">Verification code</label>
           <div class="mt-1">
             <input id="otp" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required [(ngModel)]="otp"
-              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text text-center font-mono tracking-widest placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-xl">
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text text-center font-mono tracking-widest placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-[border-color,box-shadow] text-xl">
           </div>
         </div>
 

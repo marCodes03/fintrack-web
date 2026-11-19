@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-200">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
   <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-6 animate-in fade-in duration-200">
@@ -247,7 +247,7 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <!-- Backdrop -->
     <div (click)="closeSlider()" aria-hidden="true"
-      class="fixed inset-0 scrim md:backdrop-blur-xs transition-opacity duration-300 animate-in fade-in">
+      class="fixed inset-0 scrim md:backdrop-blur-xs animate-in duration-300 fade-in">
     </div>
 
     <!-- Slider Panel -->

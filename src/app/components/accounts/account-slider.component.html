@@ -1,7 +1,7 @@
 @if (isOpen) {
   <div animate.leave="overlay-leave" class="fixed inset-0 z-50 flex justify-end">
     <!-- Backdrop -->
-    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
+    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs animate-in duration-300 fade-in"></div>
 
     <!-- Slide Panel -->
     <div appDialog aria-label="Account form" (dialogClose)="onClose()" class="relative w-96 max-w-full bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">

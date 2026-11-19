@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-200">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
   <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
@@ -25,7 +25,7 @@
     }
 
     <!-- Baseline Budget Goal Setup Card -->
-    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-6 relative overflow-hidden transition-all">
+    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-6 relative overflow-hidden transition-[border-color,background-color,box-shadow]">
       <div class="flex items-center justify-between border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading">Budget Goals</h2>
@@ -209,7 +209,7 @@
           }
         } @else {
           @for (plan of paginatedPlans(); track plan.id) {
-            <div animate.enter="fade-enter" class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
+            <div animate.enter="fade-enter" class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5 flex flex-col justify-between relative overflow-hidden transition-[border-color,background-color,box-shadow]"
               [class.border-accent-emerald/50]="plan.isActive">
               
               @if (plan.isActive) {

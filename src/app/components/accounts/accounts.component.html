@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-200">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
   <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
@@ -75,7 +75,7 @@
           }
         } @else {
           @for (acc of filteredAccounts(); track acc.id) {
-            <div animate.enter="fade-enter" class="bg-surface-card border border-border-subtle rounded-xl p-5 flex flex-col justify-between hover:border-border-strong transition-all group relative overflow-hidden">
+            <div animate.enter="fade-enter" class="bg-surface-card border border-border-subtle rounded-xl p-5 flex flex-col justify-between hover:border-border-strong transition-[border-color,background-color,box-shadow] group relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                   <div class="h-10 w-10 rounded-xl flex items-center justify-center font-bold text-lg"

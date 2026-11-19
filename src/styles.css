@@ -348,3 +348,6 @@ main[tabindex="-1"]:focus-visible { outline: none !important; }
 
 /* A leaving element is already gone to the user: it must not catch clicks while it fades */
 .overlay-leave, .overlay-leave *, .menu-leave, .banner-leave, .reveal-leave { pointer-events: none; }
+
+/* Taps respond at once: no double-tap-zoom delay on controls */
+button, a, label, select, summary, [role="button"], [role="tab"], [role="menuitem"] { touch-action: manipulation; }

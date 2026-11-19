@@ -1,7 +1,7 @@
 @if (isOpen) {
   <div animate.leave="overlay-leave" class="fixed inset-0 z-50 flex justify-end">
     <!-- Backdrop -->
-    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
+    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs animate-in duration-300 fade-in"></div>
 
     <!-- Slide Panel -->
     <div appDialog aria-label="Budget plan form" (dialogClose)="onClose()" class="relative w-full md:w-2/3 max-w-6xl bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
@@ -68,7 +68,7 @@
               <!-- Scrollable Track -->
               <div class="flex items-center space-x-2.5 overflow-x-auto pb-2 pt-0.5 px-1">
                 @for (acc of nonCreditAccounts; track acc.id) {
-                  <div class="min-w-[170px] bg-surface-card border border-border-subtle rounded-xl p-2.5 flex items-center justify-between shrink-0 hover:border-border-strong transition-all">
+                  <div class="min-w-[170px] bg-surface-card border border-border-subtle rounded-xl p-2.5 flex items-center justify-between shrink-0 hover:border-border-strong transition-[border-color,background-color,box-shadow]">
                     <div class="truncate mr-2">
                       <span class="block text-xs font-bold text-text-heading truncate">{{ acc.name }}</span>
                       <span class="text-xs text-text-muted uppercase font-semibold">{{ acc.type }}</span>

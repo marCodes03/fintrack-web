@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-200">
   <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
     <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain" />
     <h1 class="mt-6 text-3xl font-bold tracking-tight text-text-heading">
@@ -28,7 +28,7 @@
           </label>
           <div class="mt-1">
             <input id="email" name="email" [attr.aria-invalid]="fieldErrors()['email'] ? true : null" [attr.aria-describedby]="fieldErrors()['email'] ? 'email-err' : null" type="email" autocomplete="email" [(ngModel)]="email"
-              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-[border-color,box-shadow] text-base">
           </div>
           @if (fieldErrors()['email']) { <p id="email-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['email'] }}</p> }
         </div>
@@ -39,7 +39,7 @@
           </label>
           <div class="mt-1 relative">
             <input id="password" name="password" [attr.aria-invalid]="fieldErrors()['password'] ? true : null" [attr.aria-describedby]="fieldErrors()['password'] ? 'password-err' : null" [type]="showPassword() ? 'text' : 'password'" autocomplete="current-password" [(ngModel)]="password"
-              class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
+              class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-[border-color,box-shadow] text-base">
             <button type="button" (click)="showPassword.set(!showPassword())" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'" [attr.aria-pressed]="showPassword()"
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-text-muted hover:text-text-heading transition-colors">
               @if (showPassword()) {
