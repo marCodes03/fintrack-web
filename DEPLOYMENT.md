@@ -83,7 +83,7 @@ If you want to run migrations from your local machine:
    - `SMTP_HOST`: `smtp.gmail.com`
    - `SMTP_PORT`: `587`
    - `SMTP_USER`: `marcodes.fintrack.no.reply@gmail.com`
-   - `SMTP_PASS`: `woil encp huoo fmky` *(or your dedicated SMTP app password)*
+   - `SMTP_PASS`: `<your-smtp-app-password>` *(a dedicated SMTP app password; never commit the real value)*
    - `SMTP_SENDER_NAME`: `FinTrack`
 6. Click **Create Web Service**. 
 7. Once the build completes and the service is live, copy the public service URL (e.g., `https://fintrack-api-env1.onrender.com`).
