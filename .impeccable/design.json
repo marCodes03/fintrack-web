@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-19T00:00:00Z",
+  "title": "Design System: FinTrack",
+  "extensions": {
+    "colorMeta": {
+      "accent-emerald": { "role": "primary", "displayName": "Ledger Emerald", "canonical": "#059669", "tonalRamp": ["#022c22", "#064e3b", "#047857", "#059669", "#10b981", "#34d399", "#a7f3d0", "#ecfdf5"] },
+      "accent-amber": { "role": "secondary", "displayName": "Caution Amber", "canonical": "#d97706", "tonalRamp": ["#451a03", "#78350f", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fde68a", "#fffbeb"] },
+      "accent-rose": { "role": "secondary", "displayName": "Spend Rose", "canonical": "#e11d48", "tonalRamp": ["#4c0519", "#881337", "#be123c", "#e11d48", "#f43f5e", "#fb7185", "#fecdd3", "#fff1f2"] },
+      "bg-main": { "role": "neutral", "displayName": "Mist Page", "canonical": "#f8fafc", "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#475569", "#94a3b8", "#cbd5e1", "#f1f5f9", "#f8fafc"] }
+    },
+    "typographyMeta": {
+      "label": { "displayName": "Label", "purpose": "Column heads, field labels, inline actions." }
+    },
+    "shadows": [
+      { "name": "floating", "value": "0 10px 30px rgba(2,6,23,0.18)", "purpose": "Drawers and modals only." }
+    ],
+    "motion": [
+      { "name": "ui-transition", "value": "200ms to 300ms ease", "purpose": "Hover and state changes via transition-all / transition-colors." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action; emerald fill.",
+      "html": "<button class=\"ds-btn-primary\">Add account</button>",
+      "css": ".ds-btn-primary{background:#059669;color:#fff;font-weight:700;font-size:12px;padding:10px 16px;border:0;border-radius:12px;cursor:pointer;transition:all .2s}.ds-btn-primary:hover{background:#047857}.ds-btn-primary:focus-visible{outline:2px solid #10b981;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Cancel and neutral actions.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary{background:#fff;color:#64748b;font-weight:700;font-size:14px;padding:10px 16px;border:1px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s}.ds-btn-secondary:hover{background:#f1f5f9}.ds-btn-secondary:focus-visible{outline:2px solid #10b981;outline-offset:2px}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flat container with hairline border.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-label\">Balance</div><div class=\"ds-card-figure\">₱12,450.00</div></div>",
+      "css": ".ds-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px}.ds-card-label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#64748b}.ds-card-figure{font-size:30px;font-weight:700;color:#0f172a;margin-top:4px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form field with emerald focus ring.",
+      "html": "<input class=\"ds-input\" placeholder=\"Account name\">",
+      "css": ".ds-input{background:#fff;color:#0f172a;border:1px solid #cbd5e1;border-radius:12px;padding:12px 16px;font-size:14px;width:220px}.ds-input:focus{outline:2px solid #10b981;outline-offset:0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calm Ledger",
+    "overview": "FinTrack reads like a well-kept ledger: quiet slate surfaces, dense but legible numbers, and three accents that always mean the same thing. It borrows the focus of a dark-first night desk and the friendliness of a pocket planner.",
+    "keyCharacteristics": [
+      "Slate neutrals in light and dark, switched by a .dark class on CSS variables.",
+      "Emerald, amber and rose are semantic money colors, never decoration.",
+      "Bold small uppercase labels over medium-weight body text.",
+      "Generous rounded corners (12-16px) on every interactive surface."
+    ],
+    "rules": [
+      { "name": "The Money Meaning Rule", "body": "Emerald means in or good, rose means out or destructive, amber means attention.", "section": "colors" },
+      { "name": "The Dual Theme Rule", "body": "Every color is consumed through the CSS variables so both themes stay in step.", "section": "colors" },
+      { "name": "The Figures First Rule", "body": "Money amounts get the heaviest weight in their container and always show the ₱ symbol.", "section": "typography" },
+      { "name": "The Flat-Until-Floating Rule", "body": "A surface gets blur or shadow only if it floats above other content.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the CSS variables for every color so light and dark both work.",
+      "Do keep touch targets at least 40px high and focus rings visible (WCAG 2.1 AA).",
+      "Do format all amounts with the currency pipe (PHP, ₱)."
+    ],
+    "donts": [
+      "Don't use emerald, amber or rose for decoration.",
+      "Don't add shadows or blur to resting cards.",
+      "Don't convey meaning by color alone; pair it with a sign, label or icon."
+    ]
+  }
+}

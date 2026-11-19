@@ -1,151 +1,99 @@
-# FinTrack Design & Architecture Document
-
-Welcome to the FinTrack design specification. This document outlines the project's technical architecture, user interface design decisions, database models, and communication layers.
-
+---
+name: FinTrack
+description: A plan-first personal budgeting app on calm slate surfaces, where emerald, amber and rose carry money meaning.
+colors:
+  bg-main: "#f8fafc"
+  surface-card: "#ffffff"
+  surface-subtle: "#f1f5f9"
+  border-subtle: "#e2e8f0"
+  text-heading: "#0f172a"
+  text-body: "#334155"
+  text-muted: "#64748b"
+  accent-emerald: "#059669"
+  accent-amber: "#d97706"
+  accent-rose: "#e11d48"
+  input-border: "#cbd5e1"
+  dark-bg-main: "#020617"
+  dark-surface-card: "#0f172a"
+  dark-surface-subtle: "#1e293b"
+  dark-text-heading: "#ffffff"
+  dark-text-body: "#cbd5e1"
+  dark-text-muted: "#94a3b8"
+  dark-accent-emerald: "#10b981"
+  dark-accent-amber: "#fbbf24"
+  dark-accent-rose: "#f43f5e"
+typography:
+  title:
+    fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 700
+    letterSpacing: "-0.025em"
+  headline:
+    fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+    fontSize: "1.875rem"
+    fontWeight: 700
+  body:
+    fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 500
+  label:
+    fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 700
+    letterSpacing: "0.05em"
+rounded:
+  md: "8px"
+  lg: "12px"
+  xl: "16px"
+  full: "9999px"
+spacing:
+  sm: "8px"
+  md: "16px"
+  lg: "24px"
+components:
+  button-primary:
+    backgroundColor: "{colors.accent-emerald}"
+    textColor: "{colors.surface-card}"
+    typography: "{typography.label}"
+    rounded: "{rounded.lg}"
+    padding: "10px 16px"
+  button-secondary:
+    backgroundColor: "{colors.surface-card}"
+    textColor: "{colors.text-muted}"
+    rounded: "{rounded.lg}"
+    padding: "10px 16px"
+  card:
+    backgroundColor: "{colors.surface-card}"
+    textColor: "{colors.text-body}"
+    rounded: "{rounded.xl}"
+    padding: "24px"
+  input:
+    backgroundColor: "{colors.surface-card}"
+    textColor: "{colors.text-heading}"
+    rounded: "{rounded.lg}"
+    padding: "12px 16px"
 ---
 
-## 1. Technical Stack Overview
+# Design System: FinTrack
 
-FinTrack is built as a modular modern web application divided into two primary directories:
-
-```mermaid
-graph TD
-    A[Angular 22+ Frontend] -->|HTTP REST API| B[Express.js / Node.js Backend]
-    B -->|Prisma Client ORM| C[PostgreSQL 16 Database]
-    A -.->|LocalStorage Session| D[Client Session Auth]
-```
-
-### Frontend
-- **Framework**: Angular 22+ (Standalone Components, Signals API)
-- **Styling**: Tailwind CSS 4 with a curated dark-slate glassmorphism aesthetic.
-- **Routing**: Angular Router configured with secure client-side navigation.
-
-### Backend
-- **Framework**: Node.js with Express.js REST APIs.
-- **ORM**: Prisma ORM.
-- **Language**: TypeScript compiling to native Node.js ES modules.
-
-### Database
-- **Engine**: PostgreSQL 16.
-
----
-
-## 2. Database Design & Models
-
-The database is managed using Prisma. Below is the Entity-Relationship (ER) model layout of the database schema:
-
-```mermaid
-erDiagram
-    USER {
-        string id PK
-        string email UK
-        string name
-        string password
-        float monthlySavingsGoal
-    }
-    ACCOUNT {
-        string id PK
-        string name
-        string type
-        float balance
-        string currency
-        string userId FK
-    }
-    TRANSACTION {
-        string id PK
-        string description
-        float amount
-        float transferFee
-        string type
-        string expenseType
-        string category
-        DateTime date
-        string userId FK
-        string accountId FK
-        string toAccountId FK
-    }
-    BUDGET_PLAN {
-        string id PK
-        string name
-        string timeframe
-        DateTime startDate
-        DateTime endDate
-        boolean isActive
-        string userId FK
-    }
-    BUDGET_PLAN_ITEM {
-        string id PK
-        string type
-        string categoryName
-        float amount
-        string budgetPlanId FK
-    }
-    BUDGET_GOAL {
-        string id PK
-        string userId FK
-    }
-    BUDGET_GOAL_GROUP {
-        string id PK
-        string name
-        float percentage
-        string[] categories
-        string budgetGoalId FK
-    }
-    REVIEW {
-        string id PK
-        int rating
-        string comment
-        string userId FK
-    }
-
-    USER ||--o{ ACCOUNT : owns
-    USER ||--o{ TRANSACTION : records
-    USER ||--o{ BUDGET_PLAN : configures
-    USER ||--o| BUDGET_GOAL : sets
-    USER ||--o{ REVIEW : writes
-    BUDGET_PLAN ||--|{ BUDGET_PLAN_ITEM : contains
-    BUDGET_GOAL ||--|{ BUDGET_GOAL_GROUP : groups
-```
-
----
-
-## 3. UI Design System & Guidelines
-
-FinTrack employs a premium, highly dark-themed glassmorphism interface that matches modern application standards.
-
-### Color Palette
-- **Backgrounds**: Slate-950 (deep space void), Slate-900 (panel cards).
-- **Accents**: Emerald-500 (interactive items & success), Amber-400 (warnings & configurations), Rose-500 (destructive actions & expenses).
-- **Text**: White (headings), Slate-350/400 (body copy), Slate-500 (muted labels).
-
-### Key Frontend Components
-1. **Header Component**: Displays branding (`₮ FinTrack`), active user details, and controls for system triggers.
-2. **Slider Menu**: Sliding side drawer panel that handles secondary functions (Password Reset, Write a Review, Log Out).
-3. **Analytics Section (Dashboard)**:
-   - Displays a dynamic CSS conic-gradient **Donut Chart** representing the actual monthly spent/saved breakdown.
-   - Shows progress-to-goal metrics comparing actual transactions against baseline target allocations.
-4. **Implementation Modal**: Automatically parses plan timeframes (e.g. 1st to 15th) to calculate execution boundaries behind the scenes, ensuring the UI remains simple and intuitive.
-5. **Feedback & Reviews**: Star rating input and historical list with transition-effects.
-
----
-
-## 4. REST API Routing Architecture
-
-Modular Express routers mount under `/api`:
-
-| Path prefix | Router file | Description |
-|---|---|---|
-| `/api/auth` | `auth.routes.ts` | Login, Registration, Password Resets |
-| `/api/accounts` | `accounts.routes.ts` | CRUD endpoints for User Accounts & Balances |
-| `/api/transactions`| `transactions.routes.ts`| Transaction logs, transfers, and savings records |
-| `/api/reviews` | `reviews.routes.ts` | User reviews and rating submissions |
-| `/api` | `budgets.routes.ts` | Budget Plans, implementation rules, and Goal group structures |
-| `/api/refs` | `reference.routes.ts` | Pre-seeded read-only lookup data (Categories, Account Types) |
-
----
-
-## 5. Security & Session Integrity
-
-1. **Authentication**: Clear separation of endpoints. Angular frontend guards page routes using `AuthService`.
-2. **Session Persistence**: Session parameters are cached locally in browser local storage and verified dynamically with the server.
-3. **Database Cascading**: Transactions, accounts, budgets, and reviews are bound to specific `User` records with cascade delete options.
+<!-- impeccable:design-map -->
+Name: FinTrack
+Colors: primary: accent-emerald #059669; secondary: accent-amber #d97706; neutral: bg-main #f8fafc; secondary: accent-rose #e11d48
+Fonts: system-ui (title, headline, body, label)
+Spacing: sm 8px, md 16px, lg 24px
+Radius: md 8px, lg 12px, xl 16px, full 9999px
+North Star: "The Calm Ledger"
+Rules:
+- The Money Meaning Rule. Emerald means in or good, rose means out or destructive, amber means attention.
+- The Dual Theme Rule. Every color is consumed through the CSS variables, never a hard-coded slate class, so both themes stay in step.
+- The Figures First Rule. Money amounts get the heaviest weight in their container, and always show the ₱ symbol through the currency pipe.
+- The Flat-Until-Floating Rule. A surface gets blur or shadow only if it floats above other content.
+Don't:
+- Don't use emerald, amber or rose for decoration.
+- Don't add shadows or blur to resting cards.
+- Don't convey meaning by color alone; pair it with a sign, label or icon.
+Do:
+- Do use the CSS variables for every color so light and dark both work.
+- Do keep touch targets at least 40px high and focus rings visible (WCAG 2.1 AA).
+- Do format all amounts with the currency pipe (PHP, ₱).
+Full: .impeccable/design-full.md (read a section when you need its detail)
