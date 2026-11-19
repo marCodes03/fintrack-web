@@ -1,12 +1,12 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
   <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
     <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain" />
-    <h2 class="mt-6 text-3xl font-extrabold tracking-tight text-text-heading">
+    <h1 class="mt-6 text-3xl font-extrabold tracking-tight text-text-heading">
       Create your Account
-    </h2>
+    </h1>
     <p class="mt-2 text-sm text-text-muted">
       Or
-      <a routerLink="/login" class="font-medium text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+      <a routerLink="/login" class="font-medium text-accent-emerald hover:opacity-80 transition-colors">
         sign in to existing account
       </a>
     </p>
@@ -17,13 +17,13 @@
       <form (submit)="handleRegister(); $event.preventDefault()" class="space-y-5">
         
         @if (errorMessage()) {
-          <div role="alert" class="p-3 rounded-lg bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm">
+          <div role="alert" class="p-3 rounded-lg bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm">
             {{ errorMessage() }}
           </div>
         }
 
         @if (successMessage()) {
-          <div role="status" class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm">
+          <div role="status" class="p-3 rounded-lg bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm">
             {{ successMessage() }}
           </div>
         }
@@ -34,7 +34,7 @@
           </label>
           <div class="mt-1">
             <input id="name" name="name" type="text" autocomplete="name" required [(ngModel)]="name"
-              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm">
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
           </div>
         </div>
 
@@ -44,7 +44,7 @@
           </label>
           <div class="mt-1">
             <input id="email" name="email" type="email" autocomplete="email" required [(ngModel)]="email"
-              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm">
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
           </div>
         </div>
 
@@ -54,7 +54,7 @@
           </label>
           <div class="mt-1 relative">
             <input id="password" name="password" [type]="showPassword() ? 'text' : 'password'" autocomplete="new-password" required [(ngModel)]="password"
-              class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm">
+              class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
             <button type="button" (click)="showPassword.set(!showPassword())"
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-text-muted hover:text-text-heading transition-colors">
               @if (showPassword()) {
@@ -77,7 +77,7 @@
           </label>
           <div class="mt-1 relative">
             <input id="confirmPassword" name="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'" required [(ngModel)]="confirmPassword"
-              class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm">
+              class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
             <button type="button" (click)="showConfirmPassword.set(!showConfirmPassword())"
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-text-muted hover:text-text-heading transition-colors">
               @if (showConfirmPassword()) {
@@ -96,7 +96,7 @@
 
         <div class="pt-2">
           <button type="submit" [disabled]="isLoading()"
-            class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2 text-sm disabled:opacity-50">
+            class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2 text-sm disabled:opacity-50">
             @if (isLoading()) {
               <svg class="animate-spin h-5 w-5 text-on-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

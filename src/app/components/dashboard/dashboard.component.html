@@ -3,7 +3,7 @@
   <app-header (resetPassword)="openResetModal()"></app-header>
 
   <!-- Main Content Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8">
+  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8">
     <h1 class="sr-only">Dashboard</h1>
     <p class="sr-only" role="status">{{ isLoadingDashboard() || isLoadingTransactions() ? 'Loading dashboard' : 'Dashboard loaded' }}</p>
 

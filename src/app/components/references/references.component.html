@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-6 animate-in fade-in duration-200">
+  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-6 animate-in fade-in duration-200">
 
     <!-- Page Header -->
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
@@ -13,50 +13,46 @@
 
     <!-- Alert Messages -->
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <span>✅</span><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
+      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <span>⚠️</span><span>{{ errorMessage() }}</span>
       </div>
     }
 
     <!-- Tab Navigation -->
-    <div class="flex items-center space-x-1 bg-surface-subtle rounded-xl p-1.5 border border-border-subtle overflow-x-auto">
-      <button (click)="setTab('income-categories')"
+    <div role="tablist" aria-label="Reference data" class="flex items-center space-x-1 bg-surface-subtle rounded-xl p-1.5 border border-border-subtle overflow-x-auto">
+      <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'income-categories'" (click)="setTab('income-categories')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
-        [class.bg-emerald-500]="activeTab() === 'income-categories'"
-        [class.text-white]="activeTab() === 'income-categories'"
-        [class.dark:text-slate-950]="activeTab() === 'income-categories'"
+        [class.bg-accent-emerald]="activeTab() === 'income-categories'"
+        [class.text-on-accent]="activeTab() === 'income-categories'"
         [class.text-text-muted]="activeTab() !== 'income-categories'"
         [class.hover:text-text-body]="activeTab() !== 'income-categories'">
         📈 Income Categories
       </button>
-      <button (click)="setTab('expense-categories')"
+      <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'expense-categories'" (click)="setTab('expense-categories')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
-        [class.bg-emerald-500]="activeTab() === 'expense-categories'"
-        [class.text-white]="activeTab() === 'expense-categories'"
-        [class.dark:text-slate-950]="activeTab() === 'expense-categories'"
+        [class.bg-accent-emerald]="activeTab() === 'expense-categories'"
+        [class.text-on-accent]="activeTab() === 'expense-categories'"
         [class.text-text-muted]="activeTab() !== 'expense-categories'"
         [class.hover:text-text-body]="activeTab() !== 'expense-categories'">
         🛒 Expense Categories
       </button>
-      <button (click)="setTab('saving-categories')"
+      <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'saving-categories'" (click)="setTab('saving-categories')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
-        [class.bg-emerald-500]="activeTab() === 'saving-categories'"
-        [class.text-white]="activeTab() === 'saving-categories'"
-        [class.dark:text-slate-950]="activeTab() === 'saving-categories'"
+        [class.bg-accent-emerald]="activeTab() === 'saving-categories'"
+        [class.text-on-accent]="activeTab() === 'saving-categories'"
         [class.text-text-muted]="activeTab() !== 'saving-categories'"
         [class.hover:text-text-body]="activeTab() !== 'saving-categories'">
         💰 Saving Categories
       </button>
-      <button (click)="setTab('account-types')"
+      <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'account-types'" (click)="setTab('account-types')"
         class="flex-shrink-0 px-4 py-2 text-xs font-semibold rounded-lg transition-all"
-        [class.bg-emerald-500]="activeTab() === 'account-types'"
-        [class.text-white]="activeTab() === 'account-types'"
-        [class.dark:text-slate-950]="activeTab() === 'account-types'"
+        [class.bg-accent-emerald]="activeTab() === 'account-types'"
+        [class.text-on-accent]="activeTab() === 'account-types'"
         [class.text-text-muted]="activeTab() !== 'account-types'"
         [class.hover:text-text-body]="activeTab() !== 'account-types'">
         🏦 Account Types
@@ -74,20 +70,21 @@
             <p class="text-xs text-text-muted mt-0.5">Categories available when recording income transactions.</p>
           </div>
           <button (click)="openCreateIncomeSlider()"
-            class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
             <span>+</span><span>Add Category</span>
           </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm text-text-body">
+<caption class="sr-only">References table 1</caption>
             <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
               <tr>
-                <th class="px-6 py-3">Name</th>
-                <th class="px-6 py-3">Description</th>
-                <th class="px-6 py-3">Status</th>
-                <th class="px-6 py-3">Last Updated</th>
-                <th class="px-6 py-3 text-right">Actions</th>
+                <th scope="col" class="px-6 py-3">Name</th>
+                <th scope="col" class="px-6 py-3">Description</th>
+                <th scope="col" class="px-6 py-3">Status</th>
+                <th scope="col" class="px-6 py-3">Last Updated</th>
+                <th scope="col" class="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-border-subtle">
@@ -96,16 +93,16 @@
                   <td class="px-6 py-4 font-semibold text-text-heading">{{ item.name }}</td>
                   <td class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
                   <td class="px-6 py-4">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider"
-                      [class.bg-emerald-500/10]="item.isActive" [class.text-emerald-500]="item.isActive"
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                      [class.bg-accent-emerald/10]="item.isActive" [class.text-accent-emerald]="item.isActive"
                       [class.bg-surface-subtle]="!item.isActive" [class.text-text-muted]="!item.isActive">
                       {{ item.isActive ? 'Active' : 'Inactive' }}
                     </span>
                   </td>
                   <td class="px-6 py-4 text-text-muted text-xs">{{ item.updatedDate | date:'MMM d, y' }}</td>
                   <td class="px-6 py-4 text-right space-x-3">
-                    <button (click)="openEditIncomeSlider(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">Edit</button>
-                    <button (click)="promptDeleteIncomeCategory(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">Delete</button>
+                    <button (click)="openEditIncomeSlider(item)" class="text-xs font-bold text-accent-emerald hover:opacity-80 transition-colors">Edit</button>
+                    <button (click)="promptDeleteIncomeCategory(item)" class="text-xs font-bold text-accent-rose hover:opacity-80 transition-colors">Delete</button>
                   </td>
                 </tr>
               } @empty {
@@ -128,20 +125,21 @@
             <p class="text-xs text-text-muted mt-0.5">Categories available when recording expense transactions.</p>
           </div>
           <button (click)="openCreateExpenseSlider()"
-            class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
             <span>+</span><span>Add Category</span>
           </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm text-text-body">
+<caption class="sr-only">References table 2</caption>
             <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
               <tr>
-                <th class="px-6 py-3">Name</th>
-                <th class="px-6 py-3">Description</th>
-                <th class="px-6 py-3">Status</th>
-                <th class="px-6 py-3">Last Updated</th>
-                <th class="px-6 py-3 text-right">Actions</th>
+                <th scope="col" class="px-6 py-3">Name</th>
+                <th scope="col" class="px-6 py-3">Description</th>
+                <th scope="col" class="px-6 py-3">Status</th>
+                <th scope="col" class="px-6 py-3">Last Updated</th>
+                <th scope="col" class="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-border-subtle">
@@ -150,16 +148,16 @@
                   <td class="px-6 py-4 font-semibold text-text-heading">{{ item.name }}</td>
                   <td class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
                   <td class="px-6 py-4">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider"
-                      [class.bg-emerald-500/10]="item.isActive" [class.text-emerald-500]="item.isActive"
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                      [class.bg-accent-emerald/10]="item.isActive" [class.text-accent-emerald]="item.isActive"
                       [class.bg-surface-subtle]="!item.isActive" [class.text-text-muted]="!item.isActive">
                       {{ item.isActive ? 'Active' : 'Inactive' }}
                     </span>
                   </td>
                   <td class="px-6 py-4 text-text-muted text-xs">{{ item.updatedDate | date:'MMM d, y' }}</td>
                   <td class="px-6 py-4 text-right space-x-3">
-                    <button (click)="openEditExpenseSlider(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">Edit</button>
-                    <button (click)="promptDeleteExpenseCategory(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">Delete</button>
+                    <button (click)="openEditExpenseSlider(item)" class="text-xs font-bold text-accent-emerald hover:opacity-80 transition-colors">Edit</button>
+                    <button (click)="promptDeleteExpenseCategory(item)" class="text-xs font-bold text-accent-rose hover:opacity-80 transition-colors">Delete</button>
                   </td>
                 </tr>
               } @empty {
@@ -182,20 +180,21 @@
             <p class="text-xs text-text-muted mt-0.5">Categories available when allocating savings records.</p>
           </div>
           <button (click)="openCreateSavingSlider()"
-            class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-all">
             <span>+</span><span>Add Category</span>
           </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm text-text-body">
+<caption class="sr-only">References table 3</caption>
             <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
               <tr>
-                <th class="px-6 py-3">Name</th>
-                <th class="px-6 py-3">Description</th>
-                <th class="px-6 py-3">Status</th>
-                <th class="px-6 py-3">Last Updated</th>
-                <th class="px-6 py-3 text-right">Actions</th>
+                <th scope="col" class="px-6 py-3">Name</th>
+                <th scope="col" class="px-6 py-3">Description</th>
+                <th scope="col" class="px-6 py-3">Status</th>
+                <th scope="col" class="px-6 py-3">Last Updated</th>
+                <th scope="col" class="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-border-subtle">
@@ -204,16 +203,16 @@
                   <td class="px-6 py-4 font-semibold text-text-heading">{{ item.name }}</td>
                   <td class="px-6 py-4 text-text-muted text-xs">{{ item.description || '—' }}</td>
                   <td class="px-6 py-4">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider"
-                      [class.bg-emerald-500/10]="item.isActive" [class.text-emerald-500]="item.isActive"
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                      [class.bg-accent-emerald/10]="item.isActive" [class.text-accent-emerald]="item.isActive"
                       [class.bg-surface-subtle]="!item.isActive" [class.text-text-muted]="!item.isActive">
                       {{ item.isActive ? 'Active' : 'Inactive' }}
                     </span>
                   </td>
                   <td class="px-6 py-4 text-text-muted text-xs">{{ item.updatedDate | date:'MMM d, y' }}</td>
                   <td class="px-6 py-4 text-right space-x-3">
-                    <button (click)="openEditSavingSlider(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">Edit</button>
-                    <button (click)="promptDeleteSavingCategory(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">Delete</button>
+                    <button (click)="openEditSavingSlider(item)" class="text-xs font-bold text-accent-emerald hover:opacity-80 transition-colors">Edit</button>
+                    <button (click)="promptDeleteSavingCategory(item)" class="text-xs font-bold text-accent-rose hover:opacity-80 transition-colors">Delete</button>
                   </td>
                 </tr>
               } @empty {
@@ -235,12 +234,12 @@
             <h2 class="text-base font-bold text-text-heading">Account Types</h2>
             <p class="text-xs text-text-muted mt-0.5">System-seeded account type definitions. Read-only.</p>
           </div>
-          <span class="ml-auto inline-flex items-center px-2.5 py-1 rounded-full bg-surface-subtle text-text-muted text-2xs font-semibold uppercase tracking-wider">Seed Only</span>
+          <span class="ml-auto inline-flex items-center px-2.5 py-1 rounded-full bg-surface-subtle text-text-muted text-xs font-semibold uppercase tracking-wider">Seed Only</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
           @for (item of accountTypes(); track item.id) {
             <div class="flex items-center space-x-3 p-4 bg-surface-subtle border border-border-subtle rounded-xl">
-              <div class="h-9 w-9 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg font-bold">{{ item.icon }}</div>
+              <div class="h-9 w-9 rounded-lg bg-accent-amber/10 text-accent-amber flex items-center justify-center text-lg font-bold">{{ item.icon }}</div>
               <div>
                 <p class="text-sm font-bold text-text-heading">{{ item.label }}</p>
                 <p class="text-xs font-mono text-text-muted uppercase tracking-wider">{{ item.code }}</p>
@@ -270,7 +269,7 @@
     <div appDialog aria-label="Reference data form" (dialogClose)="closeSlider()" class="relative w-96 max-w-full bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
       <!-- Header -->
       <div class="flex items-center justify-between p-5 border-b border-border-subtle">
-        <h3 class="text-sm font-bold text-text-heading">{{ getSliderTitle() }}</h3>
+        <h2 class="text-sm font-bold text-text-heading">{{ getSliderTitle() }}</h2>
         <button (click)="closeSlider()"
           class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,7 +281,7 @@
       <!-- Form Body -->
       <div class="flex-1 overflow-y-auto p-6 space-y-5">
         @if (errorMessage()) {
-          <div role="alert" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-xs">
+          <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-xs">
             {{ errorMessage() }}
           </div>
         }
@@ -293,7 +292,7 @@
             type="text"
             [(ngModel)]="formName"
             placeholder="{{ isIncomeMode() ? 'e.g. Salary, Bonus...' : (isSavingMode() ? 'e.g. Retirement, Emergency...' : 'e.g. Transport, Medical...') }}"
-            class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-emerald-500 text-sm">
+            class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
         </div>
 
         <div>
@@ -302,7 +301,7 @@
             [(ngModel)]="formDescription"
             rows="3"
             placeholder="Optional: brief description of this category..."
-            class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-emerald-500 text-sm resize-none">
+            class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base resize-none">
           </textarea>
         </div>
 
@@ -311,7 +310,7 @@
             id="formIsActive"
             type="checkbox"
             [(ngModel)]="formIsActive"
-            class="w-4 h-4 rounded text-emerald-500 bg-input-bg border-input-border focus:ring-emerald-500 focus:ring-2">
+            class="w-4 h-4 rounded text-accent-emerald bg-input-bg border-input-border focus:ring-accent-emerald focus:ring-2">
           <div class="flex flex-col">
             <label for="formIsActive" class="text-xs font-bold text-text-heading">Active</label>
             <span class="text-[13px] text-text-muted">Inactive categories are hidden from transaction forms</span>
@@ -323,7 +322,7 @@
       <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
         <button (click)="isIncomeMode() ? submitIncomeCategory() : (isSavingMode() ? submitSavingCategory() : submitExpenseCategory())"
           [disabled]="isLoading()"
-          class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
+          class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-all text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
           @if (isLoading()) {
             <svg class="animate-spin h-4 w-4 text-on-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

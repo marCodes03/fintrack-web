@@ -1,25 +1,25 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
+  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
         <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Accounts Management</h1>
         <p class="text-xs text-text-muted mt-1">Manage cash drawers, bank deposits, credit details, e-wallets, and savings accounts in PHP.</p>
       </div>
       <button (click)="openCreateSlider()"
-        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+        class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
         <span>+</span><span>Add Account</span>
       </button>
     </div>
 
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <span>✅</span><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
+      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <span>⚠️</span><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -33,7 +33,7 @@
         <div class="flex items-center gap-3">
           <!-- Filter by Account Type -->
           <select [ngModel]="filterType()" (ngModelChange)="onFilterTypeChange($event)"
-            class="bg-input-bg border border-input-border rounded-xl px-3 py-1.5 text-xs text-input-text focus:outline-none focus:border-emerald-500">
+            class="bg-input-bg border border-input-border rounded-xl px-3 py-1.5 text-base text-input-text focus:outline-none focus:border-accent-emerald">
             <option value="ALL">All Types</option>
             <option value="CASH">Cash</option>
             <option value="BANK">Bank</option>
@@ -44,7 +44,7 @@
 
           <!-- Sort By -->
           <select [ngModel]="sortBy()" (ngModelChange)="onSortByChange($event)"
-            class="bg-input-bg border border-input-border rounded-xl px-3 py-1.5 text-xs text-input-text focus:outline-none focus:border-emerald-500">
+            class="bg-input-bg border border-input-border rounded-xl px-3 py-1.5 text-base text-input-text focus:outline-none focus:border-accent-emerald">
             <option value="updatedDate_desc">Last Updated (Newest)</option>
             <option value="updatedDate_asc">Last Updated (Oldest)</option>
             <option value="balance_desc">Balance (Highest)</option>
@@ -79,11 +79,11 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                   <div class="h-10 w-10 rounded-xl flex items-center justify-center font-bold text-lg"
-                    [class.bg-emerald-500/10]="acc.type === 'CASH'" [class.text-emerald-500]="acc.type === 'CASH'"
-                    [class.bg-blue-500/10]="acc.type === 'BANK'" [class.text-blue-500]="acc.type === 'BANK'"
-                    [class.bg-rose-500/10]="acc.type === 'CREDIT'" [class.text-rose-500]="acc.type === 'CREDIT'"
-                    [class.bg-indigo-500/10]="acc.type === 'SAVINGS'" [class.text-indigo-500]="acc.type === 'SAVINGS'"
-                    [class.bg-teal-500/10]="acc.type === 'E_WALLET'" [class.text-teal-500]="acc.type === 'E_WALLET'">
+                    [class.bg-accent-emerald/10]="acc.type === 'CASH'" [class.text-accent-emerald]="acc.type === 'CASH'"
+                    [class.bg-accent-indigo/10]="acc.type === 'BANK'" [class.text-accent-indigo]="acc.type === 'BANK'"
+                    [class.bg-accent-rose/10]="acc.type === 'CREDIT'" [class.text-accent-rose]="acc.type === 'CREDIT'"
+                    [class.bg-accent-indigo/10]="acc.type === 'SAVINGS'" [class.text-accent-indigo]="acc.type === 'SAVINGS'"
+                    [class.bg-accent-teal/10]="acc.type === 'E_WALLET'" [class.text-accent-teal]="acc.type === 'E_WALLET'">
                     {{ acc.type === 'CASH' ? '💵' : (acc.type === 'BANK' ? '🏦' : (acc.type === 'CREDIT' ? '💳' : (acc.type === 'SAVINGS' ? '🏧' : '📱'))) }}
                   </div>
                   <div>
@@ -100,10 +100,10 @@
 
               <!-- Action button bar -->
               <div class="mt-4 pt-3 border-t border-border-subtle flex items-center justify-end space-x-3">
-                <button (click)="startEdit(acc)" class="text-[13px] font-bold text-emerald-500 hover:text-emerald-600 transition-colors uppercase tracking-wider">
+                <button (click)="startEdit(acc)" class="text-[13px] font-bold text-accent-emerald hover:opacity-80 transition-colors uppercase tracking-wider">
                   Edit
                 </button>
-                <button (click)="handleDeleteAccount(acc)" class="text-[13px] font-bold text-rose-500 hover:text-rose-600 transition-colors uppercase tracking-wider">
+                <button (click)="handleDeleteAccount(acc)" class="text-[13px] font-bold text-accent-rose hover:opacity-80 transition-colors uppercase tracking-wider">
                   Delete
                 </button>
               </div>
@@ -111,7 +111,7 @@
           } @empty {
             <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
               <p class="text-sm text-text-muted">No accounts added yet.</p>
-              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+              <button (click)="openCreateSlider()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
                 Create First Account
               </button>
             </div>

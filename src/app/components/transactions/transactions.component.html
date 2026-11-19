@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
+  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <!-- Page Header -->
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
@@ -11,12 +11,12 @@
       <div class="flex items-center space-x-3">
         @if (selectedIds().size > 0) {
           <button (click)="handleBulkDelete()"
-            class="flex items-center space-x-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+            class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
             <span>🗑️</span><span>Delete Selected ({{ selectedIds().size }})</span>
           </button>
         }
         <button (click)="openCreateSlider()"
-          class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+          class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
           <span>+</span><span>Record Transaction</span>
         </button>
       </div>
@@ -24,12 +24,12 @@
 
     <!-- Alert Messages -->
     @if (successMessage()) {
-      <div role="status" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+      <div role="status" class="p-3 rounded-xl bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm flex items-center space-x-2">
         <span>✅</span><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div role="alert" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
+      <div role="alert" class="p-3 rounded-xl bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm flex items-center space-x-2">
         <span>⚠️</span><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -48,7 +48,7 @@
           <div>
             <label for="transactions-f1" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Timeframe</label>
             <select id="transactions-f1" [ngModel]="timeframeFilter()" (ngModelChange)="timeframeFilter.set($event); itemsToShow.set(10)"
-              class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
+              class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="ALL">All Time</option>
               <option value="THIS_MONTH">This Month</option>
               <option value="THIS_WEEK">This Week</option>
@@ -63,12 +63,12 @@
               <div>
                 <label for="transactions-f2" class="block text-[13px] uppercase font-bold text-text-muted mb-1">From</label>
                 <input id="transactions-f2" type="date" [ngModel]="customStartDate()" (ngModelChange)="customStartDate.set($event); itemsToShow.set(10)"
-                  class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2 py-1 focus:outline-none">
+                  class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2 py-1 focus:outline-none">
               </div>
               <div>
                 <label for="transactions-f3" class="block text-[13px] uppercase font-bold text-text-muted mb-1">To</label>
                 <input id="transactions-f3" type="date" [ngModel]="customEndDate()" (ngModelChange)="customEndDate.set($event); itemsToShow.set(10)"
-                  class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2 py-1 focus:outline-none">
+                  class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2 py-1 focus:outline-none">
               </div>
             </div>
           }
@@ -77,7 +77,7 @@
           <div>
             <label for="transactions-f4" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Type</label>
             <select id="transactions-f4" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event); itemsToShow.set(10)"
-              class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
+              class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="ALL">All Types</option>
               <option value="INCOME">Income</option>
               <option value="EXPENSE">Expense</option>
@@ -90,7 +90,7 @@
           <div>
             <label for="transactions-f5" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Category</label>
             <select id="transactions-f5" [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event); itemsToShow.set(10)"
-              class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
+              class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="ALL">All Categories</option>
               @for (cat of availableCategories(); track cat) {
                 <option [value]="cat">{{ cat }}</option>
@@ -103,7 +103,7 @@
         <div>
           <label for="transactions-f6" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Sort By</label>
           <select id="transactions-f6" [ngModel]="sortOrder()" (ngModelChange)="sortOrder.set($event); itemsToShow.set(10)"
-            class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
+            class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
             <option value="DATE_DESC">Date: Newest First (Desc)</option>
             <option value="DATE_ASC">Date: Oldest First (Asc)</option>
             <option value="AMOUNT_DESC">Amount: High to Low (Desc)</option>
@@ -114,19 +114,20 @@
 
       <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" (scroll)="onContainerScroll($event)">
         <table class="w-full text-left text-sm text-text-body">
+<caption class="sr-only">Transactions table</caption>
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
             <tr>
-              <th class="px-6 py-3 rounded-l-xl w-10">
+              <th scope="col" class="px-6 py-3 rounded-l-xl w-10">
                 <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll()"
-                  class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-4 h-4 cursor-pointer">
+                  class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-4 h-4 cursor-pointer">
               </th>
-              <th class="px-6 py-3">Title</th>
-              <th class="px-6 py-3">Type</th>
-              <th class="px-6 py-3">Account</th>
-              <th class="px-6 py-3">Category</th>
-              <th class="px-6 py-3">Date</th>
-              <th class="px-6 py-3">Amount</th>
-              <th class="px-6 py-3 text-right rounded-r-xl">Actions</th>
+              <th scope="col" class="px-6 py-3">Title</th>
+              <th scope="col" class="px-6 py-3">Type</th>
+              <th scope="col" class="px-6 py-3">Account</th>
+              <th scope="col" class="px-6 py-3">Category</th>
+              <th scope="col" class="px-6 py-3">Date</th>
+              <th scope="col" class="px-6 py-3">Amount</th>
+              <th scope="col" class="px-6 py-3 text-right rounded-r-xl">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border-subtle">
@@ -153,15 +154,15 @@
                 <tr class="hover:bg-table-row-hover transition-colors" [class.bg-surface-subtle]="selectedIds().has(item.id)">
                   <td class="px-6 py-4 w-10">
                     <input type="checkbox" [checked]="selectedIds().has(item.id)" (change)="toggleSelect(item.id)"
-                      class="rounded border-input-border bg-input-bg text-emerald-500 focus:ring-emerald-500/40 w-4 h-4 cursor-pointer">
+                      class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-4 h-4 cursor-pointer">
                   </td>
                   <!-- Description -->
                   <td class="px-6 py-4 font-semibold text-text-heading flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
-                      [class.bg-emerald-500/10]="item.type === 'INCOME'" [class.text-emerald-500]="item.type === 'INCOME'"
-                      [class.bg-rose-500/10]="item.type === 'EXPENSE'" [class.text-rose-500]="item.type === 'EXPENSE'"
-                      [class.bg-teal-500/10]="item.type === 'SAVINGS'" [class.text-teal-500]="item.type === 'SAVINGS'"
-                      [class.bg-indigo-500/10]="item.type === 'TRANSFER'" [class.text-indigo-500]="item.type === 'TRANSFER'">
+                      [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
+                      [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
+                      [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
+                      [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
                       {{ item.type === 'INCOME' ? '💼' : (item.type === 'TRANSFER' ? '🔄' : (item.type === 'SAVINGS' ? '💰' : '🛒')) }}
                     </div>
                     <span>{{ item.description }}</span>
@@ -170,10 +171,10 @@
                   <!-- Type badge -->
                   <td class="px-6 py-4">
                     <span class="px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider"
-                      [class.bg-emerald-500/10]="item.type === 'INCOME'" [class.text-emerald-500]="item.type === 'INCOME'"
-                      [class.bg-rose-500/10]="item.type === 'EXPENSE'" [class.text-rose-500]="item.type === 'EXPENSE'"
-                      [class.bg-teal-500/10]="item.type === 'SAVINGS'" [class.text-teal-500]="item.type === 'SAVINGS'"
-                      [class.bg-indigo-500/10]="item.type === 'TRANSFER'" [class.text-indigo-500]="item.type === 'TRANSFER'">
+                      [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
+                      [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
+                      [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
+                      [class.bg-accent-indigo/10]="item.type === 'TRANSFER'" [class.text-accent-indigo]="item.type === 'TRANSFER'">
                       {{ item.type }}
                     </span>
                   </td>
@@ -191,9 +192,9 @@
 
                   <!-- Amount -->
                   <td class="px-6 py-4 font-semibold text-xs"
-                    [class.text-emerald-500]="item.type === 'INCOME'"
-                    [class.text-rose-500]="item.type === 'EXPENSE'"
-                    [class.text-teal-500]="item.type === 'SAVINGS'"
+                    [class.text-accent-emerald]="item.type === 'INCOME'"
+                    [class.text-accent-rose]="item.type === 'EXPENSE'"
+                    [class.text-accent-teal]="item.type === 'SAVINGS'"
                     [class.text-text-muted]="item.type === 'TRANSFER'">
                     {{ item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-')) }}{{ item.amount | currency:'PHP':'symbol-narrow' }}
                     @if (item.type === 'TRANSFER' && item.transferFee && item.transferFee > 0) {
@@ -203,10 +204,10 @@
 
                   <!-- Actions -->
                   <td class="px-6 py-4 text-right space-x-3 rounded-r-xl">
-                    <button (click)="startEdit(item)" class="text-xs font-bold text-emerald-500 hover:text-emerald-600 transition-colors">
+                    <button (click)="startEdit(item)" class="text-xs font-bold text-accent-emerald hover:opacity-80 transition-colors">
                       Edit
                     </button>
-                    <button (click)="handleDeleteTransaction(item)" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors">
+                    <button (click)="handleDeleteTransaction(item)" class="text-xs font-bold text-accent-rose hover:opacity-80 transition-colors">
                       Delete
                     </button>
                   </td>
@@ -225,7 +226,7 @@
       @if (itemsToShow() < filteredTransactions().length) {
         <div class="flex justify-center py-4 border-t border-border-subtle">
           <div class="flex items-center space-x-2 text-xs text-text-muted">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="w-2 h-2 rounded-full bg-accent-emerald"></span>
             <span>Scrolling loads more items...</span>
           </div>
         </div>
