@@ -52,5 +52,7 @@ If a skill is missing, install it per `docs/required-skills.md`. If a skill conf
 - `docs/decision.md` — decision log
 - `docs/features/README.md` — feature spec index
 - `technical_design.md` — user stories and API design
-- `design.md` — visual design
+- `PRODUCT.md` — product users, purpose, and constraints
+- `design.md` — visual design system (tokens, components)
+- `docs/architecture.md` — stack, data model, API routes, security
 - `DEPLOYMENT.md` — deployment guide

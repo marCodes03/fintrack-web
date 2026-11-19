@@ -207,3 +207,12 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Overwrite `design.md` and drop the architecture content; keep architecture on top of the visual system.
 - **Consequences:** `AGENTS.md` and `technical_design.md` still list `design.md` as the visual design reference, which now holds that. Architecture lives in `docs/architecture.md`. North Star blends three options the user picked.
 - **Affected features:** all (UI)
+
+## D-022 — Correct D-021: no stale design.md links; list new docs in AGENTS.md
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** D-021 said `AGENTS.md` and `technical_design.md` still pointed to `design.md` as the architecture reference. A check showed `AGENTS.md` already called it "visual design" (correct) and `technical_design.md` never referenced it.
+- **Decision:** Leave those references as they are. Add `PRODUCT.md` and `docs/architecture.md` to the reference docs in `AGENTS.md`.
+- **Alternatives:** Edit D-021 in place (rejected: the log is append-only).
+- **Consequences:** The "Consequences" claim in D-021 about stale links is wrong; this entry supersedes it.
+- **Affected features:** none
