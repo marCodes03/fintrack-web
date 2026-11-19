@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-expense-slider',
   standalone: true,
-  imports: [FormsModule, DecimalPipe],
+  imports: [DialogDirective, FormsModule, DecimalPipe],
   templateUrl: './expense-slider.component.html'
 })
 export class ExpenseSliderComponent implements OnChanges {

@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
@@ -8,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-savings-slider',
   standalone: true,
-  imports: [FormsModule, DecimalPipe],
+  imports: [DialogDirective, FormsModule, DecimalPipe],
   templateUrl: './savings-slider.component.html'
 })
 export class SavingsSliderComponent implements OnChanges {

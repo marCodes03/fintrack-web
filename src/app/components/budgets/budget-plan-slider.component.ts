@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
@@ -9,7 +10,7 @@ import { BudgetPlanItem } from './budgets.component';
 @Component({
   selector: 'app-budget-plan-slider',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe, DecimalPipe],
+  imports: [DialogDirective, FormsModule, CurrencyPipe, DecimalPipe],
   templateUrl: './budget-plan-slider.component.html'
 })
 export class BudgetPlanSliderComponent {

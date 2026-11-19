@@ -1,10 +1,10 @@
 @if (isOpen) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <!-- Clickable dark backdrop -->
-    <div (click)="onClose()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-200 animate-in fade-in"></div>
+    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-200 animate-in fade-in"></div>
 
     <!-- Modal Card Container -->
-    <div class="relative w-full max-w-md bg-surface-card border border-border-subtle rounded-2xl shadow-2xl p-6 z-10 space-y-5 animate-in scale-in duration-200">
+    <div appDialog aria-label="Confirm delete" (dialogClose)="onClose()" class="relative w-full max-w-md bg-surface-card border border-border-subtle rounded-2xl shadow-2xl p-6 z-10 space-y-5 animate-in scale-in duration-200">
       
       <!-- Icon & Header -->
       <div class="flex items-start space-x-4">
@@ -40,7 +40,7 @@
           Cancel
         </button>
         <button type="button" (click)="onConfirm()" [disabled]="isConfirmDisabled()"
-          class="flex-1 bg-rose-500 hover:bg-rose-600 dark:hover:bg-rose-400 text-white dark:text-slate-950 font-bold py-2.5 px-4 rounded-xl transition-all text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+          class="flex-1 bg-rose-500 hover:bg-rose-600 dark:hover:bg-rose-400 text-on-accent font-bold py-2.5 px-4 rounded-xl transition-all text-xs disabled:opacity-30 disabled:cursor-not-allowed">
           Delete Item
         </button>
       </div>

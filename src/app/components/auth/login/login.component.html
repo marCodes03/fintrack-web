@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
   <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
-    <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain animate-bounce" />
+    <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain" />
     <h2 class="mt-6 text-3xl font-extrabold tracking-tight text-text-heading">
       Welcome to FinTrack
     </h2>
@@ -13,11 +13,11 @@
   </div>
 
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-    <div class="bg-surface-card border border-border-subtle p-8 rounded-2xl shadow-md">
+    <div class="bg-surface-card border border-border-subtle p-8 rounded-2xl">
       <form (submit)="handleLogin(); $event.preventDefault()" class="space-y-6">
         
         @if (errorMessage()) {
-          <div class="p-3 rounded-lg bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm">
+          <div role="alert" class="p-3 rounded-lg bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm">
             {{ errorMessage() }}
           </div>
         }
@@ -62,9 +62,9 @@
 
         <div>
           <button type="submit" [disabled]="isLoading()"
-            class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm disabled:opacity-50">
+            class="w-full bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2 text-sm disabled:opacity-50">
             @if (isLoading()) {
-              <svg class="animate-spin h-5 w-5 text-white dark:text-slate-955" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg class="animate-spin h-5 w-5 text-on-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>

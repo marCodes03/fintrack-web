@@ -1,4 +1,5 @@
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +24,7 @@ export interface BudgetPlanItem {
 @Component({
   selector: 'app-budgets',
   standalone: true,
-  imports: [HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, BudgetPlanSliderComponent, FormsModule, CurrencyPipe, DatePipe, DecimalPipe],
+  imports: [DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, BudgetPlanSliderComponent, FormsModule, CurrencyPipe, DatePipe, DecimalPipe],
   templateUrl: './budgets.component.html'
 })
 export class BudgetsComponent implements OnInit {

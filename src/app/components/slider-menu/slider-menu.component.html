@@ -2,11 +2,11 @@
 @if (isOpen) {
 <div class="fixed inset-0 z-50 flex justify-end">
   <!-- Clickable dark backdrop -->
-  <div (click)="onClose()"
+  <div (click)="onClose()" aria-hidden="true"
     class="fixed inset-0 bg-slate-950/60 dark:bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
 
   <!-- Sliding Sidebar panel -->
-  <div class="relative w-80 max-w-full bg-[var(--surface-card)] border-l border-[var(--border-subtle)] h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
+  <div appDialog aria-label="Menu" (dialogClose)="onClose()" class="relative w-80 max-w-full bg-[var(--surface-card)] border-l border-[var(--border-subtle)] h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
 
     <!-- Header: Logo + close -->
     <div class="flex items-center justify-between p-5 border-b border-[var(--border-subtle)]">
@@ -79,7 +79,7 @@
         <!-- Toggle pill -->
         <div class="relative w-10 h-5 rounded-full transition-colors duration-300"
              [class.bg-emerald-500]="hideAmounts()"
-             [class.bg-slate-300]="!hideAmounts()">
+             [class.bg-input-border]="!hideAmounts()">
           <span class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300"
                 [class.translate-x-5]="hideAmounts()"></span>
         </div>
@@ -95,7 +95,7 @@
         <!-- Toggle pill -->
         <div class="relative w-10 h-5 rounded-full transition-colors duration-300"
              [class.bg-emerald-500]="isDarkMode()"
-             [class.bg-slate-300]="!isDarkMode()">
+             [class.bg-input-border]="!isDarkMode()">
           <span class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300"
                 [class.translate-x-5]="isDarkMode()"></span>
         </div>

@@ -8,24 +8,24 @@
         <p class="text-xs text-text-muted mt-1">Design budget blueprints, allocate inflows to outflows/savings, and activate plans for target execution periods.</p>
       </div>
       <button (click)="openCreateSlider()"
-        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
+        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
         <span>+</span><span>New Budget Plan</span>
       </button>
     </div>
 
     @if (successMessage()) {
-      <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+      <div role="status" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
         <span>✅</span><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-sm flex items-center space-x-2">
+      <div role="alert" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-sm flex items-center space-x-2">
         <span>⚠️</span><span>{{ errorMessage() }}</span>
       </div>
     }
 
     <!-- Baseline Budget Goal Setup Card -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-6 relative overflow-hidden transition-all">
+    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-6 relative overflow-hidden transition-all">
       <div class="flex items-center justify-between border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading">Budget Goals</h2>
@@ -37,7 +37,7 @@
           </button>
         } @else {
           <div class="flex items-center space-x-2">
-            <button (click)="saveBudgetGoal()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
+            <button (click)="saveBudgetGoal()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
               Save Goal
             </button>
             <button (click)="cancelEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-all">
@@ -115,12 +115,12 @@
             <div class="bg-surface-subtle border border-border-subtle rounded-b-xl rounded-tr-xl p-5 space-y-4 animate-in fade-in duration-200">
               <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
                 <div class="flex-1">
-                  <label class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1">Group Name</label>
-                  <input type="text" [(ngModel)]="group.name" [disabled]="group.name.toLowerCase() === 'others'"
+                  <label for="budgets-f1" class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1">Group Name</label>
+                  <input id="budgets-f1" type="text" [(ngModel)]="group.name" [disabled]="group.name.toLowerCase() === 'others'"
                     class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2 text-input-text focus:outline-none focus:border-emerald-500 text-xs font-bold disabled:opacity-50">
                 </div>
                 <div class="w-32">
-                  <label class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1">Target %</label>
+                  <label for="budgets-f2" class="block text-2xs font-semibold text-text-muted uppercase tracking-wider mb-1">Target %</label>
                   <div class="relative">
                     <input type="number" [ngModel]="group.percentage" (ngModelChange)="onPercentageChange(group, $event)"
                       [disabled]="group.name.toLowerCase() === 'others' || (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0)"
@@ -193,7 +193,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-[640px] scroll-smooth" (scroll)="onContainerScroll($event)">
         @if (isLoading()) {
           @for (i of [1, 2, 3]; track i) {
-            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 animate-pulse">
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5 animate-pulse">
               <div class="space-y-3">
                 <div class="h-6 bg-border-subtle rounded-lg w-3/4"></div>
                 <div class="h-4 bg-border-subtle rounded-lg w-1/2"></div>
@@ -209,11 +209,11 @@
           }
         } @else {
           @for (plan of paginatedPlans(); track plan.id) {
-            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
               [class.border-emerald-500/50]="plan.isActive">
               
               @if (plan.isActive) {
-                <div class="absolute top-0 right-0 bg-emerald-505 text-white dark:text-slate-950 font-black text-[13px] uppercase px-3 py-1 rounded-bl-xl shadow-md">
+                <div class="absolute top-0 right-0 bg-emerald-505 text-on-accent font-black text-[13px] uppercase px-3 py-1 rounded-bl-xl">
                   Active Plan
                 </div>
               }
@@ -286,7 +286,7 @@
           } @empty {
             <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
               <p class="text-sm text-text-muted">No budget plans created yet.</p>
-              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
                 Create First Budget Plan
               </button>
             </div>
@@ -298,7 +298,7 @@
       @if (itemsToShow() < budgetPlans().length) {
         <div class="flex justify-center py-4 border-t border-border-subtle">
           <div class="flex items-center space-x-2 text-xs text-text-muted">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
             <span>Scrolling loads more items...</span>
           </div>
         </div>
@@ -315,7 +315,7 @@
 @if (isImplementModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <div (click)="closeImplementModal()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"></div>
-    <div class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
+    <div appDialog aria-label="Implement budget plan" (dialogClose)="closeImplementModal()" class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h3 class="text-lg font-bold text-text-heading">Implement Plan for Period</h3>
         <p class="text-xs text-text-muted mt-1">
@@ -327,7 +327,7 @@
         <!-- Start Date -->
         <div>
           <label class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Start Date *</label>
-          <input type="date" [(ngModel)]="implementStartDate" (ngModelChange)="onStartDateChange($event)"
+          <input id="budgets-f2" type="date" [(ngModel)]="implementStartDate" (ngModelChange)="onStartDateChange($event)"
             class="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 text-sm">
         </div>
 
@@ -345,7 +345,7 @@
 
       <div class="flex items-center space-x-3 pt-2">
         <button (click)="executeImplementPlan()" [disabled]="isLoading()"
-          class="flex-1 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
+          class="flex-1 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
           <span>🚀</span><span>{{ implementExecute ? 'Activate & Execute Plan' : 'Activate Plan Only' }}</span>
         </button>
         <button (click)="closeImplementModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-all">
@@ -381,7 +381,7 @@
 @if (isDeactivateModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <div (click)="closeDeactivateModal()" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"></div>
-    <div class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
+    <div appDialog aria-label="Deactivate budget plan" (dialogClose)="closeDeactivateModal()" class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h3 class="text-lg font-bold text-text-heading flex items-center space-x-2">
           <span>⚠️</span>
@@ -398,7 +398,7 @@
 
       <div class="flex items-center space-x-3 pt-2">
         <button (click)="executeDeactivatePlan()" [disabled]="isLoading()"
-          class="flex-1 bg-amber-500 hover:bg-amber-600 text-white dark:text-slate-950 font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
+          class="flex-1 bg-amber-500 hover:bg-amber-600 text-on-accent font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50">
           <span>Confirm Deactivation</span>
         </button>
         <button (click)="closeDeactivateModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-all">

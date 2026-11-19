@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       @if (isLoadingDashboard()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md motion-safe:animate-pulse space-y-3">
+          <div class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 motion-safe:animate-pulse space-y-3">
             <div class="flex items-center justify-between">
               <div class="h-4 bg-border-subtle rounded w-1/3"></div>
               <div class="h-5 bg-border-subtle rounded w-1/4"></div>
@@ -23,7 +23,7 @@
       } @else {
         <!-- Total Net Worth Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Net Worth</h2>
             <span class="text-xs uppercase font-bold text-accent-emerald bg-accent-emerald/10 px-2.5 py-1 rounded-md">{{
@@ -47,7 +47,7 @@
   
         <!-- Total Income Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Income</h2>
             <span class="text-xs font-semibold text-accent-emerald bg-accent-emerald/10 px-2 py-1 rounded-md">Inflows</span>
@@ -60,7 +60,7 @@
   
         <!-- Total Expenses Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Expenses</h2>
             <span class="text-xs font-semibold text-accent-rose bg-accent-rose/10 px-2 py-1 rounded-md">Outflows</span>
@@ -73,7 +73,7 @@
   
         <!-- Total Savings Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Savings</h2>
             <span class="text-xs font-semibold text-accent-teal bg-accent-teal/10 px-2 py-1 rounded-md">Savings</span>
@@ -89,7 +89,7 @@
     <!-- Active Budget Plan & Savings Goal Widgets Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       <!-- Active Budget Plan Widget -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4 relative">
+      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4 relative">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Active Budget Plan</h2>
           <a routerLink="/budgets" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-accent-emerald hover:underline">Manage Plans <span aria-hidden="true">➔</span></a>
@@ -156,7 +156,7 @@
       </div>
 
       <!-- Monthly Savings Goal Widget -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4 relative">
+      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4 relative">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Monthly Savings Goal</h2>
           <a routerLink="/savings" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-accent-teal hover:underline">Savings Page <span aria-hidden="true">➔</span></a>
@@ -189,7 +189,7 @@
             <!-- Progress Bar -->
             <div class="space-y-1">
               <div class="w-full bg-surface-subtle rounded-full h-3 overflow-hidden p-0.5 border border-border-subtle" role="progressbar" aria-label="Monthly savings goal progress" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="savingsGoalProgressPercentage()">
-                <div class="bg-gradient-to-r from-accent-teal to-accent-emerald h-full rounded-full transition-all duration-500"
+                <div class="bg-accent-emerald h-full rounded-full transition-all duration-500"
                   [style.width.%]="savingsGoalProgressPercentage()"></div>
               </div>
               <div class="flex items-center justify-between text-xs font-semibold text-text-muted">
@@ -211,7 +211,7 @@
     </div>
 
     <!-- Active Budget Plan Analytics (Baseline vs Active Plan vs Actual) -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-5">
+    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading flex items-center space-x-2">
@@ -252,7 +252,7 @@
             <span class="text-xs font-bold text-text-body uppercase tracking-wider text-center">
               Actual Spent Share
             </span>
-            <div class="relative w-36 h-36 rounded-full flex items-center justify-center shadow-md motion-safe:transition-transform motion-safe:hover:scale-105 duration-300" role="img" [attr.aria-label]="'Actual spent share: ' + totalAllocatedPercentage() + '% of income'" 
+            <div class="relative w-36 h-36 rounded-full flex items-center justify-center motion-safe:transition-transform motion-safe:hover:scale-105 duration-300" role="img" [attr.aria-label]="'Actual spent share: ' + totalAllocatedPercentage() + '% of income'" 
                  [style.backgroundImage]="donutGradient()">
               <div class="absolute inset-3 bg-surface-card rounded-full flex flex-col items-center justify-center text-center">
                 <span class="text-xs font-semibold text-text-muted uppercase">Spent</span>
@@ -336,7 +336,7 @@
 
     <!-- Main Section Grid -->
 
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 shadow-md space-y-4">
+    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-border-subtle pb-4">
         <h2 class="text-lg font-semibold text-text-heading">Recent Transactions</h2>
         <a routerLink="/transactions" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs text-accent-emerald hover:underline font-bold">View All</a>
@@ -396,7 +396,7 @@
                       </svg>
                     </div>
                     <span class="sr-only">{{ item.type }}:</span>
-                    <span class="min-w-0"><span class="break-words">{{ item.description }}</span><span class="block sm:hidden text-xs font-normal text-text-muted">{{ item.category }} · {{ (item.expenseDate || item.date) | date:'MMM d' }}</span></span>
+                    <span class="min-w-0"><span class="break-words">{{ item.description }}</span><span class="block sm:hidden text-xs font-normal text-text-muted">{{ item.category }} · {{ (item.expenseDate || item.date) | date:'MMM d, y' }}</span></span>
                   </div>
                 </td>
                 <td class="px-4 py-3 text-text-muted hidden sm:table-cell">{{ item.category }}</td>

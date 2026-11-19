@@ -141,3 +141,9 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Touch targets: at least 40px (WCAG 2.1 AA, design.md) */
+button:not([data-compact]) {
+  min-height: 40px;
+  min-width: 40px;
+}

@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ApiService, RefAccountType } from '../../services/api.service';
@@ -7,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-account-slider',
   standalone: true,
-  imports: [FormsModule],
+  imports: [DialogDirective, FormsModule],
   templateUrl: './account-slider.component.html'
 })
 export class AccountSliderComponent implements OnChanges {

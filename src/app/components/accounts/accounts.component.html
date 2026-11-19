@@ -8,18 +8,18 @@
         <p class="text-xs text-text-muted mt-1">Manage cash drawers, bank deposits, credit details, e-wallets, and savings accounts in PHP.</p>
       </div>
       <button (click)="openCreateSlider()"
-        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md">
+        class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
         <span>+</span><span>Add Account</span>
       </button>
     </div>
 
     @if (successMessage()) {
-      <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
+      <div role="status" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 text-sm flex items-center space-x-2">
         <span>✅</span><span>{{ successMessage() }}</span>
       </div>
     }
     @if (errorMessage()) {
-      <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
+      <div role="alert" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-500 text-sm flex items-center space-x-2">
         <span>⚠️</span><span>{{ errorMessage() }}</span>
       </div>
     }
@@ -56,7 +56,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @if (isLoading()) {
           @for (i of [1, 2, 3]; track i) {
-            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 shadow-md flex flex-col justify-between animate-pulse">
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 flex flex-col justify-between animate-pulse">
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3 w-2/3">
                   <div class="h-10 w-10 rounded-xl bg-border-subtle"></div>
@@ -75,7 +75,7 @@
           }
         } @else {
           @for (acc of filteredAccounts(); track acc.id) {
-            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 shadow-md flex flex-col justify-between hover:border-border-strong transition-all group relative overflow-hidden">
+            <div class="bg-surface-card border border-border-subtle rounded-2xl p-5 flex flex-col justify-between hover:border-border-strong transition-all group relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                   <div class="h-10 w-10 rounded-xl flex items-center justify-center font-bold text-lg"
@@ -111,7 +111,7 @@
           } @empty {
             <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
               <p class="text-sm text-text-muted">No accounts added yet.</p>
-              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+              <button (click)="openCreateSlider()" class="bg-emerald-500 hover:bg-emerald-600 dark:hover:bg-emerald-400 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
                 Create First Account
               </button>
             </div>

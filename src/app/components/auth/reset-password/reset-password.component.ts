@@ -1,11 +1,12 @@
 import { Component, signal, Output, EventEmitter, inject } from '@angular/core';
+import { DialogDirective } from '../../../shared/dialog.directive';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [FormsModule],
+  imports: [DialogDirective, FormsModule],
   templateUrl: './reset-password.component.html'
 })
 export class ResetPasswordComponent {

@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit, signal } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-slider-menu',
   standalone: true,
-  imports: [RouterLink],
+  imports: [DialogDirective, RouterLink],
   templateUrl: './slider-menu.component.html'
 })
 export class SliderMenuComponent implements OnInit {

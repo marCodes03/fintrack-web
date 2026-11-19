@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { DialogDirective } from '../../shared/dialog.directive';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-confirm-delete-modal',
   standalone: true,
-  imports: [FormsModule],
+  imports: [DialogDirective, FormsModule],
   templateUrl: './confirm-delete-modal.component.html'
 })
 export class ConfirmDeleteModalComponent {
