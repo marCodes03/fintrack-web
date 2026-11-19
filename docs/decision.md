@@ -307,11 +307,20 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Consequences:** The rewrite and the client must deploy together. `TRUST_PROXY_HOPS` must match the real proxy count or rate limiting sees the wrong IP. There is still no server-side revocation: logout clears the cookie, but a copied token works until it expires (6h).
 - **Affected features:** [authentication](features/authentication.md)
 
-## D-030 — Accessible names, real favicon, targeted reduced motion
+## D-032 — Accessible names, real favicon, targeted reduced motion
 - **Date:** 2026-11-19
 - **Status:** Accepted
 - **Context:** The all-pages audit found icon-only buttons with no accessible name, table headers without `scope`, a `favicon.ico` that was a renamed 61KB PNG, and a global reduced-motion rule that set every duration to 0.01ms (removing useful hover and focus feedback). Rendering the overlays also showed the budget plan step tabs overlapping, and the active tab carrying a conflicting muted text class.
 - **Decision:** Close buttons, password show/hide toggles and star ratings get `aria-label` (toggles and stars also `aria-pressed`); every `<th>` has `scope="col"`. `favicon.ico` is now a real 16/32/48px ICO (6KB) with a 32px PNG link. Under reduced motion, animations stop (spinners keep turning) and transitions shorten to 120ms on color and opacity only. Step tabs use `grow shrink-0` so labels cannot overlap, and the stray muted class on the active tab was removed. Added `docs/ui-quality.md`.
 - **Alternatives:** Keep the global 0.01ms rule; generate favicons with an image tool.
 - **Consequences:** The confirm-delete modal could not be opened in the mocked render and was checked from source only.
+- **Affected features:** all (UI)
+
+## D-033 — 13px type floor, token classes, table-to-card layout on small screens
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The all-pages audit found `design.md` still listing a 12px label (and the full copy a 10px compact size) while the app enforces a 13px floor. Templates also mixed `text-[13px]`, `text-[var(--text-muted)]` and token classes, and the detector flagged 13px and 15px as off the type ramp. Wide tables forced sideways scrolling on phones.
+- **Decision:** 13px (`text-xs`, the label step) is the smallest text; the label step in `design.md` is now 0.8125rem. Templates use `text-xs` and token classes (`text-text-muted`, `border-border-subtle`, `bg-surface-card`) instead of `text-[13px]` or `[var(--…)]`. The card amount is 14px bold to stay on the ramp. Below 1024px, tables tagged `card-table` render as cards (title and amount on top, details below, row menu in the corner). The detector's `rgb(0,0,0)` colour findings are treated as false positives because it cannot resolve CSS variables.
+- **Alternatives:** Allow 12px labels; keep horizontally scrolling tables on phones; add 15px to the ramp.
+- **Consequences:** Dense labels are slightly larger. New templates must use token classes. The table-to-card CSS depends on `data-cell` and `data-label` attributes in each table template.
 - **Affected features:** all (UI)
