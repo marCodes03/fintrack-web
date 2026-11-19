@@ -1,13 +1,13 @@
 import { IconComponent } from '../icon/icon.component';
 import { Component, Input, Output, EventEmitter, inject, OnInit, signal } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-slider-menu',
   standalone: true,
-  imports: [IconComponent, DialogDirective, RouterLink],
+  imports: [IconComponent, DialogDirective, RouterLink, RouterLinkActive],
   templateUrl: './slider-menu.component.html'
 })
 export class SliderMenuComponent implements OnInit {
@@ -20,6 +20,7 @@ export class SliderMenuComponent implements OnInit {
 
   protected readonly user = this.authService.currentUser;
   protected isDarkMode = signal<boolean>(false);
+  protected accountOpen = signal<boolean>(false);
   protected readonly hideAmounts = this.authService.hideAmounts;
 
   toggleHideAmounts(): void {

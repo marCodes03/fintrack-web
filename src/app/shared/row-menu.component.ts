@@ -21,11 +21,12 @@ export interface RowMenuItem {
     </button>
     @if (open()) {
       <div #menu role="menu" [attr.aria-label]="label" [style.top.px]="top()" [style.left.px]="left()"
-        class="fixed z-40 min-w-36 bg-surface-card border border-border-subtle rounded-xl shadow-2xl py-1"
+        class="fixed z-40 min-w-44 bg-surface-card border border-border-subtle rounded-xl shadow-2xl p-1.5"
         (keydown)="onMenuKey($event)">
         @for (item of items; track item.key) {
+          @if (item.danger && !$first) { <div role="separator" class="my-1.5 border-t border-border-subtle"></div> }
           <button type="button" role="menuitem" data-compact
-            class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-surface-subtle focus:bg-surface-subtle transition-colors"
+            class="w-full text-left px-3.5 py-3 rounded-lg text-sm font-semibold hover:bg-surface-subtle focus:bg-surface-subtle transition-colors"
             [class.text-accent-rose]="item.danger" [class.text-text-body]="!item.danger"
             (click)="choose(item.key)">{{ item.label }}</button>
         }
@@ -58,8 +59,8 @@ export class RowMenuComponent {
 
   private show(trigger: HTMLElement): void {
     const r = trigger.getBoundingClientRect();
-    const menuWidth = 160;
-    const menuHeight = this.items.length * 44 + 8;
+    const menuWidth = 176;
+    const menuHeight = this.items.length * 48 + 20;
     const left = Math.max(8, Math.min(r.right - menuWidth, window.innerWidth - menuWidth - 8));
     const top = r.bottom + menuHeight > window.innerHeight ? Math.max(8, r.top - menuHeight) : r.bottom + 4;
     this.left.set(left);
