@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       @if (isLoadingDashboard()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div role="status" aria-label="Loading" class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6 motion-safe:animate-pulse space-y-3">
+          <div role="status" aria-label="Loading" class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6 motion-safe:animate-pulse space-y-3">
             <div class="flex items-center justify-between">
               <div class="h-4 bg-border-subtle rounded w-1/3"></div>
               <div class="h-5 bg-border-subtle rounded w-1/4"></div>
@@ -23,7 +23,7 @@
       } @else {
         <!-- Total Net Worth Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Net Worth</h2>
             <span class="text-xs uppercase font-bold text-accent-emerald bg-accent-emerald/10 px-2.5 py-1 rounded-md">{{
@@ -47,7 +47,7 @@
   
         <!-- Total Income Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Income</h2>
             <span class="text-xs font-semibold text-accent-emerald bg-accent-emerald/10 px-2 py-1 rounded-md">Inflows</span>
@@ -60,7 +60,7 @@
   
         <!-- Total Expenses Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Expenses</h2>
             <span class="text-xs font-semibold text-accent-rose bg-accent-rose/10 px-2 py-1 rounded-md">Outflows</span>
@@ -73,7 +73,7 @@
   
         <!-- Total Savings Card -->
         <div
-          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-2xl p-6">
+          class="relative overflow-hidden bg-surface-card border border-border-subtle rounded-xl p-6">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-medium text-text-muted">Total Savings</h2>
             <span class="text-xs font-semibold text-accent-teal bg-accent-teal/10 px-2 py-1 rounded-md">Savings</span>
@@ -89,7 +89,7 @@
     <!-- Active Budget Plan & Savings Goal Widgets Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [attr.aria-busy]="isLoadingDashboard()">
       <!-- Active Budget Plan Widget -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4 relative">
+      <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4 relative">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Active Budget Plan</h2>
           <a routerLink="/budgets" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-accent-emerald hover:underline">Manage Plans <app-icon name="arrow-right" class="ml-1"/></a>
@@ -156,7 +156,7 @@
       </div>
 
       <!-- Monthly Savings Goal Widget -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4 relative">
+      <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4 relative">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Monthly Savings Goal</h2>
           <a routerLink="/savings" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs font-bold text-accent-teal hover:underline">Savings Page <app-icon name="arrow-right" class="ml-1"/></a>
@@ -211,7 +211,7 @@
     </div>
 
     <!-- Active Budget Plan Analytics (Baseline vs Active Plan vs Actual) -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5">
+    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading flex items-center space-x-2">
@@ -225,7 +225,7 @@
 
       @if (isLoadingDashboard()) {
         <div role="status" aria-label="Loading" class="grid grid-cols-1 lg:grid-cols-4 gap-8 motion-safe:animate-pulse">
-          <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-2xl border border-border-subtle w-full">
+          <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-xl border border-border-subtle w-full">
             <div class="h-4 bg-border-subtle rounded w-1/2"></div>
             <div class="w-36 h-36 rounded-full border-4 border-border-subtle bg-transparent flex items-center justify-center">
               <div class="w-24 h-24 rounded-full bg-border-subtle"></div>
@@ -248,7 +248,7 @@
       } @else if (budgetGoal()) {
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Donut Diagram Column -->
-          <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-2xl border border-border-subtle w-full min-w-[220px]">
+          <div class="lg:col-span-1 flex flex-col items-center justify-center space-y-4 bg-surface-subtle p-6 rounded-xl border border-border-subtle w-full min-w-[220px]">
             <span class="text-xs font-bold text-text-body uppercase tracking-wider text-center">
               Actual Spent Share
             </span>
@@ -336,7 +336,7 @@
 
     <!-- Main Section Grid -->
 
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4">
+    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-border-subtle pb-4">
         <h2 class="text-lg font-semibold text-text-heading">Recent Transactions</h2>
         <a routerLink="/transactions" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs text-accent-emerald hover:underline font-bold">View All</a>

@@ -9,12 +9,12 @@
       </div>
       <div class="flex items-center space-x-3">
         @if (selectedIds().size > 0) {
-          <button (click)="handleBulkDelete()"
+          <button type="button" (click)="handleBulkDelete()"
             class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <app-icon name="trash"/><span>Delete Selected ({{ selectedIds().size }})</span>
           </button>
         }
-        <button (click)="openCreateSlider()"
+        <button type="button" (click)="openCreateSlider()"
           class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
           <span>+</span><span>Record Income</span>
         </button>
@@ -36,14 +36,14 @@
     <div class="space-y-6">
       <!-- Stats Row -->
       <div class="grid grid-cols-1 gap-4">
-        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 relative overflow-hidden">
+        <div class="bg-surface-card border border-border-subtle rounded-xl p-6 relative overflow-hidden">
           <p class="text-sm font-medium text-text-muted">Total Month Income</p>
-          <p class="text-4xl font-black text-accent-emerald mt-3">{{ totalIncome() | currency:'PHP':'symbol-narrow' }}</p>
+          <p class="text-4xl font-black text-accent-emerald mt-3">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ totalIncome() | currency:'PHP':'symbol-narrow' }}}</p>
         </div>
       </div>
 
       <!-- Inflow History Table -->
-      <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4">
+      <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4">
         <div class="flex items-center justify-between border-b border-border-subtle pb-3">
           <h2 class="text-lg font-semibold text-text-heading">Inflow History</h2>
           <span class="text-xs text-text-muted font-medium">Showing {{ filteredTransactions().length }} item(s)</span>
@@ -160,7 +160,7 @@
                     <td data-label="Deposit Account" class="px-4 py-3 text-text-muted font-semibold">{{ getAccountName(item.accountId) }}</td>
                     <td data-label="Date" class="px-4 py-3 text-text-muted">{{ item.date | date:'mediumDate' }}</td>
                     <td data-cell="amount" class="px-4 py-3 text-accent-emerald font-semibold">
-                      +{{ item.amount | currency:'PHP':'symbol-narrow' }}
+                      +@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ item.amount | currency:'PHP':'symbol-narrow' }}}
                     </td>
                   </tr>
                 } @empty {

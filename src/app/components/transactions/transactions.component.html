@@ -10,12 +10,12 @@
       </div>
       <div class="flex items-center space-x-3">
         @if (selectedIds().size > 0) {
-          <button (click)="handleBulkDelete()"
+          <button type="button" (click)="handleBulkDelete()"
             class="flex items-center space-x-2 bg-accent-rose hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <app-icon name="trash"/><span>Delete Selected ({{ selectedIds().size }})</span>
           </button>
         }
-        <button (click)="openCreateSlider()"
+        <button type="button" (click)="openCreateSlider()"
           class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
           <span>+</span><span>Record Transaction</span>
         </button>
@@ -35,7 +35,7 @@
     }
 
     <!-- Transactions Listing Layout (Full Width) -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4">
+    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-border-subtle pb-3">
         <h2 class="text-lg font-bold text-text-heading">Transaction History</h2>
         <span class="text-xs text-text-muted font-medium">Showing {{ filteredTransactions().length }} item(s)</span>
@@ -197,9 +197,9 @@
                     [class.text-accent-rose]="item.type === 'EXPENSE'"
                     [class.text-accent-teal]="item.type === 'SAVINGS'"
                     [class.text-text-muted]="item.type === 'TRANSFER'">
-                    {{ item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-')) }}{{ item.amount | currency:'PHP':'symbol-narrow' }}
+                    {{ item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-')) }}@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ item.amount | currency:'PHP':'symbol-narrow' }}}
                     @if (item.type === 'TRANSFER' && item.transferFee && item.transferFee > 0) {
-                      <span class="block text-xs text-text-muted font-normal">Fee: {{ item.transferFee | currency:'PHP':'symbol-narrow' }}</span>
+                      <span class="block text-xs text-text-muted font-normal">Fee: @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ item.transferFee | currency:'PHP':'symbol-narrow' }}}</span>
                     }
                   </td>
 

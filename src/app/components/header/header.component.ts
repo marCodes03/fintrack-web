@@ -18,6 +18,14 @@ export class HeaderComponent {
   protected readonly user = this.authService.currentUser;
   protected readonly isSliderOpen = signal<boolean>(false);
   protected readonly hideAmounts = this.authService.hideAmounts;
+  protected readonly isDarkMode = signal<boolean>(document.documentElement.classList.contains('dark'));
+
+  toggleTheme(): void {
+    const nextDark = !this.isDarkMode();
+    this.isDarkMode.set(nextDark);
+    localStorage.setItem('theme', nextDark ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', nextDark);
+  }
 
   toggleHideAmounts(): void {
     this.authService.toggleHideAmounts();

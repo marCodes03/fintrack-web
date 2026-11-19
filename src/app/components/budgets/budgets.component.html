@@ -7,7 +7,7 @@
         <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Budget Plans</h1>
         <p class="text-sm text-text-body mt-1">Design budget blueprints, allocate inflows to outflows/savings, and activate plans for target execution periods.</p>
       </div>
-      <button (click)="openCreateSlider()"
+      <button type="button" (click)="openCreateSlider()"
         class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
         <span>+</span><span>New Budget Plan</span>
       </button>
@@ -25,22 +25,22 @@
     }
 
     <!-- Baseline Budget Goal Setup Card -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-6 relative overflow-hidden transition-all">
+    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-6 relative overflow-hidden transition-all">
       <div class="flex items-center justify-between border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading">Budget Goals</h2>
           <p class="text-sm text-text-body mt-0.5">Define target percentages for category groups as a baseline blueprint for your active budget timeframes.</p>
         </div>
         @if (!isEditingGoal()) {
-          <button (click)="startEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
+          <button type="button" (click)="startEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <app-icon name="settings"/> Configure Baseline Goal
           </button>
         } @else {
           <div class="flex items-center space-x-2">
-            <button (click)="saveBudgetGoal()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
+            <button type="button" (click)="saveBudgetGoal()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
               Save Goal
             </button>
-            <button (click)="cancelEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
+            <button type="button" (click)="cancelEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
               Cancel
             </button>
           </div>
@@ -53,7 +53,7 @@
           <!-- Tabs Header for Display Mode -->
           <div class="flex space-x-2 overflow-x-auto pb-2 border-b border-border-subtle">
             @for (group of budgetGoal()?.groups ?? []; track group.id; let groupIdx = $index) {
-              <button (click)="activeDisplayGoalTab.set(groupIdx)"
+              <button type="button" (click)="activeDisplayGoalTab.set(groupIdx)"
                 class="px-4 py-2 text-xs font-bold rounded-t-xl transition-[color,background-color,border-color,opacity,transform] whitespace-nowrap"
                 [class.bg-surface-subtle]="activeDisplayGoalTab() === groupIdx"
                 [class.text-text-heading]="activeDisplayGoalTab() === groupIdx"
@@ -96,7 +96,7 @@
           <!-- Tabs Header -->
           <div class="flex space-x-2 overflow-x-auto pb-2 border-b border-border-subtle">
             @for (group of goalGroupsEdit(); track $index; let groupIdx = $index) {
-              <button (click)="setActiveTab(groupIdx)"
+              <button type="button" (click)="setActiveTab(groupIdx)"
                 class="px-4 py-2 text-xs font-bold rounded-t-xl transition-[color,background-color,border-color,opacity,transform] whitespace-nowrap"
                 [class.bg-surface-subtle]="activeGoalTab() === groupIdx"
                 [class.text-text-heading]="activeGoalTab() === groupIdx"
@@ -105,7 +105,7 @@
                 {{ group.name }} <span class="ml-1 text-xs bg-surface-card px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
               </button>
             }
-            <button (click)="addGroup()" class="px-4 py-2 text-xs font-bold text-accent-emerald hover:opacity-80 transition-[color,background-color,border-color,opacity,transform]">
+            <button type="button" (click)="addGroup()" class="px-4 py-2 text-xs font-bold text-accent-emerald hover:opacity-80 transition-[color,background-color,border-color,opacity,transform]">
               + Add Group
             </button>
           </div>
@@ -120,20 +120,20 @@
                     class="w-full bg-input-bg border border-input-border rounded-xl px-3 py-2 text-input-text focus:outline-none focus:border-accent-emerald text-base font-bold disabled:opacity-50">
                 </div>
                 <div class="w-32">
-                  <label for="budgets-f2" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Target %</label>
+                  <label for="budgets-target" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Target %</label>
                   <div class="relative">
-                    <input type="number" [ngModel]="group.percentage" (ngModelChange)="onPercentageChange(group, $event)"
+                    <input id="budgets-target" type="number" inputmode="decimal" [ngModel]="group.percentage" (ngModelChange)="onPercentageChange(group, $event)"
                       [disabled]="group.name.toLowerCase() === 'others' || (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0)"
                       class="w-full bg-input-bg border border-input-border rounded-xl pl-3 pr-6 py-2 text-input-text focus:outline-none focus:border-accent-emerald text-xs font-bold disabled:opacity-50">
                     <span class="absolute right-3 top-2 text-xs text-text-muted font-bold">%</span>
                   </div>
                   @if (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0) {
-                    <p class="text-xs text-accent-emerald font-medium mt-1 leading-tight">Aligned with Savings Goal ({{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}/mo)</p>
+                    <p class="text-xs text-accent-emerald font-medium mt-1 leading-tight">Aligned with Savings Goal (@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}}/mo)</p>
                   }
                 </div>
                 <div class="flex items-end pt-5">
                   @if (group.name.toLowerCase() !== 'others') {
-                    <button (click)="removeGroup(activeGoalTab())" class="bg-accent-rose/10 hover:bg-accent-rose/20 border border-accent-rose/25 text-accent-rose text-xs font-bold py-2 px-3 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
+                    <button type="button" (click)="removeGroup(activeGoalTab())" class="bg-accent-rose/10 hover:bg-accent-rose/20 border border-accent-rose/25 text-accent-rose text-xs font-bold py-2 px-3 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                       Remove
                     </button>
                   }
@@ -193,7 +193,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto max-h-[640px] scroll-smooth" (scroll)="onContainerScroll($event)">
         @if (isLoading()) {
           @for (i of [1, 2, 3]; track i) {
-            <div role="status" aria-label="Loading" class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5 animate-pulse">
+            <div role="status" aria-label="Loading" class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5 animate-pulse">
               <div class="space-y-3">
                 <div class="h-6 bg-border-subtle rounded-lg w-3/4"></div>
                 <div class="h-4 bg-border-subtle rounded-lg w-1/2"></div>
@@ -209,7 +209,7 @@
           }
         } @else {
           @for (plan of paginatedPlans(); track plan.id) {
-            <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
+            <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5 flex flex-col justify-between relative overflow-hidden transition-all"
               [class.border-accent-emerald/50]="plan.isActive">
               
               @if (plan.isActive) {
@@ -234,15 +234,15 @@
                 <div class="grid grid-cols-3 gap-2 bg-surface-subtle p-3 rounded-xl border border-border-subtle text-center">
                   <div>
                     <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Inflows</span>
-                    <span class="text-xs font-bold text-accent-emerald">+{{ getPlannedInflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                    <span class="text-xs font-bold text-accent-emerald">+@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getPlannedInflows(plan) | currency:'PHP':'symbol-narrow' }}}</span>
                   </div>
                   <div>
                     <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Outflows</span>
-                    <span class="text-xs font-bold text-accent-rose">-{{ getPlannedOutflows(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                    <span class="text-xs font-bold text-accent-rose">-@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getPlannedOutflows(plan) | currency:'PHP':'symbol-narrow' }}}</span>
                   </div>
                   <div>
                     <span class="block text-3xs font-semibold text-text-muted uppercase tracking-wider">Savings</span>
-                    <span class="text-xs font-bold text-accent-teal">{{ getPlannedSavings(plan) | currency:'PHP':'symbol-narrow' }}</span>
+                    <span class="text-xs font-bold text-accent-teal">@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getPlannedSavings(plan) | currency:'PHP':'symbol-narrow' }}}</span>
                   </div>
                 </div>
 
@@ -250,7 +250,7 @@
                 <div class="flex items-center justify-between p-3 rounded-xl bg-surface-subtle border border-border-subtle">
                   <span class="text-xs font-medium text-text-muted">Net Remaining</span>
                   <span class="text-sm font-black" [class.text-accent-emerald]="getRemainingBudget(plan) >= 0" [class.text-accent-rose]="getRemainingBudget(plan) < 0">
-                    {{ getRemainingBudget(plan) | currency:'PHP':'symbol-narrow' }}
+                    @if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ getRemainingBudget(plan) | currency:'PHP':'symbol-narrow' }}}
                   </span>
                 </div>
               </div>
@@ -258,14 +258,14 @@
               <!-- Card Actions -->
               <div class="space-y-2 pt-2 border-t border-border-subtle">
                 <!-- Implement for Period Button -->
-                <button (click)="openImplementModal(plan)"
+                <button type="button" (click)="openImplementModal(plan)"
                   class="w-full bg-accent-emerald/10 hover:bg-accent-emerald/20 text-accent-emerald border border-accent-emerald/20 font-bold py-2 px-3 rounded-xl text-xs transition-[color,background-color,border-color,opacity,transform] flex items-center justify-center space-x-1.5">
                   <app-icon name="rocket"/>
                   <span>{{ plan.isActive ? 'Re-Implement Period' : 'Implement for Period' }}</span>
                 </button>
 
                 @if (plan.isActive) {
-                  <button (click)="openDeactivateModal(plan)"
+                  <button type="button" (click)="openDeactivateModal(plan)"
                     class="w-full bg-accent-amber/10 hover:bg-accent-amber/20 text-accent-amber border border-accent-amber/20 font-bold py-2 px-3 rounded-xl text-xs transition-[color,background-color,border-color,opacity,transform] flex items-center justify-center space-x-1.5">
                     <app-icon name="pause"/>
                     <span>Deactivate Plan</span>
@@ -273,10 +273,10 @@
                 }
 
                 <div class="flex items-center space-x-2">
-                  <button (click)="startEdit(plan)" class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-1.5 px-3 rounded-xl text-xs transition-[color,background-color,border-color,opacity,transform]">
+                  <button type="button" (click)="startEdit(plan)" class="flex-1 bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-1.5 px-3 rounded-xl text-xs transition-[color,background-color,border-color,opacity,transform]">
                     Edit Plan
                   </button>
-                  <button (click)="handleDeletePlan(plan)" class="bg-accent-rose/10 hover:bg-accent-rose/20 text-accent-rose font-bold py-1.5 px-3 rounded-xl text-xs transition-[color,background-color,border-color,opacity,transform] border border-accent-rose/20">
+                  <button type="button" (click)="handleDeletePlan(plan)" class="bg-accent-rose/10 hover:bg-accent-rose/20 text-accent-rose font-bold py-1.5 px-3 rounded-xl text-xs transition-[color,background-color,border-color,opacity,transform] border border-accent-rose/20">
                     Delete
                   </button>
                 </div>
@@ -284,9 +284,9 @@
 
             </div>
           } @empty {
-            <div class="col-span-full bg-surface-card border border-border-subtle rounded-2xl p-12 text-center space-y-3">
+            <div class="col-span-full bg-surface-card border border-border-subtle rounded-xl p-12 text-center space-y-3">
               <p class="text-sm text-text-muted">No budget plans yet. Create a plan to set spending targets.</p>
-              <button (click)="openCreateSlider()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
+              <button type="button" (click)="openCreateSlider()" class="bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
                 Create First Budget Plan
               </button>
             </div>
@@ -314,8 +314,8 @@
 <!-- Implement Budget Plan for Period Modal -->
 @if (isImplementModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div (click)="closeImplementModal()" aria-hidden="true" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"></div>
-    <div appDialog aria-label="Implement budget plan" (dialogClose)="closeImplementModal()" class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
+    <div (click)="closeImplementModal()" aria-hidden="true" class="fixed inset-0 bg-black/50 backdrop-blur-xs"></div>
+    <div appDialog aria-label="Implement budget plan" (dialogClose)="closeImplementModal()" class="relative bg-surface-card border border-border-subtle rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h2 class="text-lg font-bold text-text-heading">Implement Plan for Period</h2>
         <p class="text-sm text-text-body mt-1">
@@ -345,11 +345,11 @@
       </div>
 
       <div class="flex items-center space-x-3 pt-2">
-        <button (click)="executeImplementPlan()" [disabled]="isLoading()"
+        <button type="button" (click)="executeImplementPlan()" [disabled]="isLoading()"
           class="flex-1 bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-2.5 px-4 rounded-xl text-sm transition-[color,background-color,border-color,opacity,transform] flex items-center justify-center space-x-1.5 disabled:opacity-50">
           <app-icon name="rocket"/><span>{{ implementExecute ? 'Activate & Execute Plan' : 'Activate Plan Only' }}</span>
         </button>
-        <button (click)="closeImplementModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-[color,background-color,border-color,opacity,transform]">
+        <button type="button" (click)="closeImplementModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-[color,background-color,border-color,opacity,transform]">
           Cancel
         </button>
       </div>
@@ -381,8 +381,8 @@
 <!-- Deactivate Plan Warning Modal -->
 @if (isDeactivateModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div (click)="closeDeactivateModal()" aria-hidden="true" class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"></div>
-    <div appDialog aria-label="Deactivate budget plan" (dialogClose)="closeDeactivateModal()" class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
+    <div (click)="closeDeactivateModal()" aria-hidden="true" class="fixed inset-0 bg-black/50 backdrop-blur-xs"></div>
+    <div appDialog aria-label="Deactivate budget plan" (dialogClose)="closeDeactivateModal()" class="relative bg-surface-card border border-border-subtle rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h2 class="text-lg font-bold text-text-heading flex items-center space-x-2">
           <app-icon name="alert"/>
@@ -398,11 +398,11 @@
       </div>
 
       <div class="flex items-center space-x-3 pt-2">
-        <button (click)="executeDeactivatePlan()" [disabled]="isLoading()"
+        <button type="button" (click)="executeDeactivatePlan()" [disabled]="isLoading()"
           class="flex-1 bg-accent-amber hover:opacity-90 text-on-accent font-bold py-2.5 px-4 rounded-xl text-sm transition-[color,background-color,border-color,opacity,transform] flex items-center justify-center space-x-1.5 disabled:opacity-50">
           <span>Confirm Deactivation</span>
         </button>
-        <button (click)="closeDeactivateModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-[color,background-color,border-color,opacity,transform]">
+        <button type="button" (click)="closeDeactivateModal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold py-2.5 px-4 rounded-xl text-sm transition-[color,background-color,border-color,opacity,transform]">
           Cancel
         </button>
       </div>

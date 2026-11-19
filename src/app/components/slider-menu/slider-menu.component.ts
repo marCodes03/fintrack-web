@@ -1,5 +1,5 @@
 import { IconComponent } from '../icon/icon.component';
-import { Component, Input, Output, EventEmitter, inject, OnInit, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [IconComponent, DialogDirective, RouterLink, RouterLinkActive],
   templateUrl: './slider-menu.component.html'
 })
-export class SliderMenuComponent implements OnInit {
+export class SliderMenuComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
@@ -19,28 +19,10 @@ export class SliderMenuComponent implements OnInit {
   @Output() resetPassword = new EventEmitter<void>();
 
   protected readonly user = this.authService.currentUser;
-  protected isDarkMode = signal<boolean>(false);
   protected accountOpen = signal<boolean>(false);
-  protected readonly hideAmounts = this.authService.hideAmounts;
 
-  toggleHideAmounts(): void {
-    this.authService.toggleHideAmounts();
-  }
 
-  ngOnInit(): void {
-    this.isDarkMode.set(document.documentElement.classList.contains('dark'));
-  }
 
-  toggleTheme(): void {
-    const nextDark = !this.isDarkMode();
-    this.isDarkMode.set(nextDark);
-    localStorage.setItem('theme', nextDark ? 'dark' : 'light');
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }
 
   onClose(): void {
     this.close.emit();

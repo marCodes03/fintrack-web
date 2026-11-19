@@ -23,7 +23,7 @@
       
       <!-- Review Form Column -->
       <div class="md:col-span-2 space-y-6">
-        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5">
+        <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5">
           <h2 class="text-base font-bold text-text-heading">Write a Review</h2>
 
           @if (successMessage()) {
@@ -72,7 +72,7 @@
 
           <!-- Actions -->
           <div class="pt-2">
-            <button (click)="onSubmit()" [disabled]="isLoading()"
+            <button type="button" (click)="onSubmit()" [disabled]="isLoading()"
               class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
               @if (isLoading()) {
                 <span>Submitting Feedback...</span>
@@ -86,7 +86,7 @@
 
       <!-- Right Column: Sidebar info/history stats -->
       <div class="space-y-6">
-        <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4">
+        <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-4">
           <h2 class="text-xs font-bold text-text-muted uppercase tracking-wider">Review Guidelines</h2>
           <ul class="text-xs text-text-body space-y-3">
             <li class="flex items-start space-x-2">
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Review History Section -->
-    <div class="bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-5">
+    <div class="bg-surface-card border border-border-subtle rounded-xl p-6 space-y-5">
       <div class="border-b border-border-subtle pb-3">
         <h2 class="text-base font-bold text-text-heading">Your Past Reviews</h2>
         <p class="text-sm text-text-body mt-0.5">A history of review comments you've shared with the team.</p>

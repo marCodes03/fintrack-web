@@ -3,7 +3,7 @@
 <div class="fixed inset-0 z-50 flex justify-end">
   <!-- Clickable dark backdrop -->
   <div (click)="onClose()" aria-hidden="true"
-    class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
+    class="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
 
   <!-- Sliding Sidebar panel -->
   <div appDialog aria-label="Menu" (dialogClose)="onClose()" class="relative w-80 max-w-full bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
@@ -15,7 +15,7 @@
         <span class="text-sm font-bold tracking-tight text-text-heading">Menu Options</span>
       </div>
       <button (click)="onClose()" type="button" aria-label="Close menu"
-        class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
+        class="text-text-muted hover:text-text-heading transition-colors p-1.5 rounded-lg hover:bg-surface-subtle">
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -26,44 +26,44 @@
     <nav aria-label="Main menu" class="flex-1 overflow-y-auto pb-3 px-3">
       <h2 class="px-4 pt-3 pb-1 text-[13px] font-semibold uppercase tracking-wider text-text-muted">Overview</h2>
       <a routerLink="/dashboard" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="home" class="mr-3 text-text-muted text-lg"/>
         Dashboard
       </a>
       <h2 class="px-4 pt-4 pb-1 text-[13px] font-semibold uppercase tracking-wider text-text-muted">Money</h2>
       <a routerLink="/accounts" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="landmark" class="mr-3 text-text-muted text-lg"/>
         Accounts
       </a>
       <a routerLink="/income" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="trending-up" class="mr-3 text-text-muted text-lg"/>
         Income
       </a>
       <a routerLink="/expenses" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="trending-down" class="mr-3 text-text-muted text-lg"/>
         Expenses
       </a>
       <a routerLink="/savings" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="coins" class="mr-3 text-text-muted text-lg"/>
         Savings
       </a>
       <a routerLink="/transactions" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="transfer" class="mr-3 text-text-muted text-lg"/>
         Transactions
       </a>
       <h2 class="px-4 pt-4 pb-1 text-[13px] font-semibold uppercase tracking-wider text-text-muted">Plan</h2>
       <a routerLink="/budgets" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="bar-chart" class="mr-3 text-text-muted text-lg"/>
         Budget Plan
       </a>
       <a routerLink="/references" (click)="onClose()" routerLinkActive="bg-surface-subtle text-text-heading before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-full before:bg-accent-emerald" ariaCurrentWhenActive="page"
-        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color]">
+        class="relative flex items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color]">
         <app-icon name="clipboard" class="mr-3 text-text-muted text-lg"/>
         References
       </a>
@@ -71,32 +71,9 @@
 
     <!-- Preferences and account -->
     <div class="p-3 border-t border-border-subtle space-y-1">
-      <button type="button" role="switch" [attr.aria-checked]="hideAmounts()" (click)="toggleHideAmounts()"
-        class="flex w-full items-center justify-between px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color] text-left">
-        <span class="flex items-center">
-          <app-icon [name]="hideAmounts() ? 'eye' : 'eye-off'" class="mr-3 text-text-muted text-lg"/>
-          Hide balances
-        </span>
-        <span aria-hidden="true" class="relative w-10 h-5 rounded-full transition-colors duration-300"
-              [class.bg-accent-emerald]="hideAmounts()" [class.bg-input-border]="!hideAmounts()">
-          <span class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300" [class.translate-x-5]="hideAmounts()"></span>
-        </span>
-      </button>
-      <button type="button" role="switch" [attr.aria-checked]="isDarkMode()" (click)="toggleTheme()"
-        class="flex w-full items-center justify-between px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color] text-left">
-        <span class="flex items-center">
-          <app-icon [name]="isDarkMode() ? 'sun' : 'moon'" class="mr-3 text-text-muted text-lg"/>
-          Dark mode
-        </span>
-        <span aria-hidden="true" class="relative w-10 h-5 rounded-full transition-colors duration-300"
-              [class.bg-accent-emerald]="isDarkMode()" [class.bg-input-border]="!isDarkMode()">
-          <span class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300" [class.translate-x-5]="isDarkMode()"></span>
-        </span>
-      </button>
-
-      <div class="pt-1 mt-1 border-t border-border-subtle">
+      <div>
         <button type="button" (click)="accountOpen.set(!accountOpen())" [attr.aria-expanded]="accountOpen()" aria-controls="menu-account"
-          class="flex w-full items-center px-3 py-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left">
+          class="flex w-full items-center px-3 py-2.5 rounded-xl hover:bg-surface-subtle transition-colors text-left">
           <span aria-hidden="true" class="h-8 w-8 shrink-0 rounded-lg bg-accent-emerald flex items-center justify-center font-extrabold text-on-accent text-sm mr-3">{{ user()?.name ? user()?.name?.charAt(0) : 'U' }}</span>
           <span class="min-w-0 flex-1">
             <span class="block text-sm font-semibold text-text-heading truncate">{{ user()?.name || 'Account' }}</span>
@@ -107,12 +84,12 @@
         @if (accountOpen()) {
         <div id="menu-account" class="mt-1 space-y-0.5">
         <button type="button" (click)="triggerResetPassword()"
-          class="flex w-full items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color] text-left">
+          class="flex w-full items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color] text-left">
           <app-icon name="key" class="mr-3 text-text-muted text-lg"/>
           Reset password
         </button>
         <a routerLink="/reviews" (click)="onClose()"
-          class="flex w-full items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-heading rounded-xl transition-[color,background-color] text-left">
+          class="flex w-full items-center px-4 py-2.5 text-sm font-semibold text-text-body hover:bg-surface-subtle hover:text-text-heading rounded-xl transition-[color,background-color] text-left">
           <app-icon name="star" class="mr-3 text-text-muted text-lg"/>
           Write a review
         </a>

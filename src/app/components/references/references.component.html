@@ -63,13 +63,13 @@
     <!-- TAB: Income Categories (with management) -->
     <!-- ============================================ -->
     @if (activeTab() === 'income-categories') {
-      <div class="bg-surface-card border border-border-subtle rounded-2xl overflow-hidden animate-in fade-in duration-150">
+      <div class="bg-surface-card border border-border-subtle rounded-xl overflow-hidden animate-in fade-in duration-150">
         <div class="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <div>
             <h2 class="text-base font-bold text-text-heading">Income Categories</h2>
             <p class="text-sm text-text-body mt-0.5">Categories available when recording income transactions.</p>
           </div>
-          <button (click)="openCreateIncomeSlider()"
+          <button type="button" (click)="openCreateIncomeSlider()"
             class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <span>+</span><span>Add Category</span>
           </button>
@@ -113,13 +113,13 @@
     <!-- TAB: Expense Categories (with management) -->
     <!-- ============================================ -->
     @if (activeTab() === 'expense-categories') {
-      <div class="bg-surface-card border border-border-subtle rounded-2xl overflow-hidden animate-in fade-in duration-150">
+      <div class="bg-surface-card border border-border-subtle rounded-xl overflow-hidden animate-in fade-in duration-150">
         <div class="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <div>
             <h2 class="text-base font-bold text-text-heading">Expense Categories</h2>
             <p class="text-sm text-text-body mt-0.5">Categories available when recording expense transactions.</p>
           </div>
-          <button (click)="openCreateExpenseSlider()"
+          <button type="button" (click)="openCreateExpenseSlider()"
             class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <span>+</span><span>Add Category</span>
           </button>
@@ -163,13 +163,13 @@
     <!-- TAB: Saving Categories (with management) -->
     <!-- ============================================ -->
     @if (activeTab() === 'saving-categories') {
-      <div class="bg-surface-card border border-border-subtle rounded-2xl overflow-hidden animate-in fade-in duration-150">
+      <div class="bg-surface-card border border-border-subtle rounded-xl overflow-hidden animate-in fade-in duration-150">
         <div class="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <div>
             <h2 class="text-base font-bold text-text-heading">Saving Categories</h2>
             <p class="text-sm text-text-body mt-0.5">Categories available when allocating savings records.</p>
           </div>
-          <button (click)="openCreateSavingSlider()"
+          <button type="button" (click)="openCreateSavingSlider()"
             class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent text-xs font-bold px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
             <span>+</span><span>Add Category</span>
           </button>
@@ -213,7 +213,7 @@
     <!-- TAB: Account Types (read-only) -->
     <!-- ============================================ -->
     @if (activeTab() === 'account-types') {
-      <div class="bg-surface-card border border-border-subtle rounded-2xl overflow-hidden animate-in fade-in duration-150">
+      <div class="bg-surface-card border border-border-subtle rounded-xl overflow-hidden animate-in fade-in duration-150">
         <div class="px-6 py-4 border-b border-border-subtle flex items-center">
           <div>
             <h2 class="text-base font-bold text-text-heading">Account Types</h2>
@@ -247,7 +247,7 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <!-- Backdrop -->
     <div (click)="closeSlider()" aria-hidden="true"
-      class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in">
+      class="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in">
     </div>
 
     <!-- Slider Panel -->
@@ -307,7 +307,7 @@
 
       <!-- Footer Actions -->
       <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
-        <button (click)="isIncomeMode() ? submitIncomeCategory() : (isSavingMode() ? submitSavingCategory() : submitExpenseCategory())"
+        <button type="button" (click)="isIncomeMode() ? submitIncomeCategory() : (isSavingMode() ? submitSavingCategory() : submitExpenseCategory())"
           [disabled]="isLoading()"
           class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">
           @if (isLoading()) {

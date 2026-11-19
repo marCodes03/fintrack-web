@@ -26,6 +26,7 @@ export class TransactionsComponent implements OnInit {
 
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
+  protected readonly hideAmounts = this.authService.hideAmounts;
   private http = inject(HttpClient);
   private router = inject(Router);
 
