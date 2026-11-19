@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
+import { VerifyEmailComponent } from './components/auth/verify-email/verify-email.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { IncomeComponent } from './components/income/income.component';
 import { ExpensesComponent } from './components/expenses/expenses.component';
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'income', component: IncomeComponent },
   { path: 'expenses', component: ExpensesComponent },

@@ -12,7 +12,23 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendOtpEmail(toEmail: string, otp: string): Promise<void> {
+export type OtpPurpose = 'reset' | 'verify';
+
+const OTP_COPY: Record<OtpPurpose, { subject: string; heading: string; intro: string }> = {
+  reset: {
+    subject: 'FinTrack - Password Reset Verification Code',
+    heading: 'Reset Your Password',
+    intro: 'You requested to reset your password. Use the following 6-digit One-Time Password (OTP) to verify your request and set a new password:'
+  },
+  verify: {
+    subject: 'FinTrack - Verify Your Email',
+    heading: 'Verify Your Email',
+    intro: 'Welcome to FinTrack. Use the following 6-digit One-Time Password (OTP) to verify your email address and finish creating your account:'
+  }
+};
+
+export async function sendOtpEmail(toEmail: string, otp: string, purpose: OtpPurpose = 'reset'): Promise<void> {
+  const copy = OTP_COPY[purpose];
   const htmlBody = `
     <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; color: #1e293b;">
       <div style="text-align: center; margin-bottom: 20px;">
@@ -27,9 +43,9 @@ export async function sendOtpEmail(toEmail: string, otp: string): Promise<void> 
           </tr>
         </table>
       </div>
-      <h2 style="color: #0f172a; font-size: 1.25rem; margin-top: 0;">Reset Your Password</h2>
+      <h2 style="color: #0f172a; font-size: 1.25rem; margin-top: 0;">${copy.heading}</h2>
       <p>Hello,</p>
-      <p>You requested to reset your password. Use the following 6-digit One-Time Password (OTP) to verify your request and set a new password:</p>
+      <p>${copy.intro}</p>
       <div style="margin: 24px 0; text-align: center;">
         <span style="font-family: monospace; font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #10b981; background-color: #f1f5f9; padding: 12px 24px; border: 1px dashed #cbd5e1; border-radius: 8px; display: inline-block;">
           ${otp}
@@ -43,7 +59,7 @@ export async function sendOtpEmail(toEmail: string, otp: string): Promise<void> 
   await transporter.sendMail({
     from: `"${process.env.SMTP_SENDER_NAME || 'FinTrack'}" <${process.env.SMTP_USER}>`,
     to: toEmail,
-    subject: 'FinTrack - Password Reset Verification Code',
+    subject: copy.subject,
     html: htmlBody,
     attachments: [{
       filename: 'logo.png',

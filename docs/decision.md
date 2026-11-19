@@ -288,3 +288,12 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Install `tailwindcss-animate`; remove the dead classes. Real multi-size favicon was offered and not chosen.
 - **Consequences:** No new dependency and no template changes. `favicon.ico` is still the 61KB PNG.
 - **Affected features:** all (UI)
+
+## D-030 — Email verification before login
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** Anyone could register any email, including an unclaimed `ADMIN_EMAILS` address, and be treated as that person.
+- **Decision:** Add `User.emailVerified` (migration `add_email_verified`, backfilled to `true` for existing users). Register emails an OTP and returns no session. `POST /auth/verify-email` verifies and logs in; login returns 403 `EMAIL_NOT_VERIFIED` until then. `requireAdmin` requires a verified email.
+- **Alternatives:** Verify only for admin access; verification links instead of OTPs.
+- **Consequences:** Production signup needs working SMTP. An attacker can register a victim's address unverified, but cannot log in as it; the owner can still recover it through forgot-password.
+- **Affected features:** [authentication](features/authentication.md)

@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-bg-main text-text-body flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+    <img src="logo.png" alt="FinTrack Logo" class="mx-auto h-16 w-16 object-contain" />
+    <h1 class="mt-6 text-3xl font-extrabold tracking-tight text-text-heading">
+      Verify your email
+    </h1>
+    <p class="mt-2 text-sm text-text-muted">
+      Enter the 6-digit code we sent to your email to finish creating your account.
+    </p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-surface-card border border-border-subtle p-8 rounded-2xl">
+      <form (submit)="handleVerify(); $event.preventDefault()" class="space-y-6">
+
+        @if (errorMessage()) {
+          <div role="alert" class="p-3 rounded-lg bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        @if (successMessage()) {
+          <div role="status" class="p-3 rounded-lg bg-accent-emerald/10 border border-accent-emerald/25 text-accent-emerald text-sm">
+            {{ successMessage() }}
+          </div>
+        }
+
+        @if (simulatedOtp()) {
+          <div role="status" class="p-3 rounded-lg bg-input-bg border border-input-border text-sm text-text-muted">
+            Dev code (email not configured):
+            <span class="font-mono text-base font-bold tracking-widest text-accent-emerald">{{ simulatedOtp() }}</span>
+          </div>
+        }
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-text-muted">Email address</label>
+          <div class="mt-1">
+            <input id="email" name="email" type="email" autocomplete="email" required [(ngModel)]="email"
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
+          </div>
+        </div>
+
+        <div>
+          <label for="otp" class="block text-sm font-medium text-text-muted">Verification code</label>
+          <div class="mt-1">
+            <input id="otp" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required [(ngModel)]="otp"
+              class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text text-center font-mono tracking-widest placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-xl">
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" [disabled]="isLoading()"
+            class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] flex items-center justify-center space-x-2 text-sm disabled:opacity-50">
+            @if (isLoading()) {
+              <span>Verifying...</span>
+            } @else {
+              <span>Verify and continue</span>
+            }
+          </button>
+        </div>
+
+        <div class="text-center text-xs text-text-muted space-y-2">
+          <button type="button" (click)="handleResend()" [disabled]="resendCountdown() > 0 || isLoading()"
+            class="font-medium text-accent-emerald hover:opacity-80 transition-colors disabled:opacity-50">
+            @if (resendCountdown() > 0) {
+              Resend code in {{ resendCountdown() }}s
+            } @else {
+              Resend code
+            }
+          </button>
+          <div>
+            <a routerLink="/login" class="font-medium text-accent-emerald hover:opacity-80 transition-colors">Back to sign in</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

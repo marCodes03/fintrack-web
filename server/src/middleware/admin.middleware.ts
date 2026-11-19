@@ -15,7 +15,8 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
   let email: string | undefined;
   try {
     const user = await prisma.user.findUnique({ where: { id: req.userId as string } });
-    email = user?.email;
+    // An unverified address could be claimed by anyone, so it never counts as admin.
+    email = user?.emailVerified ? user.email : undefined;
   } catch {
     email = undefined;
   }

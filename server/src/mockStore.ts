@@ -6,7 +6,8 @@ export const mockUsers: any[] = [
     id: 'user-default-1',
     email: 'user@example.com',
     name: 'Default User',
-    password: 'password123'
+    password: 'password123',
+    emailVerified: true
   }
 ];
 

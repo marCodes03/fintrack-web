@@ -15,6 +15,9 @@ export interface AuthResponse {
   message: string;
   user?: User;
   token?: string;
+  requiresVerification?: boolean;
+  email?: string;
+  simulatedOtp?: string;
 }
 
 @Injectable({
@@ -146,6 +149,24 @@ export class AuthService {
         }
       })
     );
+  }
+
+  verifyEmail(email: string, otp: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/verify-email`, { email, otp }).pipe(
+      tap((res) => {
+        if (res.success && res.user && res.token) {
+          this.token.set(res.token);
+          localStorage.setItem('fintrack_token', res.token);
+          this.currentUser.set(res.user);
+          localStorage.setItem('fintrack_user', JSON.stringify(res.user));
+          this.updateActivity();
+        }
+      })
+    );
+  }
+
+  resendVerification(email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/resend-verification`, { email });
   }
 
   forgotPassword(email: string): Observable<AuthResponse> {

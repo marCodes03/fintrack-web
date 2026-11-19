@@ -9,8 +9,10 @@ Let users register, log in, recover a forgotten password, and change their passw
 
 | Method | Path | Body | Success | Errors |
 |---|---|---|---|---|
-| POST | `/register` | name, email, password | 201 + user (no password) | 400 missing fields; 400 duplicate email |
-| POST | `/login` | email, password | 200 + user | 400 missing fields; 401 bad credentials |
+| POST | `/register` | name, email, password | 201 `requiresVerification`, verification code emailed, no session | 400 missing fields; 400 duplicate email |
+| POST | `/verify-email` | email, otp | 200 + token + user | 400 invalid or expired code |
+| POST | `/resend-verification` | email | 200, same message for any email | 400 missing email; 429 rate limited |
+| POST | `/login` | email, password | 200 + user | 400 missing fields; 401 bad credentials; 403 `EMAIL_NOT_VERIFIED` |
 | POST | `/forgot-password` | email | 200, same generic message for known and unknown emails; OTP emailed if the account exists | 400 missing email; 429 rate limited |
 | POST | `/refresh` | Bearer token | 200 + fresh token | 401 invalid token or user deleted |
 | POST | `/reset-password-otp` | email, otp, newPassword | 200 | 400 missing fields; 400 invalid or expired OTP |
@@ -22,6 +24,7 @@ Let users register, log in, recover a forgotten password, and change their passw
 - The forgot-password response includes `simulatedOtp` only when `NODE_ENV !== 'production'` (dev aid).
 - Rate limits per IP (`express-rate-limit`, `trust proxy` = 1): login/register 20 per 15 min, forgot-password 5 per hour, OTP reset and password change 10 per 15 min.
 - Sliding session: while the user is active, the client calls `/auth/refresh` every 30 minutes (and once on load) to replace the 6h token. Idle sessions expire.
+- New accounts must verify their email with a 6-digit OTP (same expiry and attempt rules as password reset) before they can log in. `requireAdmin` also needs a verified email. Existing users were backfilled as verified by the migration; a successful password reset also verifies the account.
 - Passwords are bcrypt hashes. Legacy plaintext passwords are re-hashed on first successful login.
 - The in-memory mock user fallback is used only outside production, and only when the database is unreachable.
 - Client session: the user object is stored in `localStorage` (`fintrack_user`). It is cleared on logout.

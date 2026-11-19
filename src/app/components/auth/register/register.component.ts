@@ -42,10 +42,12 @@ export class RegisterComponent {
       next: (res) => {
         this.isLoading.set(false);
         if (res.success) {
-          this.successMessage.set('Account created successfully! Redirecting...');
+          this.successMessage.set('Account created! Check your email for a verification code...');
           setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 1500);
+            this.router.navigate(['/verify-email'], {
+              state: { email: res.email ?? this.email, simulatedOtp: res.simulatedOtp }
+            });
+          }, 1000);
         } else {
           this.errorMessage.set(res.message || 'Registration failed.');
         }

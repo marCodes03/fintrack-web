@@ -39,6 +39,10 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
+        if (err.error?.code === 'EMAIL_NOT_VERIFIED') {
+          this.router.navigate(['/verify-email'], { state: { email: this.email } });
+          return;
+        }
         this.errorMessage.set(err.error?.message || 'An error occurred during login.');
       }
     });
