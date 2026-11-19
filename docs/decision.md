@@ -297,3 +297,12 @@ Append-only record of every decision made in FinTrack. Required by `AGENTS.md` (
 - **Alternatives:** Verify only for admin access; verification links instead of OTPs.
 - **Consequences:** Production signup needs working SMTP. An attacker can register a victim's address unverified, but cannot log in as it; the owner can still recover it through forgot-password.
 - **Affected features:** [authentication](features/authentication.md)
+
+## D-031 — Session JWT in an httpOnly cookie, served first-party through Vercel
+- **Date:** 2026-11-19
+- **Status:** Accepted
+- **Context:** The JWT lived in `localStorage`, so any XSS could read and reuse it. The frontend (Vercel) and API (Render) are different sites, so a direct cross-site cookie would be a third-party cookie that Safari and some Chrome settings block.
+- **Decision:** Login, verify-email and refresh set `fintrack_token` as an httpOnly, `SameSite=Lax` cookie (`Secure` in production). `vercel.json` rewrites `/api/*` to Render and the production `apiUrl` is `/api`, so the cookie is first-party. Local dev calls the API on the page's own host, which is same-site. CORS is credentialed with an explicit origin list. A state-changing request with the cookie must send `X-Requested-With: fintrack`. `requireAuth` also still accepts a Bearer header.
+- **Alternatives:** Cross-site `SameSite=None` cookie with CSRF tokens (breaks on Safari); keep `localStorage`.
+- **Consequences:** The rewrite and the client must deploy together. `TRUST_PROXY_HOPS` must match the real proxy count or rate limiting sees the wrong IP. There is still no server-side revocation: logout clears the cookie, but a copied token works until it expires (6h).
+- **Affected features:** [authentication](features/authentication.md)

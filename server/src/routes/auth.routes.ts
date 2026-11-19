@@ -7,6 +7,7 @@ import { signToken } from '../utils/jwt';
 import { hashPassword, verifyPassword, safeEqual } from '../utils/password';
 import { canUseMockFallback } from '../utils/dbErrors';
 import { requireAuth } from '../middleware/auth.middleware';
+import { setAuthCookie, clearAuthCookie } from '../utils/authCookie';
 import { credentialsLimiter, forgotPasswordLimiter, resetLimiter } from '../middleware/rateLimit.middleware';
 
 const router = Router();
@@ -135,10 +136,10 @@ router.post('/login', credentialsLimiter, async (req: Request, res: Response) =>
   }
 
   // Sign outside the DB try/catch so a signing failure never triggers the mock fallback.
+  setAuthCookie(res, signToken(user.id));
   res.json({
     success: true,
     message: 'Login successful.',
-    token: signToken(user.id),
     user: { id: user.id, name: user.name, email: user.email }
   });
 });
@@ -214,10 +215,10 @@ router.post('/verify-email', resetLimiter, async (req: Request, res: Response) =
   }
 
   activeOtps.delete(`verify:${email}`);
+  setAuthCookie(res, signToken(user.id));
   res.json({
     success: true,
     message: 'Email verified.',
-    token: signToken(user.id),
     user: { id: user.id, name: user.name, email: user.email }
   });
 });
@@ -264,7 +265,14 @@ router.post('/refresh', requireAuth, async (req: Request, res: Response) => {
   } catch (err) {
     return handleDbError(err, res, 'Failed to refresh session');
   }
-  res.json({ success: true, token: signToken(userId) });
+  setAuthCookie(res, signToken(userId));
+  res.json({ success: true });
+});
+
+// 3c. Logout: clear the session cookie
+router.post('/logout', (_req: Request, res: Response) => {
+  clearAuthCookie(res);
+  res.json({ success: true });
 });
 
 // 4. Verify OTP & Reset Password (Unauthenticated OTP-based reset)

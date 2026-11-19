@@ -4,21 +4,26 @@ import { catchError, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
 
-/** Attaches the JWT to API requests and logs the user out on 401 from protected endpoints. */
+/**
+ * Sends the httpOnly session cookie with API requests (plus the CSRF header the server requires)
+ * and logs the user out on 401 from protected endpoints.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const apiUrl = inject(ApiService).apiUrl;
 
-  // Only attach the token to our own API: exact match or a path/query boundary after apiUrl.
+  // Only our own API: exact match or a path/query boundary after apiUrl.
   const isApiRequest = req.url === apiUrl || ['/', '?', '#'].some(sep => req.url.startsWith(apiUrl + sep));
   if (!isApiRequest) {
     return next(req);
   }
 
-  const token = authService.getToken();
-  const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+  const apiReq = req.clone({
+    withCredentials: true,
+    setHeaders: { 'X-Requested-With': 'fintrack' }
+  });
 
-  return next(authReq).pipe(
+  return next(apiReq).pipe(
     catchError((err: unknown) => {
       // Login/register 401s mean "bad credentials", not "expired session".
       const isAuthEndpoint = req.url.startsWith(`${apiUrl}/auth/`);

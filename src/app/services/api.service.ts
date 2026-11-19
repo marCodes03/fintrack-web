@@ -125,9 +125,11 @@ export interface Review {
 })
 export class ApiService {
   private http = inject(HttpClient);
+  // Local dev calls the API on the same host the page was served from (localhost or 127.0.0.1) so the
+  // session cookie stays same-site. Production uses the same-origin /api path, which Vercel rewrites to Render.
   readonly apiUrl = ['localhost', '127.0.0.1'].includes(window.location.hostname)
-    ? 'http://localhost:4902/api'
-    : 'https://fintrack-api-env1.onrender.com/api';
+    ? `http://${window.location.hostname}:4902/api`
+    : '/api';
   private baseUrl = this.apiUrl;
 
   getHealth(): Observable<HealthResponse> {
