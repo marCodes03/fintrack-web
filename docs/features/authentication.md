@@ -11,7 +11,8 @@ Let users register, log in, recover a forgotten password, and change their passw
 |---|---|---|---|---|
 | POST | `/register` | name, email, password | 201 + user (no password) | 400 missing fields; 400 duplicate email |
 | POST | `/login` | email, password | 200 + user | 400 missing fields; 401 bad credentials |
-| POST | `/forgot-password` | email | 200, OTP emailed | 400 missing email; 404 unknown email; 500 SMTP failure |
+| POST | `/forgot-password` | email | 200, same generic message for known and unknown emails; OTP emailed if the account exists | 400 missing email; 429 rate limited |
+| POST | `/refresh` | Bearer token | 200 + fresh token | 401 invalid token or user deleted |
 | POST | `/reset-password-otp` | email, otp, newPassword | 200 | 400 missing fields; 400 invalid or expired OTP |
 | POST | `/reset-password` | email, currentPassword, newPassword | 200 | 400 missing fields; 400 wrong current password |
 
@@ -19,6 +20,8 @@ Let users register, log in, recover a forgotten password, and change their passw
 - Forgot-password creates a 6-digit OTP, stores it in the in-memory `activeOtps` map keyed by email, and sends it with Nodemailer (SMTP configured through `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SENDER_NAME`).
 - The OTP expires after 10 minutes and is invalidated after 5 wrong attempts. It is deleted after a successful reset.
 - The forgot-password response includes `simulatedOtp` only when `NODE_ENV !== 'production'` (dev aid).
+- Rate limits per IP (`express-rate-limit`, `trust proxy` = 1): login/register 20 per 15 min, forgot-password 5 per hour, OTP reset and password change 10 per 15 min.
+- Sliding session: while the user is active, the client calls `/auth/refresh` every 30 minutes (and once on load) to replace the 6h token. Idle sessions expire.
 - Passwords are bcrypt hashes. Legacy plaintext passwords are re-hashed on first successful login.
 - The in-memory mock user fallback is used only outside production, and only when the database is unreachable.
 - Client session: the user object is stored in `localStorage` (`fintrack_user`). It is cleared on logout.

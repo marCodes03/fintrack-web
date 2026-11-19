@@ -6,6 +6,8 @@ import { sendOtpEmail } from '../services/email.service';
 import { signToken } from '../utils/jwt';
 import { hashPassword, verifyPassword, safeEqual } from '../utils/password';
 import { canUseMockFallback } from '../utils/dbErrors';
+import { requireAuth } from '../middleware/auth.middleware';
+import { credentialsLimiter, forgotPasswordLimiter, resetLimiter } from '../middleware/rateLimit.middleware';
 
 const router = Router();
 
@@ -13,7 +15,7 @@ const OTP_TTL_MS = 10 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
 
 // 1. Register
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', credentialsLimiter, async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     res.status(400).json({ success: false, message: 'All fields are required.' });
@@ -57,7 +59,7 @@ router.post('/register', async (req: Request, res: Response) => {
 });
 
 // 2. Login
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', credentialsLimiter, async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ success: false, message: 'Email and password are required.' });
@@ -101,7 +103,7 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 // 3. Forgot Password
-router.post('/forgot-password', async (req: Request, res: Response) => {
+router.post('/forgot-password', forgotPasswordLimiter, async (req: Request, res: Response) => {
   const { email } = req.body;
   if (!email) {
     res.status(400).json({ success: false, message: 'Email is required.' });
@@ -120,8 +122,10 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
     if (mockUsers.find(u => u.email === email)) userExists = true;
   }
 
+  // Same response whether or not the account exists, so this can't be used to enumerate emails.
+  const genericMessage = 'If an account exists for this email, a verification code has been sent.';
   if (!userExists) {
-    res.status(404).json({ success: false, message: 'No account found with this email address.' });
+    res.json({ success: true, message: genericMessage });
     return;
   }
 
@@ -131,24 +135,39 @@ router.post('/forgot-password', async (req: Request, res: Response) => {
   try {
     // Send the real email via Nodemailer Google SMTP
     await sendOtpEmail(email, otp);
-
-    res.json({
-      success: true,
-      message: `OTP sent to ${email}.`,
-      // Dev aid so the UI works without SMTP. Never returned in production.
-      ...(process.env['NODE_ENV'] !== 'production' ? { simulatedOtp: otp } : {})
-    });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to send verification email. Please try again later.',
-      error: (err as Error).message
-    });
+    // Don't surface SMTP failures: an error only for existing accounts would reveal which emails exist.
+    console.error('Failed to send OTP email:', (err as Error).message);
   }
+
+  res.json({
+    success: true,
+    message: genericMessage,
+    // Dev aid so the UI works without SMTP. Never returned in production.
+    ...(process.env['NODE_ENV'] !== 'production' ? { simulatedOtp: otp } : {})
+  });
+});
+
+// 3b. Refresh: exchange a still-valid token for a fresh one (sliding session)
+router.post('/refresh', requireAuth, async (req: Request, res: Response) => {
+  const userId = req.userId as string;
+  try {
+    // Real users must still exist; mock users (dev fallback) have no DB row.
+    if (!userId.startsWith('user-mock-') && !mockUsers.some(u => u.id === userId)) {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        res.status(401).json({ success: false, message: 'Not authenticated.' });
+        return;
+      }
+    }
+  } catch (err) {
+    return handleDbError(err, res, 'Failed to refresh session');
+  }
+  res.json({ success: true, token: signToken(userId) });
 });
 
 // 4. Verify OTP & Reset Password (Unauthenticated OTP-based reset)
-router.post('/reset-password-otp', async (req: Request, res: Response) => {
+router.post('/reset-password-otp', resetLimiter, async (req: Request, res: Response) => {
   const { email, otp, newPassword } = req.body;
   if (!email || !otp || !newPassword) {
     res.status(400).json({ success: false, message: 'Email, OTP, and new password are required.' });
@@ -189,7 +208,7 @@ router.post('/reset-password-otp', async (req: Request, res: Response) => {
 });
 
 // 5. Change Password (Authenticated reset using current password)
-router.post('/reset-password', async (req: Request, res: Response) => {
+router.post('/reset-password', resetLimiter, async (req: Request, res: Response) => {
   const { email, currentPassword, newPassword } = req.body;
   if (!email || !currentPassword || !newPassword) {
     res.status(400).json({ success: false, message: 'Email, current password, and new password are required.' });

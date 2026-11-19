@@ -89,7 +89,33 @@ export class AuthService {
           }
         }
       }, 10000);
+
+      // Sliding session: while the user is active, swap the token for a fresh one.
+      // Deferred so the HTTP interceptor (which injects AuthService) doesn't hit a circular dependency.
+      setTimeout(() => this.refreshIfActive(), 0);
+      setInterval(() => this.refreshIfActive(), this.refreshIntervalMs);
     }
+  }
+
+  private refreshIntervalMs = 30 * 60 * 1000; // 30 minutes
+
+  private refreshIfActive(): void {
+    if (!this.isAuthenticated() || !this.token()) return;
+    const lastActivity = parseInt(localStorage.getItem(this.lastActivityKey) || '0', 10);
+    if (Date.now() - lastActivity > this.refreshIntervalMs) return; // idle: let the token run out
+
+    this.http.post<AuthResponse>(`${this.baseUrl}/refresh`, {}).subscribe({
+      next: (res) => {
+        if (res.success && res.token) {
+          this.token.set(res.token);
+          localStorage.setItem('fintrack_token', res.token);
+        }
+      },
+      error: (err) => {
+        // The auth interceptor skips /auth/ URLs, so handle an expired or revoked token here.
+        if (err?.status === 401) this.logout();
+      }
+    });
   }
 
   updateActivity(): void {

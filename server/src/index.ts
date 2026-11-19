@@ -18,6 +18,9 @@ if (!process.env['JWT_SECRET']) {
 const app = express();
 const PORT = process.env['PORT'] || 3000;
 
+// Behind one reverse proxy (Render): use the real client IP for rate limiting.
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
