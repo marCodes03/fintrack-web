@@ -3,7 +3,7 @@
   <app-header (resetPassword)="openResetModal()"></app-header>
 
   <!-- Main Content Container -->
-  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8">
+  <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8">
     <h1 class="sr-only">Dashboard</h1>
     <p class="sr-only" role="status">{{ isLoadingDashboard() || isLoadingTransactions() ? 'Loading dashboard' : 'Dashboard loaded' }}</p>
 
@@ -147,7 +147,7 @@
         } @else {
           <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Budget Plan Active</p>
-            <p class="text-xs text-text-muted">Implement a budget plan for a date range to track allocations.</p>
+            <p class="text-sm text-text-body">Implement a budget plan for a date range to track allocations.</p>
             <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
               Set Up Budget Plan
             </a>
@@ -201,7 +201,7 @@
         } @else {
           <div class="p-6 bg-surface-subtle border border-border-subtle rounded-xl text-center space-y-2">
             <p class="text-sm font-semibold text-text-heading">No Monthly Savings Goal Set</p>
-            <p class="text-xs text-text-muted">Define a monthly goal to monitor your savings target progress.</p>
+            <p class="text-sm text-text-body">Define a monthly goal to monitor your savings target progress.</p>
             <a routerLink="/savings" class="inline-block bg-accent-teal hover:opacity-90 text-on-accent font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
               Define Savings Goal
             </a>
@@ -218,7 +218,7 @@
             <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
             <span>Actual vs Budget Goal Analytics</span>
           </h2>
-          <p class="text-xs text-text-muted mt-0.5">Comparing baseline target percentages against current active plan blueprint and actual period expenses/savings.</p>
+          <p class="text-sm text-text-body mt-0.5">Comparing baseline target percentages against current active plan blueprint and actual period expenses/savings.</p>
         </div>
         <span class="text-xs font-semibold text-text-muted">Denominator: Actual Month Income (@if (hideAmounts()) {<span aria-hidden="true">₱ •••••</span><span class="sr-only">Amount hidden</span>} @else {{{ (activePlanInflows() | currency:'PHP':'symbol-narrow') }}})</span>
       </div>
@@ -325,7 +325,7 @@
             <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             <span>Target Goal Analytics Unavailable</span>
           </p>
-          <p class="text-xs text-text-muted">Set your budget goals to track spending against targets.</p>
+          <p class="text-sm text-text-body">Set your budget goals to track spending against targets.</p>
           <a routerLink="/budgets" class="inline-block bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform] mt-1">
             Setup & Configure Budget Goals
           </a>
@@ -342,8 +342,8 @@
         <a routerLink="/transactions" class="inline-flex items-center min-h-6 pointer-coarse:min-h-11 text-xs text-accent-emerald hover:underline font-bold">View All</a>
       </div>
 
-      <div class="overflow-x-auto overflow-y-auto max-h-[295px] scroll-smooth" tabindex="0" role="region" aria-label="Recent transactions">
-        <table class="w-full text-left text-sm text-text-body">
+      <div class="relative overflow-x-auto overflow-y-auto max-h-[295px] scroll-smooth" tabindex="0" role="region" aria-label="Recent transactions">
+        <table class="card-table w-full text-left text-sm text-text-body">
           <caption class="sr-only">Recent transactions</caption>
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg rounded-lg">
             <tr>
@@ -371,7 +371,7 @@
             } @else {
               @for (item of transactions(); track item.id) {
               <tr class="hover:bg-table-row-hover transition-colors">
-                <td class="px-4 py-3 font-medium text-text-heading">
+                <td data-cell="title" class="px-4 py-3 font-medium text-text-heading">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center" aria-hidden="true"
                       [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
@@ -399,9 +399,9 @@
                     <span class="min-w-0"><span class="break-words">{{ item.description }}</span><span class="block sm:hidden text-xs font-normal text-text-muted">{{ item.category }} · {{ (item.expenseDate || item.date) | date:'MMM d, y' }}</span></span>
                   </div>
                 </td>
-                <td class="px-4 py-3 text-text-muted hidden sm:table-cell">{{ item.category }}</td>
-                <td class="px-4 py-3 text-text-muted hidden sm:table-cell whitespace-nowrap">{{ (item.expenseDate || item.date) | date:'mediumDate' }}</td>
-                <td class="px-4 py-3 text-right font-semibold tabular-nums whitespace-nowrap"
+                <td data-label="Category" class="px-4 py-3 text-text-muted hidden sm:table-cell">{{ item.category }}</td>
+                <td data-label="Date" class="px-4 py-3 text-text-muted hidden sm:table-cell whitespace-nowrap">{{ (item.expenseDate || item.date) | date:'mediumDate' }}</td>
+                <td data-cell="amount" class="px-4 py-3 text-right font-semibold tabular-nums whitespace-nowrap"
                   [class.text-accent-emerald]="item.type === 'INCOME'"
                   [class.text-accent-rose]="item.type === 'EXPENSE'"
                   [class.text-accent-teal]="item.type === 'SAVINGS'"

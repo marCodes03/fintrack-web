@@ -1,5 +1,6 @@
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -14,10 +15,15 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, TransactionSliderComponent, CurrencyPipe, DatePipe, FormsModule],
+  imports: [RowMenuComponent, IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, TransactionSliderComponent, CurrencyPipe, DatePipe, FormsModule],
   templateUrl: './transactions.component.html'
 })
 export class TransactionsComponent implements OnInit {
+  protected readonly rowActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit' },
+    { key: 'delete', label: 'Delete', danger: true }
+  ];
+
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);

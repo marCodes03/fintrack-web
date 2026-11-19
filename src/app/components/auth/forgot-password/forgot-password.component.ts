@@ -24,6 +24,15 @@ export class ForgotPasswordComponent implements OnDestroy {
 
   protected step = signal<'request' | 'verify' | 'reset'>('request');
   protected errorMessage = signal<string | null>(null);
+
+  protected fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors)[0];
+    if (first) document.getElementById(first)?.focus();
+  }
   protected successMessage = signal<string | null>(null);
   protected simulatedOtp = signal<string | null>(null);
   protected isLoading = signal<boolean>(false);
@@ -66,10 +75,11 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   handleForgotPassword(): void {
-    if (!this.email) {
-      this.errorMessage.set('Please enter your email address.');
+    if (!this.email.trim()) {
+      this.showFieldErrors({ email: 'Enter your email address.' });
       return;
     }
+    this.fieldErrors.set({});
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
@@ -204,15 +214,15 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   handleResetPasswordOtp(): void {
-    if (!this.otp || !this.newPassword || !this.confirmNewPassword) {
-      this.errorMessage.set('All fields are required.');
+    const errors: Record<string, string> = {};
+    if (!this.newPassword) errors['newPassword'] = 'Choose a new password.';
+    if (!this.confirmNewPassword) errors['confirmNewPassword'] = 'Re-enter the new password.';
+    else if (this.newPassword && this.newPassword !== this.confirmNewPassword) errors['confirmNewPassword'] = 'Passwords do not match.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
-
-    if (this.newPassword !== this.confirmNewPassword) {
-      this.errorMessage.set('Passwords do not match.');
-      return;
-    }
+    this.fieldErrors.set({});
 
     this.isLoading.set(true);
     this.errorMessage.set(null);

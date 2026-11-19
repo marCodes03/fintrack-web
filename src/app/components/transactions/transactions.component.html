@@ -1,12 +1,12 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
-  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
+  <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <!-- Page Header -->
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
         <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Transactions Hub</h1>
-        <p class="text-xs text-text-muted mt-1">Record incomes, manage expenses, and process internal account-to-account transfers.</p>
+        <p class="text-sm text-text-body mt-1">Record incomes, manage expenses, and process internal account-to-account transfers.</p>
       </div>
       <div class="flex items-center space-x-3">
         @if (selectedIds().size > 0) {
@@ -46,7 +46,7 @@
         <div class="flex flex-wrap items-center gap-3">
           <!-- Timeframe Filter -->
           <div>
-            <label for="transactions-f1" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Timeframe</label>
+            <label for="transactions-f1" class="block text-xs uppercase font-bold text-text-muted mb-1">Timeframe</label>
             <select id="transactions-f1" [ngModel]="timeframeFilter()" (ngModelChange)="timeframeFilter.set($event); itemsToShow.set(10)"
               class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="ALL">All Time</option>
@@ -61,12 +61,12 @@
           @if (timeframeFilter() === 'CUSTOM') {
             <div class="flex items-center space-x-2">
               <div>
-                <label for="transactions-f2" class="block text-[13px] uppercase font-bold text-text-muted mb-1">From</label>
+                <label for="transactions-f2" class="block text-xs uppercase font-bold text-text-muted mb-1">From</label>
                 <input id="transactions-f2" type="date" [ngModel]="customStartDate()" (ngModelChange)="customStartDate.set($event); itemsToShow.set(10)"
                   class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2 py-1 focus:outline-none">
               </div>
               <div>
-                <label for="transactions-f3" class="block text-[13px] uppercase font-bold text-text-muted mb-1">To</label>
+                <label for="transactions-f3" class="block text-xs uppercase font-bold text-text-muted mb-1">To</label>
                 <input id="transactions-f3" type="date" [ngModel]="customEndDate()" (ngModelChange)="customEndDate.set($event); itemsToShow.set(10)"
                   class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2 py-1 focus:outline-none">
               </div>
@@ -75,7 +75,7 @@
 
           <!-- Type Filter -->
           <div>
-            <label for="transactions-f4" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Type</label>
+            <label for="transactions-f4" class="block text-xs uppercase font-bold text-text-muted mb-1">Type</label>
             <select id="transactions-f4" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event); itemsToShow.set(10)"
               class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="ALL">All Types</option>
@@ -88,7 +88,7 @@
 
           <!-- Category Filter -->
           <div>
-            <label for="transactions-f5" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Category</label>
+            <label for="transactions-f5" class="block text-xs uppercase font-bold text-text-muted mb-1">Category</label>
             <select id="transactions-f5" [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event); itemsToShow.set(10)"
               class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
               <option value="ALL">All Categories</option>
@@ -101,7 +101,7 @@
 
         <!-- Sort Order -->
         <div>
-          <label for="transactions-f6" class="block text-[13px] uppercase font-bold text-text-muted mb-1">Sort By</label>
+          <label for="transactions-f6" class="block text-xs uppercase font-bold text-text-muted mb-1">Sort By</label>
           <select id="transactions-f6" [ngModel]="sortOrder()" (ngModelChange)="sortOrder.set($event); itemsToShow.set(10)"
             class="bg-input-bg border border-input-border text-input-text text-base rounded-lg px-2.5 py-1.5 focus:outline-none">
             <option value="DATE_DESC">Date: Newest First (Desc)</option>
@@ -112,14 +112,19 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" (scroll)="onContainerScroll($event)">
-        <table class="w-full text-left text-sm text-text-body">
+      <div class="lg:hidden flex items-center px-4 py-2 border-b border-border-subtle">
+          <label class="inline-flex items-center gap-3 min-h-10 cursor-pointer text-sm font-semibold text-text-body">
+            <input type="checkbox" class="rounded border-input-border bg-input-bg text-accent-emerald w-5 h-5" [checked]="isAllSelected()" (change)="toggleSelectAll()">
+            Select all
+          </label>
+        </div>
+        <div class="overflow-x-auto overflow-y-auto max-h-[540px] scroll-smooth" tabindex="0" role="region" aria-label="Transactions table" (scroll)="onContainerScroll($event)">
+        <table class="card-table w-full text-left text-sm text-text-body">
 <caption class="sr-only">Transactions table</caption>
           <thead class="text-xs text-text-muted uppercase bg-table-header-bg">
             <tr>
               <th scope="col" class="px-6 py-3 rounded-l-xl w-10">
-                <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll()"
-                  class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-4 h-4 cursor-pointer">
+                <label class="inline-flex items-center justify-center min-h-10 min-w-10 cursor-pointer"><input type="checkbox" aria-label="Select all rows" [checked]="isAllSelected()" (change)="toggleSelectAll()" class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-5 h-5 cursor-pointer"></label>
               </th>
               <th scope="col" class="px-6 py-3">Title</th>
               <th scope="col" class="px-6 py-3">Type</th>
@@ -127,7 +132,6 @@
               <th scope="col" class="px-6 py-3">Category</th>
               <th scope="col" class="px-6 py-3">Date</th>
               <th scope="col" class="px-6 py-3">Amount</th>
-              <th scope="col" class="px-6 py-3 text-right rounded-r-xl">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border-subtle">
@@ -144,20 +148,16 @@
                   <td class="px-6 py-4"><div class="h-4 bg-border-subtle rounded w-24"></div></td>
                   <td class="px-6 py-4"><div class="h-4 bg-border-subtle rounded w-20"></div></td>
                   <td class="px-6 py-4 font-semibold"><div class="h-4 bg-border-subtle rounded w-16"></div></td>
-                  <td class="px-6 py-4 text-right space-x-3 rounded-r-xl">
-                    <div class="h-4 bg-border-subtle rounded w-12 ml-auto"></div>
-                  </td>
                 </tr>
               }
             } @else {
               @for (item of paginatedTransactions(); track item.id) {
                 <tr class="hover:bg-table-row-hover transition-colors" [class.bg-surface-subtle]="selectedIds().has(item.id)">
-                  <td class="px-6 py-4 w-10">
-                    <input type="checkbox" [checked]="selectedIds().has(item.id)" (change)="toggleSelect(item.id)"
-                      class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-4 h-4 cursor-pointer">
+                  <td data-cell="select" class="px-6 py-4 w-10">
+                    <label class="inline-flex items-center justify-center min-h-10 min-w-10 cursor-pointer"><input type="checkbox" aria-label="Select row" [checked]="selectedIds().has(item.id)" (change)="toggleSelect(item.id)" class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-5 h-5 cursor-pointer"></label>
                   </td>
                   <!-- Description -->
-                  <td class="px-6 py-4 font-semibold text-text-heading flex items-center space-x-3">
+                  <td data-cell="title" class="px-6 py-4 font-semibold text-text-heading"><div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
                       [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
                       [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
@@ -166,11 +166,12 @@
                       <app-icon [name]="item.type === 'INCOME' ? 'briefcase' : (item.type === 'TRANSFER' ? 'transfer' : (item.type === 'SAVINGS' ? 'coins' : 'cart'))"/>
                     </div>
                     <span>{{ item.description }}</span>
-                  </td>
+                      <app-row-menu class="ml-auto shrink-0" [label]="'Actions for ' + item.description" [items]="rowActions" (select)="$event === 'edit' ? startEdit(item) : handleDeleteTransaction(item)"/>
+                    </div></td>
 
                   <!-- Type badge -->
-                  <td class="px-6 py-4">
-                    <span class="px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider"
+                  <td data-label="Type" class="px-6 py-4">
+                    <span class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider"
                       [class.bg-accent-emerald/10]="item.type === 'INCOME'" [class.text-accent-emerald]="item.type === 'INCOME'"
                       [class.bg-accent-rose/10]="item.type === 'EXPENSE'" [class.text-accent-rose]="item.type === 'EXPENSE'"
                       [class.bg-accent-teal/10]="item.type === 'SAVINGS'" [class.text-accent-teal]="item.type === 'SAVINGS'"
@@ -180,41 +181,32 @@
                   </td>
 
                   <!-- Account name -->
-                  <td class="px-6 py-4 text-text-muted font-semibold">{{ getAccountName(item.accountId) }}</td>
+                  <td data-label="Account" class="px-6 py-4 text-text-muted font-semibold">{{ getAccountName(item.accountId) }}</td>
 
                   <!-- Category -->
-                  <td class="px-6 py-4 text-text-muted">{{ item.category }}</td>
+                  <td data-label="Category" class="px-6 py-4 text-text-muted">{{ item.category }}</td>
 
                   <!-- Date -->
-                  <td class="px-6 py-4 text-text-muted">
+                  <td data-label="Date" class="px-6 py-4 text-text-muted">
                     {{ (item.expenseDate || item.date) | date:'mediumDate' }}
                   </td>
 
                   <!-- Amount -->
-                  <td class="px-6 py-4 font-semibold text-xs"
+                  <td data-cell="amount" class="px-6 py-4 font-semibold text-xs"
                     [class.text-accent-emerald]="item.type === 'INCOME'"
                     [class.text-accent-rose]="item.type === 'EXPENSE'"
                     [class.text-accent-teal]="item.type === 'SAVINGS'"
                     [class.text-text-muted]="item.type === 'TRANSFER'">
                     {{ item.type === 'INCOME' ? '+' : (item.type === 'TRANSFER' ? '' : (item.type === 'SAVINGS' ? '+' : '-')) }}{{ item.amount | currency:'PHP':'symbol-narrow' }}
                     @if (item.type === 'TRANSFER' && item.transferFee && item.transferFee > 0) {
-                      <span class="block text-[13px] text-text-muted font-normal">Fee: {{ item.transferFee | currency:'PHP':'symbol-narrow' }}</span>
+                      <span class="block text-xs text-text-muted font-normal">Fee: {{ item.transferFee | currency:'PHP':'symbol-narrow' }}</span>
                     }
                   </td>
 
-                  <!-- Actions -->
-                  <td class="px-6 py-4 text-right space-x-3 rounded-r-xl">
-                    <button (click)="startEdit(item)" class="text-xs font-bold text-accent-emerald hover:opacity-80 transition-colors">
-                      Edit
-                    </button>
-                    <button (click)="handleDeleteTransaction(item)" class="text-xs font-bold text-accent-rose hover:opacity-80 transition-colors">
-                      Delete
-                    </button>
-                  </td>
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="8" class="px-6 py-10 text-center text-text-muted">No transactions match these filters. Clear a filter to see more.</td>
+                  <td colspan="7" class="px-6 py-10 text-center text-text-muted">No transactions match these filters. Clear a filter to see more.</td>
                 </tr>
               }
             }

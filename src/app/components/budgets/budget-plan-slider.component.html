@@ -28,23 +28,23 @@
         <div class="rounded-2xl border p-4 bg-surface-subtle border-border-subtle space-y-4">
           <div class="flex items-center justify-between border-b border-border-subtle pb-3">
             <div>
-              <span class="block text-[13px] uppercase font-extrabold text-accent-emerald tracking-wider">Active Plan Blueprint</span>
+              <span class="block text-xs uppercase font-extrabold text-accent-emerald tracking-wider">Active Plan Blueprint</span>
               <h2 class="text-sm font-bold text-text-heading flex items-center space-x-2 mt-0.5">
                 <span class="inline-flex items-center gap-1.5"><app-icon name="clipboard"/> {{ planName || 'Untitled Budget Plan' }}</span>
-                <span class="px-2.5 py-0.5 rounded-full text-[13px] bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20 font-bold uppercase tracking-wider">{{ timePeriodLabel }}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/20 font-bold uppercase tracking-wider">{{ timePeriodLabel }}</span>
               </h2>
             </div>
             <div class="flex items-center space-x-6 text-right">
               <div>
-                <span class="block text-[13px] uppercase font-semibold text-text-muted">Total Inflows</span>
+                <span class="block text-xs uppercase font-semibold text-text-muted">Total Inflows</span>
                 <span class="text-xs font-black text-accent-emerald">{{ totalPlannedIncome | currency:'PHP':'symbol-narrow' }}</span>
               </div>
               <div>
-                <span class="block text-[13px] uppercase font-semibold text-text-muted">Total Outflows</span>
+                <span class="block text-xs uppercase font-semibold text-text-muted">Total Outflows</span>
                 <span class="text-xs font-black text-accent-rose">{{ totalPlannedOutflows | currency:'PHP':'symbol-narrow' }}</span>
               </div>
               <div>
-                <span class="block text-[13px] uppercase font-semibold text-text-muted">Net Balance</span>
+                <span class="block text-xs uppercase font-semibold text-text-muted">Net Balance</span>
                 <span class="text-sm font-black" [class.text-accent-emerald]="netBalance >= 0" [class.text-accent-rose]="netBalance < 0">
                   {{ netBalance | currency:'PHP':'symbol-narrow' }}
                 </span>
@@ -55,9 +55,9 @@
           <!-- Virtual Balance per Account Breakdown (EXCLUDES CREDIT ACCOUNTS) -->
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="block text-[13px] uppercase font-bold text-text-muted tracking-wider">Virtual Account Balance Breakdown (₱0.00 Baseline)</span>
+              <span class="block text-xs uppercase font-bold text-text-muted tracking-wider">Virtual Account Balance Breakdown (₱0.00 Baseline)</span>
               @if (nonCreditAccounts.length > 3) {
-                <span class="text-[13px] text-accent-emerald font-bold flex items-center space-x-1 bg-accent-emerald/10 px-2 py-0.5 rounded-full border border-accent-emerald/20">
+                <span class="text-xs text-accent-emerald font-bold flex items-center space-x-1 bg-accent-emerald/10 px-2 py-0.5 rounded-full border border-accent-emerald/20">
                   <span>Scroll <app-icon name="arrows-h"/></span>
                 </span>
               }
@@ -70,15 +70,15 @@
                 @for (acc of nonCreditAccounts; track acc.id) {
                   <div class="min-w-[170px] bg-surface-card border border-border-subtle rounded-xl p-2.5 flex items-center justify-between shrink-0 hover:border-border-strong transition-all">
                     <div class="truncate mr-2">
-                      <span class="block text-[13px] font-bold text-text-heading truncate">{{ acc.name }}</span>
-                      <span class="text-[13px] text-text-muted uppercase font-semibold">{{ acc.type }}</span>
+                      <span class="block text-xs font-bold text-text-heading truncate">{{ acc.name }}</span>
+                      <span class="text-xs text-text-muted uppercase font-semibold">{{ acc.type }}</span>
                     </div>
                     <span class="text-xs font-black shrink-0" [class.text-accent-emerald]="getVirtualBalance(acc.id) >= 0" [class.text-accent-rose]="getVirtualBalance(acc.id) < 0">
                       ₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }}
                     </span>
                   </div>
                 } @empty {
-                  <div class="text-xs text-text-muted italic">No non-credit accounts available.</div>
+                  <div class="text-xs text-text-muted">No non-credit accounts available.</div>
                 }
               </div>
             </div>
@@ -129,8 +129,9 @@
               <!-- Plan Name -->
               <div>
                 <label for="budget-plan-slider-f1" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Plan Name *</label>
-                <input id="budget-plan-slider-f1" type="text" [(ngModel)]="planName" placeholder="e.g. 2nd Half Month Budget Plan"
+                <input id="budget-plan-slider-f1" [attr.aria-invalid]="fieldErrors()['f1'] ? true : null" [attr.aria-describedby]="fieldErrors()['f1'] ? 'budget-plan-slider-f1-err' : null" type="text" [(ngModel)]="planName" placeholder="e.g. 2nd Half Month Budget Plan"
                   class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
+                @if (fieldErrors()['f1']) { <p id="budget-plan-slider-f1-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p> }
               </div>
 
               <!-- Time Period Days (1-30) -->
@@ -176,27 +177,30 @@
             <!-- Step 2 Form -->
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-4">
-                <label for="budget-plan-slider-f2" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
-                <select id="budget-plan-slider-f2" [(ngModel)]="newIncomeCategory" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none">
+                <label for="budget-plan-slider-f2" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <select id="budget-plan-slider-f2" [attr.aria-invalid]="fieldErrors()['f2'] ? true : null" [attr.aria-describedby]="fieldErrors()['f2'] ? 'budget-plan-slider-f2-err' : null" [(ngModel)]="newIncomeCategory" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none">
                   @for (cat of incomeCategories(); track cat.id) {
                     <option [value]="cat.name">{{ cat.name }}</option>
                   }
                 </select>
+                @if (fieldErrors()['f2']) { <p id="budget-plan-slider-f2-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f2'] }}</p> }
               </div>
 
               <div class="col-span-4">
-                <label for="budget-plan-slider-f3" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Added To) *</label>
-                <select id="budget-plan-slider-f3" [(ngModel)]="newIncomeAccountId" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none">
+                <label for="budget-plan-slider-f3" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Added To) *</label>
+                <select id="budget-plan-slider-f3" [attr.aria-invalid]="fieldErrors()['f3'] ? true : null" [attr.aria-describedby]="fieldErrors()['f3'] ? 'budget-plan-slider-f3-err' : null" [(ngModel)]="newIncomeAccountId" class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }}</option>
                   }
                 </select>
+                @if (fieldErrors()['f3']) { <p id="budget-plan-slider-f3-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f3'] }}</p> }
               </div>
               
               <div class="col-span-2">
-                <label for="budget-plan-slider-f4" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
-                <input id="budget-plan-slider-f4" type="number" [(ngModel)]="newIncomeAmount" placeholder="0" min="1"
+                <label for="budget-plan-slider-f4" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input id="budget-plan-slider-f4" [attr.aria-invalid]="fieldErrors()['f4'] ? true : null" [attr.aria-describedby]="fieldErrors()['f4'] ? 'budget-plan-slider-f4-err' : null" type="number" [(ngModel)]="newIncomeAmount" placeholder="0" min="1"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none">
+                @if (fieldErrors()['f4']) { <p id="budget-plan-slider-f4-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f4'] }}</p> }
               </div>
 
               <div class="col-span-2 flex flex-col justify-end space-y-1">
@@ -208,7 +212,7 @@
                 </button>
                 @if (editingIncomeItem()) {
                   <button type="button" (click)="cancelIncomeEdit()"
-                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs py-1 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
                     Cancel
                   </button>
                 }
@@ -217,7 +221,7 @@
 
             <!-- Step 2 Inflows List Table -->
             <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
-              <table class="w-full text-left text-xs text-text-body">
+              <table class="card-table w-full text-left text-xs text-text-body">
 <caption class="sr-only">Budget plan slider table 1</caption>
                 <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
                   <tr>
@@ -231,10 +235,10 @@
                   @for (item of planItems(); track $index) {
                     @if (item.type === 'INCOME') {
                       <tr class="hover:bg-table-row-hover">
-                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
-                        <td class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.accountId) }}</td>
-                        <td class="px-4 py-2 text-accent-emerald font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
-                        <td class="px-4 py-2 text-right space-x-2">
+                        <td data-cell="title" class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td data-label="Account (Added To)" class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td data-label="Planned Inflow" class="px-4 py-2 text-accent-emerald font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                        <td data-label="Action" class="px-4 py-2 text-right space-x-2">
                           <button type="button" (click)="editIncomeItem(item)" class="text-accent-amber hover:opacity-80 transition-colors font-bold">
                             Edit
                           </button>
@@ -246,7 +250,7 @@
                     }
                   } @empty {
                     <tr>
-                      <td colspan="4" class="px-4 py-4 text-center text-text-muted italic">No inflows added yet. Add inflows above to establish baseline budget limit.</td>
+                      <td colspan="4" class="px-4 py-4 text-center text-text-muted">No inflows added yet. Add inflows above to establish baseline budget limit.</td>
                     </tr>
                   }
                 </tbody>
@@ -274,43 +278,46 @@
 
             <!-- Step 3 Form -->
             @if (totalPlannedIncome <= 0) {
-              <p class="text-xs text-text-muted">Plan some income in step 2 first. These fields unlock once there is income to allocate.</p>
+              <p class="text-sm text-text-body">Plan some income in step 2 first. These fields unlock once there is income to allocate.</p>
             }
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-3">
-                <label for="budget-plan-slider-f5" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Title / Note</label>
+                <label for="budget-plan-slider-f5" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Title / Note</label>
                 <input id="budget-plan-slider-f5" type="text" [(ngModel)]="newTransferCategory" placeholder="e.g. Checking to Savings Transfer" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
               
               <div class="col-span-3">
-                <label for="budget-plan-slider-f6" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
-                <select id="budget-plan-slider-f6" [(ngModel)]="newTransferSourceAccountId" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f6" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
+                <select id="budget-plan-slider-f6" [attr.aria-invalid]="fieldErrors()['f6'] ? true : null" [attr.aria-describedby]="fieldErrors()['f6'] ? 'budget-plan-slider-f6-err' : null" [(ngModel)]="newTransferSourceAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
                   }
                 </select>
+                @if (fieldErrors()['f6']) { <p id="budget-plan-slider-f6-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f6'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f7" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
-                <select id="budget-plan-slider-f7" [(ngModel)]="newTransferDestAccountId" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f7" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
+                <select id="budget-plan-slider-f7" [attr.aria-invalid]="fieldErrors()['f7'] ? true : null" [attr.aria-describedby]="fieldErrors()['f7'] ? 'budget-plan-slider-f7-err' : null" [(ngModel)]="newTransferDestAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }}</option>
                   }
                 </select>
+                @if (fieldErrors()['f7']) { <p id="budget-plan-slider-f7-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f7'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f8" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
-                <input id="budget-plan-slider-f8" type="number" [(ngModel)]="newTransferAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f8" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input id="budget-plan-slider-f8" [attr.aria-invalid]="fieldErrors()['f8'] ? true : null" [attr.aria-describedby]="fieldErrors()['f8'] ? 'budget-plan-slider-f8-err' : null" type="number" [(ngModel)]="newTransferAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+                @if (fieldErrors()['f8']) { <p id="budget-plan-slider-f8-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f8'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f9" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
+                <label for="budget-plan-slider-f9" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
                 <input id="budget-plan-slider-f9" type="number" [(ngModel)]="newTransferTransferFee" placeholder="0" min="0" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
@@ -332,7 +339,7 @@
 
             <!-- Step 3 Transfers List Table -->
             <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
-              <table class="w-full text-left text-xs text-text-body">
+              <table class="card-table w-full text-left text-xs text-text-body">
 <caption class="sr-only">Budget plan slider table 2</caption>
                 <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
                   <tr>
@@ -348,12 +355,12 @@
                   @for (item of planItems(); track $index) {
                     @if (item.type === 'TRANSFER') {
                       <tr class="hover:bg-table-row-hover">
-                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
-                        <td class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
-                        <td class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.toAccountId) }}</td>
-                        <td class="px-4 py-2 text-accent-indigo font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
-                        <td class="px-4 py-2 text-accent-rose font-bold">{{ item.transferFee ? (item.transferFee | currency:'PHP':'symbol-narrow') : '₱0.00' }}</td>
-                        <td class="px-4 py-2 text-right space-x-2">
+                        <td data-cell="title" class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td data-label="Source Account (Deducted)" class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td data-label="Destination Account (Added)" class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.toAccountId) }}</td>
+                        <td data-cell="amount" class="px-4 py-2 text-accent-indigo font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                        <td data-label="Transfer Fee" class="px-4 py-2 text-accent-rose font-bold">{{ item.transferFee ? (item.transferFee | currency:'PHP':'symbol-narrow') : '₱0.00' }}</td>
+                        <td data-label="Action" class="px-4 py-2 text-right space-x-2">
                           <button type="button" (click)="editTransferItem(item)" class="text-accent-amber hover:opacity-80 transition-colors font-bold">
                             Edit
                           </button>
@@ -365,7 +372,7 @@
                     }
                   } @empty {
                     <tr>
-                      <td colspan="6" class="px-4 py-4 text-center text-text-muted italic">No internal transfers added yet.</td>
+                      <td colspan="6" class="px-4 py-4 text-center text-text-muted">No internal transfers added yet.</td>
                     </tr>
                   }
                 </tbody>
@@ -393,11 +400,11 @@
 
             <!-- Step 4 Form -->
             @if (totalPlannedIncome <= 0) {
-              <p class="text-xs text-text-muted">Plan some income in step 2 first. These fields unlock once there is income to allocate.</p>
+              <p class="text-sm text-text-body">Plan some income in step 2 first. These fields unlock once there is income to allocate.</p>
             }
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-3">
-                <label for="budget-plan-slider-f10" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Savings Category *</label>
+                <label for="budget-plan-slider-f10" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Savings Category *</label>
                 <select id="budget-plan-slider-f10" [(ngModel)]="newSavingsCategory" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (cat of savingCategories(); track cat.id) {
@@ -407,33 +414,36 @@
               </div>
 
               <div class="col-span-3">
-                <label for="budget-plan-slider-f11" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
-                <select id="budget-plan-slider-f11" [(ngModel)]="newSavingsSourceAccountId" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f11" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Source Account (Deducted) *</label>
+                <select id="budget-plan-slider-f11" [attr.aria-invalid]="fieldErrors()['f11'] ? true : null" [attr.aria-describedby]="fieldErrors()['f11'] ? 'budget-plan-slider-f11-err' : null" [(ngModel)]="newSavingsSourceAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
                   }
                 </select>
+                @if (fieldErrors()['f11']) { <p id="budget-plan-slider-f11-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f11'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f12" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
-                <select id="budget-plan-slider-f12" [(ngModel)]="newSavingsDestAccountId" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f12" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Destination *</label>
+                <select id="budget-plan-slider-f12" [attr.aria-invalid]="fieldErrors()['f12'] ? true : null" [attr.aria-describedby]="fieldErrors()['f12'] ? 'budget-plan-slider-f12-err' : null" [(ngModel)]="newSavingsDestAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }}</option>
                   }
                 </select>
+                @if (fieldErrors()['f12']) { <p id="budget-plan-slider-f12-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f12'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f13" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
-                <input id="budget-plan-slider-f13" type="number" [(ngModel)]="newSavingsAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f13" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input id="budget-plan-slider-f13" [attr.aria-invalid]="fieldErrors()['f13'] ? true : null" [attr.aria-describedby]="fieldErrors()['f13'] ? 'budget-plan-slider-f13-err' : null" type="number" [(ngModel)]="newSavingsAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+                @if (fieldErrors()['f13']) { <p id="budget-plan-slider-f13-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f13'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f14" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
+                <label for="budget-plan-slider-f14" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Fee (₱)</label>
                 <input id="budget-plan-slider-f14" type="number" [(ngModel)]="newSavingsTransferFee" placeholder="0" min="0" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
               </div>
@@ -455,7 +465,7 @@
 
             <!-- Step 4 Savings List Table -->
             <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
-              <table class="w-full text-left text-xs text-text-body">
+              <table class="card-table w-full text-left text-xs text-text-body">
 <caption class="sr-only">Budget plan slider table 3</caption>
                 <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
                   <tr>
@@ -471,12 +481,12 @@
                   @for (item of planItems(); track $index) {
                     @if (item.type === 'SAVINGS') {
                       <tr class="hover:bg-table-row-hover">
-                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
-                        <td class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
-                        <td class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.toAccountId) }}</td>
-                        <td class="px-4 py-2 text-accent-teal font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
-                        <td class="px-4 py-2 text-accent-rose font-bold">{{ item.transferFee ? (item.transferFee | currency:'PHP':'symbol-narrow') : '₱0.00' }}</td>
-                        <td class="px-4 py-2 text-right space-x-2">
+                        <td data-cell="title" class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td data-label="Source Account (Deducted)" class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td data-label="Destination Account (Added)" class="px-4 py-2 text-accent-emerald font-semibold">{{ getAccountName(item.toAccountId) }}</td>
+                        <td data-cell="amount" class="px-4 py-2 text-accent-teal font-bold">{{ item.amount | currency:'PHP':'symbol-narrow' }}</td>
+                        <td data-label="Transfer Fee" class="px-4 py-2 text-accent-rose font-bold">{{ item.transferFee ? (item.transferFee | currency:'PHP':'symbol-narrow') : '₱0.00' }}</td>
+                        <td data-label="Action" class="px-4 py-2 text-right space-x-2">
                           <button type="button" (click)="editSavingsItem(item)" class="text-accent-amber hover:opacity-80 transition-colors font-bold">
                             Edit
                           </button>
@@ -488,7 +498,7 @@
                     }
                   } @empty {
                     <tr>
-                      <td colspan="6" class="px-4 py-4 text-center text-text-muted italic">No savings transfers added yet.</td>
+                      <td colspan="6" class="px-4 py-4 text-center text-text-muted">No savings transfers added yet.</td>
                     </tr>
                   }
                 </tbody>
@@ -516,33 +526,36 @@
 
             <!-- Step 5 Form -->
             @if (totalPlannedIncome <= 0) {
-              <p class="text-xs text-text-muted">Plan some income in step 2 first. These fields unlock once there is income to allocate.</p>
+              <p class="text-sm text-text-body">Plan some income in step 2 first. These fields unlock once there is income to allocate.</p>
             }
             <div class="grid grid-cols-12 gap-2 bg-surface-card p-3 border border-border-subtle rounded-xl">
               <div class="col-span-4">
-                <label for="budget-plan-slider-f15" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
-                <select id="budget-plan-slider-f15" [(ngModel)]="newOutflowCategory" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f15" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Category / Title *</label>
+                <select id="budget-plan-slider-f15" [attr.aria-invalid]="fieldErrors()['f15'] ? true : null" [attr.aria-describedby]="fieldErrors()['f15'] ? 'budget-plan-slider-f15-err' : null" [(ngModel)]="newOutflowCategory" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (cat of expenseCategories(); track cat.id) {
                     <option [value]="cat.name">{{ cat.name }}</option>
                   }
                 </select>
+                @if (fieldErrors()['f15']) { <p id="budget-plan-slider-f15-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f15'] }}</p> }
               </div>
 
               <div class="col-span-4">
-                <label for="budget-plan-slider-f16" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Deducted From) *</label>
-                <select id="budget-plan-slider-f16" [(ngModel)]="newOutflowAccountId" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f16" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Account (Deducted From) *</label>
+                <select id="budget-plan-slider-f16" [attr.aria-invalid]="fieldErrors()['f16'] ? true : null" [attr.aria-describedby]="fieldErrors()['f16'] ? 'budget-plan-slider-f16-err' : null" [(ngModel)]="newOutflowAccountId" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text focus:outline-none disabled:opacity-50">
                   @for (acc of nonCreditAccounts; track acc.id) {
                     <option [value]="acc.id">{{ acc.name }} (₱{{ getVirtualBalance(acc.id) | number:'1.2-2' }})</option>
                   }
                 </select>
+                @if (fieldErrors()['f16']) { <p id="budget-plan-slider-f16-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f16'] }}</p> }
               </div>
 
               <div class="col-span-2">
-                <label for="budget-plan-slider-f17" class="block text-[13px] text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
-                <input id="budget-plan-slider-f17" type="number" [(ngModel)]="newOutflowAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
+                <label for="budget-plan-slider-f17" class="block text-xs text-text-muted mb-0.5 uppercase tracking-wider font-semibold">Amount (₱) *</label>
+                <input id="budget-plan-slider-f17" [attr.aria-invalid]="fieldErrors()['f17'] ? true : null" [attr.aria-describedby]="fieldErrors()['f17'] ? 'budget-plan-slider-f17-err' : null" type="number" [(ngModel)]="newOutflowAmount" placeholder="0" min="1" [disabled]="totalPlannedIncome <= 0"
                   class="w-full bg-input-bg border border-input-border rounded-lg px-2 py-1.5 text-base text-input-text placeholder-text-muted focus:outline-none disabled:opacity-50">
+                @if (fieldErrors()['f17']) { <p id="budget-plan-slider-f17-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f17'] }}</p> }
               </div>
 
               <div class="col-span-2 flex flex-col justify-end space-y-1">
@@ -553,7 +566,7 @@
                 </button>
                 @if (editingOutflowItem()) {
                   <button type="button" (click)="cancelOutflowEdit()"
-                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-[13px] py-1 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
+                    class="w-full bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs py-1 rounded-lg transition-[color,background-color,border-color,opacity,transform]">
                     Cancel
                   </button>
                 }
@@ -562,7 +575,7 @@
 
             <!-- Step 5 Outflows List Table -->
             <div class="border border-border-subtle rounded-xl overflow-hidden bg-surface-card">
-              <table class="w-full text-left text-xs text-text-body">
+              <table class="card-table w-full text-left text-xs text-text-body">
 <caption class="sr-only">Budget plan slider table 4</caption>
                 <thead class="bg-table-header-bg text-text-muted uppercase tracking-wider font-bold">
                   <tr>
@@ -576,12 +589,12 @@
                   @for (item of planItems(); track $index) {
                     @if (item.type === 'EXPENSE') {
                       <tr class="hover:bg-table-row-hover">
-                        <td class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
-                        <td class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
-                        <td class="px-4 py-2 text-text-body font-bold">
+                        <td data-cell="title" class="px-4 py-2 text-text-heading font-medium">{{ item.categoryName }}</td>
+                        <td data-label="Account (Deducted From)" class="px-4 py-2 text-accent-rose font-semibold">{{ getAccountName(item.accountId) }}</td>
+                        <td data-label="Planned Amount" class="px-4 py-2 text-text-body font-bold">
                           {{ item.amount | currency:'PHP':'symbol-narrow' }}
                         </td>
-                        <td class="px-4 py-2 text-right space-x-2">
+                        <td data-label="Action" class="px-4 py-2 text-right space-x-2">
                           <button type="button" (click)="editOutflowItem(item)" class="text-accent-amber hover:opacity-80 transition-colors font-bold">
                             Edit
                           </button>
@@ -593,7 +606,7 @@
                     }
                   } @empty {
                     <tr>
-                      <td colspan="4" class="px-4 py-4 text-center text-text-muted italic">No expense outflows added yet.</td>
+                      <td colspan="4" class="px-4 py-4 text-center text-text-muted">No expense outflows added yet.</td>
                     </tr>
                   }
                 </tbody>
@@ -612,7 +625,7 @@
       <!-- Footer Actions -->
       <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
         @if (nonCreditAccounts.length === 0) {
-          <p id="submit-hint" class="text-xs text-text-muted">Add a non-credit account first, then you can save this plan.</p>
+          <p id="submit-hint" class="text-sm text-text-body">Add a non-credit account first, then you can save this plan.</p>
         }
         <button [attr.aria-describedby]="nonCreditAccounts.length === 0 ? 'submit-hint' : null" (click)="onSubmit()" [disabled]="isLoading() || nonCreditAccounts.length === 0"
           class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">

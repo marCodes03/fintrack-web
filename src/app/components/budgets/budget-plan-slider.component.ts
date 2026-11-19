@@ -108,6 +108,14 @@ export class BudgetPlanSliderComponent {
 
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly fieldErrors = signal<Record<string, string>>({});
+
+  private fail(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors)[0];
+    if (first) document.getElementById('budget-plan-slider-' + first)?.focus();
+  }
 
   constructor() {
     this.loadCategories();
@@ -249,7 +257,7 @@ export class BudgetPlanSliderComponent {
 
   addIncomeItem(): void {
     if (!this.newIncomeCategory || !this.newIncomeAmount || this.newIncomeAmount <= 0 || !this.newIncomeAccountId) {
-      this.errorMessage.set('Please pick a category, choose an account, and enter an amount greater than zero.');
+      { const e: Record<string,string> = {}; if (!this.newIncomeCategory) e['f2']='Pick a category.'; if (!this.newIncomeAccountId) e['f3']='Choose an account.'; if (!this.newIncomeAmount || this.newIncomeAmount <= 0) e['f4']='Enter an amount above zero.'; this.fail(e); }
       return;
     }
 
@@ -269,6 +277,7 @@ export class BudgetPlanSliderComponent {
       this.planItems.set(updatedList);
       this.cancelIncomeEdit();
       this.errorMessage.set(null);
+    this.fieldErrors.set({});
       return;
     }
 
@@ -282,6 +291,7 @@ export class BudgetPlanSliderComponent {
     this.planItems.set([...this.planItems(), newItem]);
     this.newIncomeAmount = null;
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
   }
 
   // Step 3: Add or Update Internal Transfer Item with Guardrail
@@ -303,12 +313,12 @@ export class BudgetPlanSliderComponent {
 
   addTransferItem(): void {
     if (!this.newTransferSourceAccountId || !this.newTransferDestAccountId || !this.newTransferAmount || this.newTransferAmount <= 0) {
-      this.errorMessage.set('Please choose a source account, a destination account, and enter a positive amount.');
+      { const e: Record<string,string> = {}; if (!this.newTransferSourceAccountId) e['f6']='Choose a source account.'; if (!this.newTransferDestAccountId) e['f7']='Choose a destination account.'; if (!this.newTransferAmount || this.newTransferAmount <= 0) e['f8']='Enter an amount above zero.'; this.fail(e); }
       return;
     }
 
     if (this.newTransferSourceAccountId === this.newTransferDestAccountId) {
-      this.errorMessage.set('The source and destination accounts must be different.');
+      this.fail({ f7: 'Pick a different account from the source.' });
       return;
     }
 
@@ -347,6 +357,7 @@ export class BudgetPlanSliderComponent {
       this.planItems.set(updatedList);
       this.cancelTransferEdit();
       this.errorMessage.set(null);
+    this.fieldErrors.set({});
       return;
     }
 
@@ -364,6 +375,7 @@ export class BudgetPlanSliderComponent {
     this.newTransferTransferFee = null;
     this.newTransferCategory = '';
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
   }
 
   // Step 4: Add or Update Savings Item with Guardrail
@@ -385,12 +397,12 @@ export class BudgetPlanSliderComponent {
 
   addSavingsItem(): void {
     if (!this.newSavingsSourceAccountId || !this.newSavingsDestAccountId || !this.newSavingsAmount || this.newSavingsAmount <= 0) {
-      this.errorMessage.set('Please choose a source account, a destination account, and enter a positive amount.');
+      { const e: Record<string,string> = {}; if (!this.newSavingsSourceAccountId) e['f11']='Choose a source account.'; if (!this.newSavingsDestAccountId) e['f12']='Choose a destination account.'; if (!this.newSavingsAmount || this.newSavingsAmount <= 0) e['f13']='Enter an amount above zero.'; this.fail(e); }
       return;
     }
 
     if (this.newSavingsSourceAccountId === this.newSavingsDestAccountId) {
-      this.errorMessage.set('The source and destination accounts must be different.');
+      this.fail({ f12: 'Pick a different account from the source.' });
       return;
     }
 
@@ -429,6 +441,7 @@ export class BudgetPlanSliderComponent {
       this.planItems.set(updatedList);
       this.cancelSavingsEdit();
       this.errorMessage.set(null);
+    this.fieldErrors.set({});
       return;
     }
 
@@ -446,6 +459,7 @@ export class BudgetPlanSliderComponent {
     this.newSavingsTransferFee = null;
     this.newSavingsCategory = '';
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
   }
 
   // Step 5: Add or Update Outflow / Expense Item with Guardrail
@@ -463,7 +477,7 @@ export class BudgetPlanSliderComponent {
 
   addOutflowItem(): void {
     if (!this.newOutflowCategory || !this.newOutflowAmount || this.newOutflowAmount <= 0 || !this.newOutflowAccountId) {
-      this.errorMessage.set('Please pick a category, choose an account, and enter an amount greater than zero.');
+      { const e: Record<string,string> = {}; if (!this.newOutflowCategory) e['f15']='Pick a category.'; if (!this.newOutflowAccountId) e['f16']='Choose an account.'; if (!this.newOutflowAmount || this.newOutflowAmount <= 0) e['f17']='Enter an amount above zero.'; this.fail(e); }
       return;
     }
 
@@ -496,6 +510,7 @@ export class BudgetPlanSliderComponent {
       this.planItems.set(updatedList);
       this.cancelOutflowEdit();
       this.errorMessage.set(null);
+    this.fieldErrors.set({});
       return;
     }
 
@@ -509,6 +524,7 @@ export class BudgetPlanSliderComponent {
     this.planItems.set([...this.planItems(), newItem]);
     this.newOutflowAmount = null;
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
   }
 
   removePlanItem(itemToRemove: BudgetPlanItem): void {
@@ -556,7 +572,7 @@ export class BudgetPlanSliderComponent {
 
   onSubmit(): void {
     if (!this.planName.trim()) {
-      this.errorMessage.set('Please give your budget plan a name.');
+      this.fail({ f1: 'Name your budget plan.' });
       return;
     }
 
@@ -567,6 +583,7 @@ export class BudgetPlanSliderComponent {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
 
     const payload = {
       name: this.planName,
@@ -620,6 +637,7 @@ export class BudgetPlanSliderComponent {
     this.cancelSavingsEdit();
     this.cancelOutflowEdit();
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
   }
 
   get totalPlannedIncome(): number {

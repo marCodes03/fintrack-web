@@ -1,5 +1,6 @@
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit } from '@angular/core';
+import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -23,10 +24,15 @@ type SliderMode = 'create-income' | 'edit-income' | 'create-expense' | 'edit-exp
 @Component({
   selector: 'app-references',
   standalone: true,
-  imports: [IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, FormsModule, DatePipe],
+  imports: [RowMenuComponent, IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, FormsModule, DatePipe],
   templateUrl: './references.component.html'
 })
 export class ReferencesComponent implements OnInit {
+  protected readonly rowActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit' },
+    { key: 'delete', label: 'Delete', danger: true }
+  ];
+
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);
@@ -55,6 +61,7 @@ export class ReferencesComponent implements OnInit {
   // Messages
   protected successMessage = signal<string | null>(null);
   protected errorMessage = signal<string | null>(null);
+  protected nameError = signal<string | null>(null);
 
   // Delete Modal
   protected readonly isDeleteModalOpen = signal<boolean>(false);
@@ -108,6 +115,7 @@ export class ReferencesComponent implements OnInit {
     this.closeSlider();
     this.successMessage.set(null);
     this.errorMessage.set(null);
+    this.nameError.set(null);
   }
 
   // ---- INCOME CATEGORY CRUD ----
@@ -130,7 +138,8 @@ export class ReferencesComponent implements OnInit {
 
   submitIncomeCategory(): void {
     if (!this.formName.trim()) {
-      this.errorMessage.set('Category name is required.');
+      this.nameError.set('Enter a category name.');
+      document.getElementById('references-f1')?.focus();
       return;
     }
     this.isLoading.set(true);
@@ -189,7 +198,8 @@ export class ReferencesComponent implements OnInit {
 
   submitExpenseCategory(): void {
     if (!this.formName.trim()) {
-      this.errorMessage.set('Category name is required.');
+      this.nameError.set('Enter a category name.');
+      document.getElementById('references-f1')?.focus();
       return;
     }
     this.isLoading.set(true);
@@ -248,7 +258,8 @@ export class ReferencesComponent implements OnInit {
 
   submitSavingCategory(): void {
     if (!this.formName.trim()) {
-      this.errorMessage.set('Category name is required.');
+      this.nameError.set('Enter a category name.');
+      document.getElementById('references-f1')?.focus();
       return;
     }
     this.isLoading.set(true);

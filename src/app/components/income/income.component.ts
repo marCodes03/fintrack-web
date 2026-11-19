@@ -1,5 +1,6 @@
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -14,10 +15,15 @@ import { DatePipe, CurrencyPipe } from '@angular/common';
 @Component({
   selector: 'app-income',
   standalone: true,
-  imports: [IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, IncomeSliderComponent, DatePipe, CurrencyPipe, FormsModule],
+  imports: [RowMenuComponent, IconComponent, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, IncomeSliderComponent, DatePipe, CurrencyPipe, FormsModule],
   templateUrl: './income.component.html'
 })
 export class IncomeComponent implements OnInit {
+  protected readonly rowActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit' },
+    { key: 'delete', label: 'Delete', danger: true }
+  ];
+
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);

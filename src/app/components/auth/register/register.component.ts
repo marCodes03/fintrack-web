@@ -23,16 +23,27 @@ export class RegisterComponent {
   protected showPassword = signal<boolean>(false);
   protected showConfirmPassword = signal<boolean>(false);
 
-  handleRegister(): void {
-    if (!this.name || !this.email || !this.password || !this.confirmPassword) {
-      this.errorMessage.set('All fields are required.');
-      return;
-    }
+  protected fieldErrors = signal<Record<string, string>>({});
 
-    if (this.password !== this.confirmPassword) {
-      this.errorMessage.set('Passwords do not match.');
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors)[0];
+    if (first) document.getElementById(first)?.focus();
+  }
+
+  handleRegister(): void {
+    const errors: Record<string, string> = {};
+    if (!this.name.trim()) errors['name'] = 'Enter your full name.';
+    if (!this.email.trim()) errors['email'] = 'Enter your email address.';
+    if (!this.password) errors['password'] = 'Choose a password.';
+    if (!this.confirmPassword) errors['confirmPassword'] = 'Re-enter your password.';
+    else if (this.password && this.password !== this.confirmPassword) errors['confirmPassword'] = 'Passwords do not match.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
+    this.fieldErrors.set({});
 
     this.isLoading.set(true);
     this.errorMessage.set(null);

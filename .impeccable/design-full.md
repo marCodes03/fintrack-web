@@ -47,7 +47,7 @@ typography:
     fontWeight: 500
   label:
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
-    fontSize: "0.75rem"
+    fontSize: "0.8125rem"
     fontWeight: 700
     letterSpacing: "0.05em"
 rounded:
@@ -131,7 +131,7 @@ Cool slate neutrals with three semantic accents. Values below are light mode; da
 - **Headline** (700, 1.875rem): page and key-figure headings.
 - **Title** (700, 1.25rem, -0.025em): brand and card titles.
 - **Body** (500, 0.875rem): form text and table content.
-- **Label** (700, 0.75rem, 0.05em, uppercase): column heads, field labels, inline actions (10px for compact row actions).
+- **Label** (700, 0.8125rem, 0.05em, uppercase): column heads, field labels, inline actions (13px is the floor, no smaller text).
 
 ### Named Rules
 **The Figures First Rule.** Money amounts get the heaviest weight in their container, and always show the ₱ symbol through the currency pipe.
@@ -155,7 +155,7 @@ Soft and consistent: `rounded-xl` (12px) for buttons and inputs, `rounded-2xl` (
 
 ### Buttons
 - **Shape:** 12px radius.
-- **Primary:** Ledger Emerald fill, white text (dark mode: slate-950 text), bold 12px label, 10px 16px padding. Hover darkens in light mode and lightens in dark.
+- **Primary:** Ledger Emerald fill, white text (dark mode: slate-950 text), bold 13px label, 10px 16px padding. Hover darkens in light mode and lightens in dark.
 - **Secondary:** card fill, hairline border, muted bold text; hover fills Slate Wash.
 - **Inline text actions:** 10px bold uppercase, emerald for edit and rose for delete.
 - **Transitions:** `transition-all` / `transition-colors`, 200-300ms.

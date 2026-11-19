@@ -11,7 +11,7 @@ Run from the repo root (on Windows use `impeccable.cmd`):
 .agents/skills/impeccable/scripts/impeccable doctor --json
 ```
 
-In the agent: `$impeccable audit <page>`, `critique`, `polish`, `harden`, `adapt`. The design hook (`.codex/hooks.json`) runs the detector after UI edits. A finding on an `sr-only` element reading `rgb(0,0,0)` is a false positive.
+In the agent: `$impeccable audit <page>`, `critique`, `polish`, `harden`, `adapt`. The design hook (`.codex/hooks.json`) runs the detector after UI edits. A `design-system-color` finding reading `rgb(0,0,0)` is a false positive: the detector cannot resolve CSS variables, so every token colour reads as black. Text sizes: 13px (`text-xs`) is the floor; do not write `text-[13px]`. Use token classes (`text-text-muted`), not `text-[var(--text-muted)]`.
 
 ## House rules the checks enforce
 

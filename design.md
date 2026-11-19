@@ -47,7 +47,7 @@ typography:
     fontWeight: 500
   label:
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
-    fontSize: "0.75rem"
+    fontSize: "0.8125rem"
     fontWeight: 700
     letterSpacing: "0.05em"
 rounded:

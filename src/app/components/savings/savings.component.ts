@@ -1,5 +1,6 @@
 import { IconComponent } from '../icon/icon.component';
 import { Component, signal, inject, OnInit, computed, HostListener } from '@angular/core';
+import { RowMenuComponent, RowMenuItem } from '../../shared/row-menu.component';
 import { DialogDirective } from '../../shared/dialog.directive';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -15,10 +16,15 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-savings',
   standalone: true,
-  imports: [IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, CurrencyPipe, DatePipe, FormsModule],
+  imports: [RowMenuComponent, IconComponent, DialogDirective, HeaderComponent, ResetPasswordComponent, ConfirmDeleteModalComponent, SavingsSliderComponent, CurrencyPipe, DatePipe, FormsModule],
   templateUrl: './savings.component.html'
 })
 export class SavingsComponent implements OnInit {
+  protected readonly rowActions: RowMenuItem[] = [
+    { key: 'edit', label: 'Edit' },
+    { key: 'delete', label: 'Delete', danger: true }
+  ];
+
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private http = inject(HttpClient);

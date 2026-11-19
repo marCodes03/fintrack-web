@@ -1,11 +1,11 @@
 <div class="min-h-screen bg-bg-main text-text-body flex flex-col font-sans transition-colors duration-300">
   <app-header (resetPassword)="openResetModal()"></app-header>
 
-  <main id="main-content" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
+  <main id="main-content" tabindex="-1" class="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8 space-y-8 animate-in fade-in duration-200">
     <div class="flex items-center justify-between border-b border-border-subtle pb-4">
       <div>
         <h1 class="text-2xl font-extrabold text-text-heading tracking-tight">Budget Plans</h1>
-        <p class="text-xs text-text-muted mt-1">Design budget blueprints, allocate inflows to outflows/savings, and activate plans for target execution periods.</p>
+        <p class="text-sm text-text-body mt-1">Design budget blueprints, allocate inflows to outflows/savings, and activate plans for target execution periods.</p>
       </div>
       <button (click)="openCreateSlider()"
         class="flex items-center space-x-2 bg-accent-emerald hover:opacity-90 text-on-accent font-bold text-xs px-4 py-2.5 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
@@ -29,7 +29,7 @@
       <div class="flex items-center justify-between border-b border-border-subtle pb-3">
         <div>
           <h2 class="text-lg font-bold text-text-heading">Budget Goals</h2>
-          <p class="text-xs text-text-muted mt-0.5">Define target percentages for category groups as a baseline blueprint for your active budget timeframes.</p>
+          <p class="text-sm text-text-body mt-0.5">Define target percentages for category groups as a baseline blueprint for your active budget timeframes.</p>
         </div>
         @if (!isEditingGoal()) {
           <button (click)="startEditGoal()" class="bg-surface-subtle hover:bg-border-subtle text-text-body font-bold text-xs px-3.5 py-2 rounded-xl transition-[color,background-color,border-color,opacity,transform]">
@@ -60,10 +60,10 @@
                 [class.text-text-muted]="activeDisplayGoalTab() !== groupIdx"
                 [class.hover:text-text-body]="activeDisplayGoalTab() !== groupIdx">
                 {{ group.name }} 
-                <span class="ml-1 text-[13px] font-black text-accent-emerald bg-accent-emerald/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+                <span class="ml-1 text-xs font-black text-accent-emerald bg-accent-emerald/10 px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
               </button>
             } @empty {
-              <div class="py-4 text-center text-text-muted text-xs italic w-full">
+              <div class="py-4 text-center text-text-muted text-xs w-full">
                 No baseline goals set. Click configure to define Necessity (e.g. 50%), Wants (e.g. 10%), or Savings (e.g. 25%).
               </div>
             }
@@ -84,7 +84,7 @@
                     <span>{{ cat }}</span>
                   </span>
                 } @empty {
-                  <span class="text-xs text-text-muted italic">No categories in this group yet.</span>
+                  <span class="text-xs text-text-muted">No categories in this group yet.</span>
                 }
               </div>
             </div>
@@ -102,7 +102,7 @@
                 [class.text-text-heading]="activeGoalTab() === groupIdx"
                 [class.text-text-muted]="activeGoalTab() !== groupIdx"
                 [class.hover:text-text-body]="activeGoalTab() !== groupIdx">
-                {{ group.name }} <span class="ml-1 text-[13px] bg-surface-card px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
+                {{ group.name }} <span class="ml-1 text-xs bg-surface-card px-1.5 py-0.5 rounded-md">{{ group.percentage | number:'1.0-2' }}%</span>
               </button>
             }
             <button (click)="addGroup()" class="px-4 py-2 text-xs font-bold text-accent-emerald hover:opacity-80 transition-[color,background-color,border-color,opacity,transform]">
@@ -128,7 +128,7 @@
                     <span class="absolute right-3 top-2 text-xs text-text-muted font-bold">%</span>
                   </div>
                   @if (group.name.toLowerCase() === 'savings' && userMonthlySavingsGoal() > 0) {
-                    <p class="text-[13px] text-accent-emerald font-medium mt-1 leading-tight">Aligned with Savings Goal ({{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}/mo)</p>
+                    <p class="text-xs text-accent-emerald font-medium mt-1 leading-tight">Aligned with Savings Goal ({{ userMonthlySavingsGoal() | currency:'PHP':'symbol-narrow' }}/mo)</p>
                   }
                 </div>
                 <div class="flex items-end pt-5">
@@ -152,12 +152,12 @@
                     <div class="flex items-center space-x-2">
                       <input type="checkbox" [checked]="isCategoryInGroup(group, 'Savings')" (change)="toggleCategoryInGroup(group, 'Savings')" 
                         [disabled]="group.name.toLowerCase() === 'others'"
-                        class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-3.5 h-3.5 disabled:opacity-50">
+                        class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-4 h-4 disabled:opacity-50">
                       <span class="font-semibold text-text-body">Savings</span>
                     </div>
                     @if (getCategoryOwnerGroup('Savings'); as owner) {
                       @if (owner !== group.name) {
-                        <span class="text-[13px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
+                        <span class="text-xs text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
                       }
                     }
                   </label>
@@ -170,12 +170,12 @@
                       <div class="flex items-center space-x-2">
                         <input type="checkbox" [checked]="isCategoryInGroup(group, cat.name)" (change)="toggleCategoryInGroup(group, cat.name)"
                           [disabled]="group.name.toLowerCase() === 'others'"
-                          class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-3.5 h-3.5 disabled:opacity-50">
+                          class="rounded border-input-border bg-input-bg text-accent-emerald focus:ring-accent-emerald/40 w-4 h-4 disabled:opacity-50">
                         <span class="font-semibold text-text-body truncate">{{ cat.name }}</span>
                       </div>
                       @if (getCategoryOwnerGroup(cat.name); as owner) {
                         @if (owner !== group.name) {
-                          <span class="text-[13px] text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
+                          <span class="text-xs text-text-muted font-normal mt-1 ml-5.5">In: {{ owner }}</span>
                         }
                       }
                     </label>
@@ -213,7 +213,7 @@
               [class.border-accent-emerald/50]="plan.isActive">
               
               @if (plan.isActive) {
-                <div class="absolute top-0 right-0 bg-accent-emerald text-on-accent font-black text-[13px] uppercase px-3 py-1 rounded-bl-xl">
+                <div class="absolute top-0 right-0 bg-accent-emerald text-on-accent font-black text-xs uppercase px-3 py-1 rounded-bl-xl">
                   Active Plan
                 </div>
               }
@@ -223,7 +223,7 @@
                   <div>
                     <h3 class="text-lg font-bold text-text-heading leading-tight">{{ plan.name }}</h3>
                     @if (plan.isActive && plan.startDate && plan.endDate) {
-                      <p class="text-[13px] font-semibold text-accent-emerald mt-1">
+                      <p class="text-xs font-semibold text-accent-emerald mt-1">
                         Period: {{ plan.startDate | date:'MMM d, y' }} — {{ plan.endDate | date:'MMM d, y' }}
                       </p>
                     }
@@ -318,7 +318,7 @@
     <div appDialog aria-label="Implement budget plan" (dialogClose)="closeImplementModal()" class="relative bg-surface-card border border-border-subtle rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <div>
         <h2 class="text-lg font-bold text-text-heading">Implement Plan for Period</h2>
-        <p class="text-xs text-text-muted mt-1">
+        <p class="text-sm text-text-body mt-1">
           Activate "<span class="text-accent-emerald font-semibold">{{ implementPlanName() }}</span>" for a specific timeframe. The planned income will be deposited automatically as an actual income record.
         </p>
       </div>
@@ -327,8 +327,9 @@
         <!-- Start Date -->
         <div>
           <label for="budgets-f2" class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Start Date *</label>
-          <input id="budgets-f2" type="date" [(ngModel)]="implementStartDate" (ngModelChange)="onStartDateChange($event)"
+          <input id="budgets-f2" [attr.aria-invalid]="startDateError() ? true : null" [attr.aria-describedby]="startDateError() ? 'budgets-f2-err' : null" type="date" [(ngModel)]="implementStartDate" (ngModelChange)="onStartDateChange($event)"
             class="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2.5 focus:outline-none focus:border-accent-emerald text-base">
+          @if (startDateError()) { <p id="budgets-f2-err" class="text-xs text-accent-rose mt-1">{{ startDateError() }}</p> }
         </div>
 
         <!-- Option to apply but don't execute -->
@@ -387,7 +388,7 @@
           <app-icon name="alert"/>
           <span>Deactivate Budget Plan</span>
         </h2>
-        <p class="text-xs text-text-muted mt-2">
+        <p class="text-sm text-text-body mt-2">
           Are you sure you want to deactivate "<span class="text-accent-amber font-semibold">{{ planToDeactivate()?.name }}</span>"?
         </p>
       </div>

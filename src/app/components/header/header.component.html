@@ -1,18 +1,18 @@
 <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-emerald focus:text-on-accent focus:text-sm focus:font-semibold">Skip to main content</a>
-<header class="border-b border-[var(--border-subtle)] bg-[var(--surface-card)] fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
+<header class="border-b border-border-subtle bg-surface-card fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
     <!-- Logo -->
     <a routerLink="/dashboard" class="flex items-center space-x-2.5 cursor-pointer group">
       <img src="logo.png" alt="FinTrack"
         class="h-9 w-9 object-contain group-hover:scale-105 transition-transform" />
-      <span class="text-xl font-bold tracking-tight text-[var(--text-heading)]">FinTrack</span>
+      <span class="text-xl font-bold tracking-tight text-text-heading">FinTrack</span>
     </a>
 
     <!-- Right-aligned profile area & hamburger button -->
     <div class="flex items-center space-x-4">
       <!-- Amount Privacy Eye Toggle -->
       <button (click)="toggleHideAmounts()"
-        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
+        class="p-2 text-text-muted hover:text-text-heading hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
         [attr.aria-label]="hideAmounts() ? 'Show amounts' : 'Hide amounts'" [attr.aria-pressed]="hideAmounts()">
         @if (hideAmounts()) {
           <svg class="h-5 w-5 text-accent-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -29,18 +29,18 @@
       <!-- Profile Info Area -->
       <div class="flex items-center space-x-3">
         <div class="hidden sm:block text-right">
-          <p class="text-xs font-semibold text-[var(--text-heading)] leading-tight">{{ user()?.name }}</p>
-          <p class="text-[13px] text-[var(--text-muted)] leading-tight mt-0.5">{{ user()?.email }}</p>
+          <p class="text-xs font-semibold text-text-heading leading-tight">{{ user()?.name }}</p>
+          <p class="text-xs text-text-muted leading-tight mt-0.5">{{ user()?.email }}</p>
         </div>
         <!-- User avatar thumbnail -->
-        <div class="h-8 w-8 rounded-lg bg-[var(--accent-emerald)] flex items-center justify-center font-extrabold text-[var(--on-accent)] text-sm">
+        <div class="h-8 w-8 rounded-lg bg-accent-emerald flex items-center justify-center font-extrabold text-on-accent text-sm">
           {{ user()?.name ? user()?.name?.charAt(0) : 'U' }}
         </div>
       </div>
 
       <!-- Hamburger Slider Menu button -->
       <button (click)="openSlider()"
-        class="p-2 text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
+        class="p-2 text-text-muted hover:text-text-heading hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-[color,background-color,border-color,opacity,transform] focus:outline-none"
         aria-label="Open menu">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

@@ -115,15 +115,15 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--surface-subtle);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.4);
+  background: var(--input-border);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.7);
+  background: var(--text-muted);
 }
 
 /* Focus shows at once on every control (WCAG 2.1 AA); overrides focus:outline-none */
@@ -182,4 +182,76 @@ a[class*="bg-accent-"]:active {
   a:active {
     transform: none !important;
   }
+}
+
+/* Tables become cards below 1024px (phones and tablets). Templates tag cells with
+   data-cell (select | title | amount | actions) or data-label (the column header).
+   Card: title left, amount right, kebab in the corner, one quiet line of details below. */
+@media (max-width: 1023.98px) {
+  .card-table,
+  .card-table tbody { display: block; width: 100%; }
+  .card-table { padding: 0.75rem; }
+  .card-table thead { display: none; }
+  .card-table tbody > * + * { margin-top: 0.625rem; }
+
+  .card-table tbody > tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+    position: relative;
+    padding: 0.75rem 3rem 0.75rem 0.75rem;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+  }
+  .card-table tbody > tr::before { content: ""; order: 1; flex: 0 0 100%; height: 0; }
+  .card-table tbody > tr.bg-surface-subtle { background: var(--surface-subtle); }
+  .card-table tbody > tr[aria-busy="true"] { display: block; padding-right: 0.75rem; }
+  .card-table tbody > tr[aria-busy="true"]::before { display: none; }
+
+  .card-table td {
+    display: block;
+    min-width: 0;
+    padding: 0 !important;
+    border: 0;
+    order: 2;
+    flex: 0 0 auto;
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+  }
+  .card-table td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .card-table td[data-cell="select"] { position: absolute; top: 0.5rem; left: 0.25rem; order: 0; }
+  .card-table td[data-cell="title"] {
+    order: 0;
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    min-height: 2.5rem;
+  }
+  .card-table tbody > tr:has(> td[data-cell="select"]) td[data-cell="title"] { padding-left: 2.5rem !important; }
+  .card-table td[data-cell="title"] .sm:hidden { display: none; }
+  .card-table td[data-cell="title"] app-row-menu { position: absolute; top: 0.5rem; right: 0.5rem; margin: 0; }
+  .card-table td[data-cell="amount"] {
+    order: 0;
+    flex: 0 0 auto;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .card-table td[data-cell="actions"] {
+    order: 3;
+    flex: 0 0 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem !important;
+    border-top: 1px solid var(--border-subtle);
+    text-align: left;
+  }
+  .card-table td[colspan] { flex: 0 0 100%; }
 }

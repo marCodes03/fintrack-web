@@ -19,11 +19,24 @@ export class LoginComponent {
   protected isLoading = signal<boolean>(false);
   protected showPassword = signal<boolean>(false);
 
+  protected fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors)[0];
+    if (first) document.getElementById(first)?.focus();
+  }
+
   handleLogin(): void {
-    if (!this.email || !this.password) {
-      this.errorMessage.set('Please fill out all fields.');
+    const errors: Record<string, string> = {};
+    if (!this.email.trim()) errors['email'] = 'Enter your email address.';
+    if (!this.password) errors['password'] = 'Enter your password.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
+    this.fieldErrors.set({});
 
     this.isLoading.set(true);
     this.errorMessage.set(null);

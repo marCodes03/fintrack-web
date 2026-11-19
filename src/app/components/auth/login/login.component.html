@@ -14,7 +14,7 @@
 
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-surface-card border border-border-subtle p-8 rounded-2xl">
-      <form (submit)="handleLogin(); $event.preventDefault()" class="space-y-6">
+      <form novalidate (submit)="handleLogin(); $event.preventDefault()" class="space-y-6">
         
         @if (errorMessage()) {
           <div role="alert" class="p-3 rounded-lg bg-accent-rose/10 border border-accent-rose/25 text-accent-rose text-sm">
@@ -27,9 +27,10 @@
             Email address
           </label>
           <div class="mt-1">
-            <input id="email" name="email" type="email" autocomplete="email" required [(ngModel)]="email"
+            <input id="email" name="email" [attr.aria-invalid]="fieldErrors()['email'] ? true : null" [attr.aria-describedby]="fieldErrors()['email'] ? 'email-err' : null" type="email" autocomplete="email" [(ngModel)]="email"
               class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
           </div>
+          @if (fieldErrors()['email']) { <p id="email-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['email'] }}</p> }
         </div>
 
         <div>
@@ -37,7 +38,7 @@
             Password
           </label>
           <div class="mt-1 relative">
-            <input id="password" name="password" [type]="showPassword() ? 'text' : 'password'" autocomplete="current-password" required [(ngModel)]="password"
+            <input id="password" name="password" [attr.aria-invalid]="fieldErrors()['password'] ? true : null" [attr.aria-describedby]="fieldErrors()['password'] ? 'password-err' : null" [type]="showPassword() ? 'text' : 'password'" autocomplete="current-password" [(ngModel)]="password"
               class="w-full bg-input-bg border border-input-border rounded-xl pl-4 pr-10 py-3 text-input-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-emerald/20 focus:border-accent-emerald transition-all text-base">
             <button type="button" (click)="showPassword.set(!showPassword())" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'" [attr.aria-pressed]="showPassword()"
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-text-muted hover:text-text-heading transition-colors">
@@ -53,6 +54,7 @@
               }
             </button>
           </div>
+          @if (fieldErrors()['password']) { <p id="password-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['password'] }}</p> }
           <div class="mt-2 text-center">
             <a routerLink="/forgot-password" class="font-medium text-accent-emerald hover:opacity-80 transition-colors text-xs">
               Forgot password?

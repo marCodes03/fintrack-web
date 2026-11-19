@@ -78,7 +78,7 @@
       <!-- Footer Actions -->
       <div class="p-5 border-t border-border-subtle bg-surface-subtle/50 space-y-2">
         @if (accounts.length === 0) {
-          <p id="submit-hint" class="text-xs text-text-muted">Add an account first, then you can save this record.</p>
+          <p id="submit-hint" class="text-sm text-text-body">Add an account first, then you can save this record.</p>
         }
         <button (click)="onSubmit()" [disabled]="isLoading() || accounts.length === 0" [attr.aria-describedby]="accounts.length === 0 ? 'submit-hint' : null"
           class="w-full bg-accent-emerald hover:opacity-90 text-on-accent font-bold py-3 px-4 rounded-xl transition-[color,background-color,border-color,opacity,transform] text-sm disabled:opacity-50 flex items-center justify-center space-x-2">

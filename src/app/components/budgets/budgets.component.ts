@@ -99,6 +99,7 @@ export class BudgetsComponent implements OnInit {
 
   protected successMessage = signal<string | null>(null);
   protected errorMessage = signal<string | null>(null);
+  protected startDateError = signal<string | null>(null);
 
 
   ngOnInit(): void {
@@ -219,6 +220,7 @@ export class BudgetsComponent implements OnInit {
 
   // Implementation Modal methods
   openImplementModal(plan: BudgetPlan): void {
+    this.startDateError.set(null);
     this.implementPlanId.set(plan.id);
     this.implementPlanName.set(plan.name);
     
@@ -307,9 +309,12 @@ export class BudgetsComponent implements OnInit {
   executeImplementPlan(): void {
     const planId = this.implementPlanId();
     if (!planId || !this.implementStartDate) {
-      this.errorMessage.set('Please select a start date to activate the plan.');
+      this.startDateError.set('Pick a start date to activate this plan.');
+      document.getElementById('budgets-f2')?.focus();
       return;
     }
+
+    this.startDateError.set(null);
 
     if (!this.implementEndDate) {
       this.onStartDateChange(this.implementStartDate);

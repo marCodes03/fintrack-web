@@ -24,16 +24,26 @@ export class ResetPasswordComponent {
   protected showNewPassword = signal<boolean>(false);
   protected showConfirmNewPassword = signal<boolean>(false);
 
-  handleResetPassword(): void {
-    if (!this.currentPassword || !this.newPassword || !this.confirmNewPassword) {
-      this.errorMessage.set('All fields are required.');
-      return;
-    }
+  protected fieldErrors = signal<Record<string, string>>({});
 
-    if (this.newPassword !== this.confirmNewPassword) {
-      this.errorMessage.set('New passwords do not match.');
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors)[0];
+    if (first) document.getElementById(first)?.focus();
+  }
+
+  handleResetPassword(): void {
+    const errors: Record<string, string> = {};
+    if (!this.currentPassword) errors['currentPassword'] = 'Enter your current password.';
+    if (!this.newPassword) errors['newPassword'] = 'Choose a new password.';
+    if (!this.confirmNewPassword) errors['confirmNewPassword'] = 'Re-enter the new password.';
+    else if (this.newPassword && this.newPassword !== this.confirmNewPassword) errors['confirmNewPassword'] = 'Passwords do not match.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
+    this.fieldErrors.set({});
 
     this.isLoading.set(true);
     this.errorMessage.set(null);

@@ -27,6 +27,15 @@ export class ReviewsComponent implements OnInit {
   protected successMessage = signal<string | null>(null);
   protected errorMessage = signal<string | null>(null);
 
+  protected fieldErrors = signal<Record<string, string>>({});
+
+  private showFieldErrors(errors: Record<string, string>): void {
+    this.fieldErrors.set(errors);
+    this.errorMessage.set('Fix the highlighted fields to continue.');
+    const first = Object.keys(errors)[0];
+    if (first) document.getElementById('reviews-' + first)?.focus();
+  }
+
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
@@ -62,12 +71,11 @@ export class ReviewsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.rating() === 0) {
-      this.errorMessage.set('Please select a star rating between 1 and 5.');
-      return;
-    }
-    if (!this.comment.trim()) {
-      this.errorMessage.set('Please share a few words about your experience before submitting.');
+    const errors: Record<string, string> = {};
+    if (this.rating() === 0) errors['rating'] = 'Pick a rating from 1 to 5 stars.';
+    if (!this.comment.trim()) errors['f1'] = 'Write a few words about your experience.';
+    if (Object.keys(errors).length) {
+      this.showFieldErrors(errors);
       return;
     }
 
@@ -79,6 +87,7 @@ export class ReviewsComponent implements OnInit {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.fieldErrors.set({});
     this.successMessage.set(null);
 
     this.apiService.submitReview(this.rating(), this.comment.trim()).subscribe({
