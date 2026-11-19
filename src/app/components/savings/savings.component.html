@@ -230,7 +230,7 @@
 <!-- Savings Goal Edit Modal -->
 @if (isGoalModalOpen()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div (click)="closeGoalModal()" aria-hidden="true" class="fixed inset-0 scrim backdrop-blur-xs"></div>
+    <div (click)="closeGoalModal()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs"></div>
     <div appDialog aria-label="Monthly savings goal" (dialogClose)="closeGoalModal()" class="relative bg-surface-card border border-border-subtle rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4 z-10 animate-in zoom-in-95">
       <h2 class="text-lg font-bold text-text-heading">Set Monthly Savings Goal</h2>
       <p class="text-sm text-text-body">Define your monthly target savings amount in PHP. Progress will update automatically as you deposit funds.</p>

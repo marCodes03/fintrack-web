@@ -1,7 +1,7 @@
 @if (isOpen) {
   <div animate.leave="overlay-leave" class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <!-- Clickable dark backdrop -->
-    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim backdrop-blur-xs transition-opacity duration-200 animate-in fade-in"></div>
+    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs transition-opacity duration-200 animate-in fade-in"></div>
 
     <!-- Modal Card Container -->
     <div appDialog aria-label="Confirm delete" (dialogClose)="onClose()" class="relative w-full max-w-md bg-surface-card border border-border-subtle rounded-xl shadow-2xl p-6 z-10 space-y-5 animate-in scale-in duration-200">

@@ -1,7 +1,7 @@
 @if (isOpen) {
   <div animate.leave="overlay-leave" class="fixed inset-0 z-50 flex justify-end">
     <!-- Backdrop -->
-    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
+    <div (click)="onClose()" aria-hidden="true" class="fixed inset-0 scrim md:backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"></div>
 
     <!-- Slide Panel -->
     <div appDialog aria-label="Expense form" (dialogClose)="onClose()" class="relative w-96 max-w-full bg-surface-card border-l border-border-subtle h-full flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
@@ -30,7 +30,7 @@
           <input id="expense-slider-f1" [attr.aria-invalid]="fieldErrors()['f1'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f1'] ? 'expense-slider-f1-err' : null" type="text" [(ngModel)]="localDescription" placeholder="e.g. Electricity Bill or Groceries"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
           @if (fieldErrors()['f1']) {
-            <p id="expense-slider-f1-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p>
+            <p id="expense-slider-f1-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f1'] }}</p>
           }
         </div>
 
@@ -40,7 +40,7 @@
           <input id="expense-slider-f2" [attr.aria-invalid]="fieldErrors()['f2'] ? 'true' : null" [attr.aria-describedby]="fieldErrors()['f2'] ? 'expense-slider-f2-err' : null" type="number" inputmode="decimal" [(ngModel)]="localAmount" placeholder="0.00" min="0.01" step="0.01"
             class="w-full bg-input-bg border border-input-border rounded-xl px-4 py-2.5 text-input-text placeholder-text-muted focus:outline-none focus:border-accent-emerald text-base">
           @if (fieldErrors()['f2']) {
-            <p id="expense-slider-f2-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f2'] }}</p>
+            <p id="expense-slider-f2-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f2'] }}</p>
           }
         </div>
 
@@ -55,7 +55,7 @@
             }
           </select>
           @if (fieldErrors()['f3']) {
-            <p id="expense-slider-f3-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f3'] }}</p>
+            <p id="expense-slider-f3-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f3'] }}</p>
           }
         </div>
 
@@ -70,7 +70,7 @@
             }
           </select>
           @if (fieldErrors()['f4']) {
-            <p id="expense-slider-f4-err" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f4'] }}</p>
+            <p id="expense-slider-f4-err" animate.enter="banner-enter" animate.leave="banner-leave" class="text-xs text-accent-rose mt-1">{{ fieldErrors()['f4'] }}</p>
           }
         </div>
 

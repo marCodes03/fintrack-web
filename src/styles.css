@@ -345,3 +345,6 @@ main[tabindex="-1"]:focus-visible { outline: none !important; }
   .star-pop { display: inline-block; animation: star-pop 300ms cubic-bezier(0.22, 1, 0.36, 1) both; }
   .goal-pulse { transform-origin: center; animation: goal-pulse 300ms cubic-bezier(0.22, 1, 0.36, 1); }
 }
+
+/* A leaving element is already gone to the user: it must not catch clicks while it fades */
+.overlay-leave, .overlay-leave *, .menu-leave, .banner-leave, .reveal-leave { pointer-events: none; }
