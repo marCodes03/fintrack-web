@@ -4,7 +4,7 @@
   "description": "FinTrack Node.js Express REST API with PostgreSQL and Prisma",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "prisma:generate": "prisma generate",
